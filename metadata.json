@@ -1,0 +1,6 @@
+{
+  "name": "Bytexon",
+  "description": "Premium client project portal and admin dashboard with real-time requests tracking, integrated live chat, and UPI payment verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
