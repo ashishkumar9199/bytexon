@@ -45,6 +45,19 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
   const [updatingSettings, setUpdatingSettings] = useState(false);
   const [settingsSuccess, setSettingsSuccess] = useState(false);
 
+  // Sync form when parent adminConfig is loaded/updated
+  useEffect(() => {
+    setSettingsForm({
+      username: adminConfig.adminUsername,
+      password: adminConfig.adminPassword,
+      upiId: adminConfig.upiId,
+      starterPrice: adminConfig.standardPricing?.starter ?? 15000,
+      professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
+      enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
+    });
+    setQrFileBase64(adminConfig.upiQrBase64 || '');
+  }, [adminConfig]);
+
   // Load All Requests in Real-time
   useEffect(() => {
     setLoadingRequests(true);

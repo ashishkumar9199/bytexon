@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "AdminConfig": {
+      "title": "AdminConfig",
+      "description": "System-wide admin credentials, pricing and UPI payment settings",
+      "type": "object",
+      "properties": {
+        "adminUsername": {
+          "type": "string",
+          "description": "The administrator username"
+        },
+        "adminPassword": {
+          "type": "string",
+          "description": "The administrator password"
+        },
+        "upiId": {
+          "type": "string",
+          "description": "The business UPI ID for payments"
+        },
+        "upiQrBase64": {
+          "type": "string",
+          "description": "Base64 data URL for a custom QR code"
+        },
+        "standardPricing": {
+          "type": "object",
+          "description": "Adjustable pricing for web development plans"
+        }
+      },
+      "required": [
+        "adminUsername",
+        "adminPassword",
+        "upiId"
+      ]
+    },
+    "ProjectRequest": {
+      "title": "ProjectRequest",
+      "description": "Client project proposal and request tracking",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique tracking ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "The client name"
+        },
+        "email": {
+          "type": "string",
+          "description": "The client email"
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The client company"
+        },
+        "whatsapp": {
+          "type": "string",
+          "description": "The client WhatsApp contact"
+        },
+        "description": {
+          "type": "string",
+          "description": "Details about the web project"
+        },
+        "budgetAmount": {
+          "type": "number",
+          "description": "Initial selected plan or custom budget"
+        },
+        "budgetCurrency": {
+          "type": "string",
+          "description": "INR or USD"
+        },
+        "status": {
+          "type": "string",
+          "description": "Request processing status"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Unix timestamp of creation"
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "whatsapp",
+        "description",
+        "budgetAmount",
+        "budgetCurrency",
+        "status",
+        "createdAt"
+      ]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Messaging logs between client and administrator",
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "description": "References a ProjectRequest ID"
+        },
+        "sender": {
+          "type": "string",
+          "description": "client or admin"
+        },
+        "text": {
+          "type": "string",
+          "description": "The message body"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp of message"
+        }
+      },
+      "required": [
+        "requestId",
+        "sender",
+        "text",
+        "timestamp"
+      ]
+    }
+  },
+  "firestore": {
+    "config/{configId}": {
+      "schema": "AdminConfig",
+      "description": "Administrative system settings"
+    },
+    "requests/{requestId}": {
+      "schema": "ProjectRequest",
+      "description": "Client submitted requests"
+    },
+    "chats/{chatId}": {
+      "schema": "ChatMessage",
+      "description": "Instant messaging chat rooms"
+    }
+  }
+}
