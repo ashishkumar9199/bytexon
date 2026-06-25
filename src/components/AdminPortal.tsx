@@ -38,7 +38,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
     username: adminConfig.adminUsername,
     password: adminConfig.adminPassword,
     upiId: adminConfig.upiId,
-    adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate',
+    adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate-abhy2302',
     starterPrice: adminConfig.standardPricing?.starter ?? 15000,
     professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
     enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
@@ -53,7 +53,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       username: adminConfig.adminUsername,
       password: adminConfig.adminPassword,
       upiId: adminConfig.upiId,
-      adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate',
+      adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate-abhy2302',
       starterPrice: adminConfig.standardPricing?.starter ?? 15000,
       professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
       enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
