@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { collection, query, onSnapshot, updateDoc, doc, addDoc, where } from 'firebase/firestore';
 import { ProjectRequest, ChatMessage, AdminConfig } from '../types';
+import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
@@ -80,6 +81,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
     }, (err) => {
       console.error("Error loading admin requests:", err);
       setLoadingRequests(false);
+      handleFirestoreError(err, OperationType.LIST, 'requests');
     });
 
     return () => unsubscribe();
@@ -105,6 +107,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       setChatMessages(msgs);
     }, (err) => {
       console.error("Error loading chat messages:", err);
+      handleFirestoreError(err, OperationType.LIST, 'chats');
     });
 
     return () => unsubscribe();

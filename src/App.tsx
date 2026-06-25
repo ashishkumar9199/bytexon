@@ -3,6 +3,7 @@ import { db } from './firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { AdminConfig } from './types';
 import { getAdminConfig, updateAdminConfig, DEFAULT_CONFIG } from './lib/configHelper';
+import { handleFirestoreError, OperationType } from './lib/firestoreErrorHandler';
 import ClientLanding from './components/ClientLanding';
 import ClientPortal from './components/ClientPortal';
 import AdminPortal from './components/AdminPortal';
@@ -24,7 +25,11 @@ export default function App() {
   useEffect(() => {
     // Initial fetch and setup
     getAdminConfig().then((cfg) => {
-      setAdminConfig(cfg);
+      if (cfg) {
+        setAdminConfig(cfg);
+      }
+    }).catch((err) => {
+      console.warn("Failed to load admin config during startup, fallback defaults will be used:", err);
     });
 
     // Establish real-time listener for changes (e.g. from the admin panel itself)
@@ -33,6 +38,8 @@ export default function App() {
       if (docSnap.exists()) {
         setAdminConfig({ ...DEFAULT_CONFIG, ...docSnap.data() } as AdminConfig);
       }
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, 'config/admin_settings');
     });
 
     return () => unsubscribe();
@@ -72,55 +79,53 @@ export default function App() {
   const handleAdminLogOut = () => {
     setIsAdminLoggedIn(false);
     setView('client-landing');
+    if (window.location.hash === '#/admin' || window.location.hash === '#admin') {
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
+    }
   };
+
+  // Listen for hash/query/path changes to route to admin login or dashboard
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      
+      if (path === '/admin' || hash === '#/admin' || hash === '#admin' || params.has('admin')) {
+        if (isAdminLoggedIn) {
+          setView('admin-dashboard');
+        } else {
+          setView('admin-login');
+        }
+      }
+    };
+
+    handleUrlRoute();
+
+    window.addEventListener('popstate', handleUrlRoute);
+    window.addEventListener('hashchange', handleUrlRoute);
+    return () => {
+      window.removeEventListener('popstate', handleUrlRoute);
+      window.removeEventListener('hashchange', handleUrlRoute);
+    };
+  }, [isAdminLoggedIn]);
+
+  // Keep URL updated when view changes
+  useEffect(() => {
+    if (view === 'admin-login' || view === 'admin-dashboard') {
+      if (window.location.hash !== '#/admin' && !window.location.search.includes('admin') && window.location.pathname !== '/admin') {
+        window.history.pushState(null, '', '#/admin');
+      }
+    } else if (view === 'client-landing') {
+      if (window.location.hash === '#/admin' || window.location.hash === '#admin') {
+        window.history.pushState(null, '', window.location.pathname + window.location.search);
+      }
+    }
+  }, [view]);
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 antialiased">
       
-      {/* Dynamic View-Switching Ribbon for AI Studio Evaluator */}
-      <div className="bg-slate-950 text-white px-3 py-1 flex flex-wrap items-center justify-between text-[11px] font-sans border-b border-slate-850 gap-2">
-        <div className="flex items-center space-x-2">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-          <span className="font-mono text-[9px] tracking-wider uppercase font-bold text-indigo-300">Bytexon Sandbox Controller:</span>
-          <span className="text-slate-400 font-medium">Quickly toggle profiles to test live-chat & payments in real-time</span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          {view !== 'client-landing' && (
-            <button 
-              onClick={() => {
-                setView('client-landing');
-                setActiveRequestId('');
-              }}
-              className="px-2 py-0.5 bg-indigo-900 hover:bg-indigo-800 rounded-sm text-[10px] font-bold transition-all cursor-pointer border border-indigo-700/50"
-            >
-              ← Agency Home
-            </button>
-          )}
-
-          {view === 'client-portal' && (
-            <div className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 rounded-sm font-mono text-[9px] font-bold text-indigo-300 uppercase">
-              Viewing Client Portal: {activeRequestId}
-            </div>
-          )}
-
-          <button
-            onClick={() => {
-              if (isAdminLoggedIn) {
-                setView(view === 'admin-dashboard' ? 'client-landing' : 'admin-dashboard');
-              } else {
-                setView(view === 'admin-login' ? 'client-landing' : 'admin-login');
-              }
-            }}
-            id="btn-toggle-sandbox-profile"
-            className="px-2.5 py-0.5 bg-white text-slate-950 hover:bg-slate-100 font-bold rounded-sm text-[10px] transition-all flex items-center space-x-1 cursor-pointer border border-slate-200"
-          >
-            <Shield className="w-3 h-3 text-indigo-600" />
-            <span>{view.startsWith('admin') ? 'Switch to Client Profile' : 'Switch to Admin Profile'}</span>
-          </button>
-        </div>
-      </div>
-
       {/* Primary Brand Navigation (Sticky Header) - Only on public pages */}
       {!view.startsWith('admin') && (
         <header className="bg-white border-b border-slate-200 px-4 py-2 sticky top-0 z-40 shadow-xs">
@@ -142,30 +147,9 @@ export default function App() {
             <nav className="hidden md:flex items-center space-x-5 text-xs font-semibold text-slate-500">
               <a href="#quote" onClick={() => setView('client-landing')} className="hover:text-slate-950 transition-colors">Project Planner</a>
               <a href="#pricing" onClick={() => setView('client-landing')} className="hover:text-slate-950 transition-colors">Standard Pricing</a>
-              <button 
-                onClick={() => setView('admin-login')} 
-                className="hover:text-slate-950 transition-colors cursor-pointer"
-              >
-                Support Hub
-              </button>
             </nav>
 
             <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => {
-                  const pricingElement = document.getElementById('pricing');
-                  if (pricingElement) {
-                    pricingElement.scrollIntoView({ behavior: 'smooth' });
-                  } else {
-                    setView('client-landing');
-                    setTimeout(() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }), 100);
-                  }
-                }}
-                className="px-2.5 py-1 text-indigo-600 hover:text-indigo-700 border border-slate-200 hover:border-slate-300 bg-slate-50 rounded-sm text-[11px] font-bold font-sans transition-all cursor-pointer"
-              >
-                Standard Pricing Plans
-              </button>
-              
               <button 
                 onClick={() => {
                   const quoteElement = document.getElementById('quote');

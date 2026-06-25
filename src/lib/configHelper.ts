@@ -1,6 +1,7 @@
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { AdminConfig } from '../types';
+import { handleFirestoreError, OperationType } from './firestoreErrorHandler';
 
 const CONFIG_DOC_ID = 'admin_settings';
 
@@ -18,6 +19,7 @@ export const DEFAULT_CONFIG: AdminConfig = {
 };
 
 export async function getAdminConfig(): Promise<AdminConfig> {
+  const path = `config/${CONFIG_DOC_ID}`;
   try {
     const docRef = doc(db, 'config', CONFIG_DOC_ID);
     const docSnap = await getDoc(docRef);
@@ -26,22 +28,27 @@ export async function getAdminConfig(): Promise<AdminConfig> {
       return { ...DEFAULT_CONFIG, ...docSnap.data() } as AdminConfig;
     } else {
       // Create default configuration on first load
-      await setDoc(docRef, DEFAULT_CONFIG);
+      try {
+        await setDoc(docRef, DEFAULT_CONFIG);
+      } catch (writeErr) {
+        handleFirestoreError(writeErr, OperationType.WRITE, path);
+      }
       return DEFAULT_CONFIG;
     }
   } catch (error) {
     console.error('Error fetching admin config:', error);
-    return DEFAULT_CONFIG;
+    handleFirestoreError(error, OperationType.GET, path);
   }
 }
 
 export async function updateAdminConfig(updates: Partial<AdminConfig>): Promise<void> {
+  const path = `config/${CONFIG_DOC_ID}`;
   try {
     const docRef = doc(db, 'config', CONFIG_DOC_ID);
     await setDoc(docRef, updates, { merge: true });
   } catch (error) {
     console.error('Error updating admin config:', error);
-    throw error;
+    handleFirestoreError(error, OperationType.WRITE, path);
   }
 }
 

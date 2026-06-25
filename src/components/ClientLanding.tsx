@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
 import { ProjectRequest, AdminConfig } from '../types';
+import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Briefcase, Send, Shield, Zap, Search, ChevronRight, Check,
@@ -99,7 +100,11 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
     try {
       // Set doc with explicit custom readable ID
       const requestRef = doc(db, 'requests', customId);
-      await setDoc(requestRef, payload);
+      try {
+        await setDoc(requestRef, payload);
+      } catch (writeErr) {
+        handleFirestoreError(writeErr, OperationType.WRITE, `requests/${customId}`);
+      }
 
       const savedRequest: ProjectRequest = {
         id: customId,
@@ -109,12 +114,16 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
       setSuccessRequest(savedRequest);
       
       // Auto pre-populate some starter messages in chat for the client
-      await addDoc(collection(db, 'chats'), {
-        requestId: customId,
-        sender: 'admin',
-        text: `👋 Hello ${payload.name}! Thank you for choosing Bytexon. We have received your project request for "${payload.description.substring(0, 30)}...". Our architects are reviewing it and will get back to you shortly in this live chat!`,
-        timestamp: Date.now()
-      });
+      try {
+        await addDoc(collection(db, 'chats'), {
+          requestId: customId,
+          sender: 'admin',
+          text: `👋 Hello ${payload.name}! Thank you for choosing Bytexon. We have received your project request for "${payload.description.substring(0, 30)}...". Our architects are reviewing it and will get back to you shortly in this live chat!`,
+          timestamp: Date.now()
+        });
+      } catch (chatErr) {
+        handleFirestoreError(chatErr, OperationType.CREATE, 'chats');
+      }
 
       // Reset form
       setFormData({
@@ -154,7 +163,12 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
         collection(db, 'requests'), 
         where('email', '==', trackEmail.trim().toLowerCase())
       );
-      const snapshot = await getDocs(q);
+      let snapshot;
+      try {
+        snapshot = await getDocs(q);
+      } catch (getErr) {
+        handleFirestoreError(getErr, OperationType.GET, 'requests');
+      }
       
       if (snapshot.empty) {
         setTrackError('No project requests found with that email address.');

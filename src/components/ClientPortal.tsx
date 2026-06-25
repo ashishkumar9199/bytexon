@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { ProjectRequest, ChatMessage, AdminConfig } from '../types';
+import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, CheckCircle2, AlertCircle, Clock, Send, CreditCard, 
@@ -45,6 +46,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
       console.error("Error loading request:", err);
       setError('Failed to fetch request details.');
       setLoading(false);
+      handleFirestoreError(err, OperationType.GET, `requests/${requestId}`);
     });
 
     return () => unsubscribe();
@@ -63,6 +65,9 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
       // Sort client-side by timestamp to avoid requiring manual firestore index creation
       msgs.sort((a, b) => a.timestamp - b.timestamp);
       setMessages(msgs);
+    }, (err) => {
+      console.error("Error loading chat messages:", err);
+      handleFirestoreError(err, OperationType.LIST, 'chats');
     });
 
     return () => unsubscribe();
@@ -90,6 +95,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
       });
     } catch (err) {
       console.error('Error sending message:', err);
+      handleFirestoreError(err, OperationType.CREATE, 'chats');
     }
   };
 
@@ -121,6 +127,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
     } catch (err) {
       console.error('Error updating payment info:', err);
       alert('Failed to submit payment details. Please try again.');
+      handleFirestoreError(err, OperationType.WRITE, `requests/${request.id}`);
     } finally {
       setSubmittingPayment(false);
     }
