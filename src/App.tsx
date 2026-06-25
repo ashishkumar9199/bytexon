@@ -79,7 +79,10 @@ export default function App() {
   const handleAdminLogOut = () => {
     setIsAdminLoggedIn(false);
     setView('client-landing');
-    if (window.location.hash === '#/admin' || window.location.hash === '#admin') {
+    const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate';
+    const expectedHash = '#/admin-' + secret;
+    const expectedHashAlt = '#admin-' + secret;
+    if (window.location.hash === expectedHash || window.location.hash === expectedHashAlt) {
       window.history.pushState(null, '', window.location.pathname + window.location.search);
     }
   };
@@ -87,11 +90,14 @@ export default function App() {
   // Listen for hash/query/path changes to route to admin login or dashboard
   useEffect(() => {
     const handleUrlRoute = () => {
-      const path = window.location.pathname;
       const hash = window.location.hash;
       const params = new URLSearchParams(window.location.search);
+      const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate';
+      const expectedHash = '#/admin-' + secret;
+      const expectedHashAlt = '#admin-' + secret;
+      const hasSecretParam = params.get('admin') === secret;
       
-      if (path === '/admin' || hash === '#/admin' || hash === '#admin' || params.has('admin')) {
+      if (hash === expectedHash || hash === expectedHashAlt || hasSecretParam) {
         if (isAdminLoggedIn) {
           setView('admin-dashboard');
         } else {
@@ -108,20 +114,24 @@ export default function App() {
       window.removeEventListener('popstate', handleUrlRoute);
       window.removeEventListener('hashchange', handleUrlRoute);
     };
-  }, [isAdminLoggedIn]);
+  }, [isAdminLoggedIn, adminConfig.adminSecretPath]);
 
   // Keep URL updated when view changes
   useEffect(() => {
+    const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate';
+    const expectedHash = '#/admin-' + secret;
+    const expectedHashAlt = '#admin-' + secret;
+
     if (view === 'admin-login' || view === 'admin-dashboard') {
-      if (window.location.hash !== '#/admin' && !window.location.search.includes('admin') && window.location.pathname !== '/admin') {
-        window.history.pushState(null, '', '#/admin');
+      if (window.location.hash !== expectedHash && window.location.hash !== expectedHashAlt && window.location.search !== `?admin=${secret}`) {
+        window.history.pushState(null, '', expectedHash);
       }
     } else if (view === 'client-landing') {
-      if (window.location.hash === '#/admin' || window.location.hash === '#admin') {
+      if (window.location.hash === expectedHash || window.location.hash === expectedHashAlt) {
         window.history.pushState(null, '', window.location.pathname + window.location.search);
       }
     }
-  }, [view]);
+  }, [view, adminConfig.adminSecretPath]);
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 antialiased">
@@ -254,10 +264,16 @@ export default function App() {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
 
-                  <div className="pt-2 border-t border-slate-200 flex justify-between text-[10px] text-slate-400 font-mono font-semibold">
-                    <span>User: admin</span>
-                    <span>Pass: admin123</span>
-                  </div>
+                  {adminConfig.adminUsername === 'admin' && adminConfig.adminPassword === 'admin123' && (
+                    <div className="pt-2 border-t border-slate-200 flex flex-col space-y-1 text-[9px] text-indigo-600 font-semibold leading-relaxed bg-indigo-50/40 p-2 rounded-sm border border-indigo-100">
+                      <p>⚠️ Default configuration is active:</p>
+                      <div className="flex justify-between font-mono font-bold text-slate-700">
+                        <span>User: admin</span>
+                        <span>Pass: admin123</span>
+                      </div>
+                      <p className="text-[8px] text-slate-400 font-normal">Change this in "System & Billing Config" settings after signing in.</p>
+                    </div>
+                  )}
                 </form>
               </div>
             )}

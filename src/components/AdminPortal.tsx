@@ -38,6 +38,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
     username: adminConfig.adminUsername,
     password: adminConfig.adminPassword,
     upiId: adminConfig.upiId,
+    adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate',
     starterPrice: adminConfig.standardPricing?.starter ?? 15000,
     professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
     enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
@@ -52,6 +53,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       username: adminConfig.adminUsername,
       password: adminConfig.adminPassword,
       upiId: adminConfig.upiId,
+      adminSecretPath: adminConfig.adminSecretPath || 'bytexon-secure-gate',
       starterPrice: adminConfig.standardPricing?.starter ?? 15000,
       professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
       enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
@@ -251,6 +253,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
         adminUsername: settingsForm.username.trim(),
         adminPassword: settingsForm.password.trim(),
         upiId: settingsForm.upiId.trim(),
+        adminSecretPath: settingsForm.adminSecretPath.trim(),
         upiQrBase64: qrFileBase64,
         standardPricing: {
           starter: Number(settingsForm.starterPrice),
@@ -842,7 +845,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
                 
                 {/* Credentials block */}
                 <div className="space-y-3">
-                  <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest font-mono">1. Admin Credentials change</h3>
+                  <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest font-mono">1. Admin Credentials & Secret Access Path</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-slate-700 text-[9px] font-bold uppercase tracking-wider mb-1">
@@ -869,6 +872,28 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
                         className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-500 focus:outline-none rounded-sm text-xs font-mono transition-all"
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-700 text-[9px] font-bold uppercase tracking-wider mb-1">
+                      Secret Admin URL Access Path Hash
+                    </label>
+                    <div className="flex rounded-sm border border-slate-300 overflow-hidden bg-slate-50">
+                      <span className="px-2.5 py-1.5 text-[11px] text-slate-400 font-mono bg-slate-100 border-r border-slate-200 select-none">
+                        #/admin-
+                      </span>
+                      <input 
+                        type="text"
+                        required
+                        placeholder="e.g. secret-entry"
+                        value={settingsForm.adminSecretPath}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, adminSecretPath: e.target.value.replace(/[^a-zA-Z0-9_-]/g, '') }))}
+                        className="w-full px-2.5 py-1.5 bg-white focus:bg-white focus:border-indigo-500 focus:outline-none text-xs font-mono font-semibold transition-all text-slate-800"
+                      />
+                    </div>
+                    <p className="text-[9px] text-slate-400 mt-1 leading-relaxed">
+                      By setting this path, the login screen is ONLY accessible by entering <span className="font-mono bg-slate-100 px-1 py-0.5 rounded text-indigo-600 font-semibold font-sans">#/admin-{settingsForm.adminSecretPath || 'bytexon-secure-gate'}</span> in your browser's address bar. Standard entries like <span className="font-mono text-slate-500 font-sans">#admin</span> will be blocked/redirected.
+                    </p>
                   </div>
                 </div>
 

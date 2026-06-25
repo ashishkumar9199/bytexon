@@ -31,6 +31,7 @@ export interface AdminConfig {
   adminUsername: string;
   adminPassword: string;
   upiId: string;
+  adminSecretPath?: string;
   upiQrBase64?: string; // Stored as data URL
   standardPricing?: {
     starter: number;
