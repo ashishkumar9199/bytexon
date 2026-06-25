@@ -43,10 +43,9 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
       }
       setLoading(false);
     }, (err) => {
-      console.error("Error loading request:", err);
-      setError('Failed to fetch request details.');
+      console.warn("Error loading request (likely offline or database initializing):", err);
+      setError('Failed to fetch request details. Please check your network connection.');
       setLoading(false);
-      handleFirestoreError(err, OperationType.GET, `requests/${requestId}`);
     });
 
     return () => unsubscribe();
@@ -66,8 +65,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
       msgs.sort((a, b) => a.timestamp - b.timestamp);
       setMessages(msgs);
     }, (err) => {
-      console.error("Error loading chat messages:", err);
-      handleFirestoreError(err, OperationType.LIST, 'chats');
+      console.warn("Error loading chat messages (likely offline or database initializing):", err);
     });
 
     return () => unsubscribe();

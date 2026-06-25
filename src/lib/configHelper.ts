@@ -32,13 +32,13 @@ export async function getAdminConfig(): Promise<AdminConfig> {
       try {
         await setDoc(docRef, DEFAULT_CONFIG);
       } catch (writeErr) {
-        handleFirestoreError(writeErr, OperationType.WRITE, path);
+        console.warn("Failed to write initial default config, using memory default:", writeErr);
       }
       return DEFAULT_CONFIG;
     }
   } catch (error) {
-    console.error('Error fetching admin config:', error);
-    handleFirestoreError(error, OperationType.GET, path);
+    console.warn('Firestore is offline or unreachable. Falling back to local DEFAULT_CONFIG:', error);
+    return DEFAULT_CONFIG;
   }
 }
 

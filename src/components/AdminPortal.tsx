@@ -81,9 +81,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
         if (updated) setSelectedRequest(updated);
       }
     }, (err) => {
-      console.error("Error loading admin requests:", err);
+      console.warn("Error loading admin requests (likely offline or database initializing):", err);
       setLoadingRequests(false);
-      handleFirestoreError(err, OperationType.LIST, 'requests');
     });
 
     return () => unsubscribe();
@@ -108,8 +107,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       msgs.sort((a, b) => a.timestamp - b.timestamp);
       setChatMessages(msgs);
     }, (err) => {
-      console.error("Error loading chat messages:", err);
-      handleFirestoreError(err, OperationType.LIST, 'chats');
+      console.warn("Error loading chat messages (likely offline or database initializing):", err);
     });
 
     return () => unsubscribe();

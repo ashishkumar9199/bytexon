@@ -39,7 +39,7 @@ export default function App() {
         setAdminConfig({ ...DEFAULT_CONFIG, ...docSnap.data() } as AdminConfig);
       }
     }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'config/admin_settings');
+      console.warn("Firestore real-time config listener is offline or unreachable (using defaults):", error.message || error);
     });
 
     return () => unsubscribe();
