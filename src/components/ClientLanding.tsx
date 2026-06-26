@@ -438,12 +438,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
                     <p className="text-slate-500 text-[11px] mt-0.5 leading-relaxed">{plan.desc}</p>
                   </div>
                   
-                  <div className="py-2.5 border-b border-slate-200">
-                    <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Starting From</p>
-                    <p className="text-2xl font-display font-black text-slate-900 mt-0.5">
-                      ₹{plan.price.toLocaleString()}
-                    </p>
-                  </div>
+
 
                   <ul className="space-y-2 py-2 text-[11px] font-sans text-slate-600">
                     {plan.features.map((feat, fIdx) => (
