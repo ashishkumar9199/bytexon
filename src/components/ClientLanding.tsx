@@ -189,262 +189,400 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
     }
   };
 
+  // Track mode toggling inside the bento card
+  const [bentoTab, setBentoTab] = useState<'create' | 'track'>('create');
+
   return (
-    <div className="bg-slate-50 min-h-screen">
-          {/* Premium Hero Section */}
-      <section className="relative overflow-hidden py-10 px-4 bg-white border-b border-slate-200">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-4 left-6 w-48 h-48 bg-indigo-100 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-4 right-6 w-64 h-64 bg-sky-100 rounded-full blur-2xl"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+    <div className="bg-slate-50 min-h-screen text-slate-900 selection:bg-indigo-600 selection:text-white">
+      {/* Brutalist Hero Section */}
+      <section className="relative overflow-hidden py-12 lg:py-20 px-6 sm:px-12 max-w-7xl mx-auto border-b-2 border-slate-300">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Hero Content (7 Columns) */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-4 text-left">
-            <div className="inline-flex self-start items-center space-x-1 px-2.5 py-0.5 bg-indigo-50 border border-indigo-200 rounded-sm text-indigo-700 text-[10px] font-bold uppercase tracking-wider font-sans">
-              <Sparkles className="w-3 h-3 text-indigo-500 animate-pulse" />
-              <span>Full-Stack Software Architecture Agency</span>
+          {/* Left Column: Big Syne Typography Heading */}
+          <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="inline-flex items-center space-x-2 border border-indigo-200 bg-indigo-50 px-3 py-1 rounded-sm text-indigo-600 text-[11px] font-bold uppercase tracking-widest font-mono">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Architectural digital ecosystems</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight leading-tight">
-              Engineering Your <br />
-              <span className="bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">Digital Breakthrough</span>
+            <h1 className="text-4xl sm:text-6xl lg:text-7.5xl font-display font-black leading-[0.85] uppercase tracking-tighter text-slate-900">
+              Engineering <br />
+              <span 
+                className="text-transparent"
+                style={{ WebkitTextStroke: "1px #0f172a" }}
+              >
+                Digital
+              </span> <br />
+              Breakthroughs
             </h1>
 
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-xl font-medium">
-              Bytexon builds high-performance web products, scalable database backends, and bespoke digital ecosystems. Submit your requirements, chat instantly with our tech leads, and launch your project with secure UPI processing.
+            <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-xl font-sans">
+              Bytexon builds high-performance web products, scalable database backends, and bespoke digital ecosystems. Submit your specifications, track request progression, and chat directly with tech leads.
             </p>
 
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <a 
-                href="#quote"
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold rounded-sm shadow-xs transition-all flex items-center space-x-1.5 text-xs"
-              >
-                <span>Launch Project Planner</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </a>
-              <a 
-                href="#pricing"
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-sans font-bold rounded-sm text-xs transition-all border border-slate-250"
-              >
-                Browse Price Plans
-              </a>
-            </div>
-
-            {/* Credibility highlights */}
-            <div className="pt-4 border-t border-slate-200 grid grid-cols-3 gap-2">
-              <div>
-                <p className="text-lg sm:text-xl font-display font-black text-slate-900">100%</p>
-                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">UPI Verified Trans</p>
+            {/* Quick stats with brutalist metric boxes */}
+            <div className="pt-8 grid grid-cols-3 gap-4 border-t border-slate-200">
+              <div className="border border-slate-200 p-3 bg-white">
+                <p className="text-xl sm:text-2xl font-display font-black text-indigo-600">100%</p>
+                <p className="text-slate-500 text-[9px] font-bold uppercase tracking-wider mt-1">UPI VERIFIED</p>
               </div>
-              <div>
-                <p className="text-lg sm:text-xl font-display font-black text-slate-900">&lt; 2 Hr</p>
-                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Architect Review</p>
+              <div className="border border-slate-200 p-3 bg-white">
+                <p className="text-xl sm:text-2xl font-display font-black text-indigo-600">&lt; 2 HR</p>
+                <p className="text-slate-500 text-[9px] font-bold uppercase tracking-wider mt-1">TECH REVIEW</p>
               </div>
-              <div>
-                <p className="text-lg sm:text-xl font-display font-black text-slate-900">Live</p>
-                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Client-Admin Chat</p>
+              <div className="border border-slate-200 p-3 bg-white">
+                <p className="text-xl sm:text-2xl font-display font-black text-indigo-600">LIVE</p>
+                <p className="text-slate-500 text-[9px] font-bold uppercase tracking-wider mt-1">DIRECT CHAT</p>
               </div>
             </div>
           </div>
 
-          {/* Tracking Panel (5 Columns) */}
-          <div className="lg:col-span-5 bg-slate-50 border border-slate-300 p-4 rounded-sm shadow-xs space-y-4">
-            <div>
-              <h2 className="text-base font-display font-bold text-slate-900 flex items-center space-x-1.5">
-                <Search className="w-4.5 h-4.5 text-indigo-600" />
-                <span>Track Existing Project</span>
-              </h2>
-              <p className="text-slate-500 text-[11px] mt-0.5">Track approval status, chat with developers, or submit payments.</p>
+          {/* Right Column: Unified Brutalist Interactive Card */}
+          <div id="quote" className="lg:col-span-5 bg-white border-2 border-slate-300 p-6 sm:p-8 relative">
+            {/* Tab header buttons */}
+            <div className="flex border-b border-slate-300 pb-4 mb-6">
+              <button 
+                onClick={() => setBentoTab('create')}
+                className={`flex-1 text-center py-2 text-xs uppercase tracking-widest font-bold transition-all border-b-2 ${
+                  bentoTab === 'create' 
+                    ? 'border-indigo-600 text-indigo-600' 
+                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                [01] START PROJECT
+              </button>
+              <button 
+                onClick={() => setBentoTab('track')}
+                className={`flex-1 text-center py-2 text-xs uppercase tracking-widest font-bold transition-all border-b-2 ${
+                  bentoTab === 'track' 
+                    ? 'border-indigo-600 text-indigo-600' 
+                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                [02] TRACK ACCESS
+              </button>
             </div>
 
-            {/* Track by ID */}
-            <form onSubmit={handleTrackById} className="space-y-1.5">
-              <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider">Track with Project ID</label>
-              <div className="flex space-x-1.5">
-                <input 
-                  type="text"
-                  required
-                  placeholder="e.g. BTX-FA39CD"
-                  value={trackId}
-                  onChange={(e) => setTrackId(e.target.value)}
-                  className="flex-1 px-2.5 py-1.5 bg-white border border-slate-300 focus:border-indigo-600 focus:outline-none rounded-sm text-xs font-mono uppercase transition-all"
-                />
-                <button 
-                  type="submit"
-                  id="btn-track-id"
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm text-xs font-bold transition-all cursor-pointer"
-                >
-                  Track ID
-                </button>
-              </div>
-            </form>
-
-            <div className="relative flex py-1 items-center">
-              <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-2 text-slate-400 text-[9px] uppercase font-bold font-mono">Or Search Email</span>
-              <div className="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            {/* Track by Email */}
-            <form onSubmit={handleTrackByEmail} className="space-y-1.5">
-              <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider">Search by Registered Email</label>
-              <div className="flex space-x-1.5">
-                <input 
-                  type="email"
-                  required
-                  placeholder="e.g. yourname@example.com"
-                  value={trackEmail}
-                  onChange={(e) => setTrackEmail(e.target.value)}
-                  className="flex-1 px-2.5 py-1.5 bg-white border border-slate-300 focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                />
-                <button 
-                  type="submit"
-                  disabled={searching}
-                  id="btn-track-email"
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-400 text-white rounded-sm text-xs font-bold transition-all cursor-pointer"
-                >
-                  {searching ? '...' : 'Search'}
-                </button>
-              </div>
-            </form>
-
-            {/* Search Results / Status */}
             <AnimatePresence mode="wait">
-              {trackError && (
-                <motion.p 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  className="text-[11px] text-rose-600 bg-rose-50 border border-rose-200 p-2 rounded-sm"
-                >
-                  {trackError}
-                </motion.p>
-              )}
-
-              {matchingRequests.length > 0 && (
-                <motion.div 
+              {bentoTab === 'create' ? (
+                <motion.div
+                  key="create-proposal"
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-1.5 bg-white p-2.5 rounded-sm border border-slate-300 max-h-40 overflow-y-auto"
+                  exit={{ opacity: 0, y: -5 }}
+                  className="space-y-4"
                 >
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Project Request:</p>
-                  {matchingRequests.map((req) => (
-                    <button
-                       key={req.id}
-                       onClick={() => onAccessPortal(req.id)}
-                       className="w-full text-left p-2 hover:bg-slate-50 border border-slate-200 rounded-sm flex items-center justify-between text-xs transition-colors"
-                     >
-                       <div className="truncate pr-2">
-                         <p className="font-mono font-bold text-indigo-700 text-[11px]">{req.id}</p>
-                         <p className="text-slate-500 truncate text-[10px]">{req.description}</p>
-                       </div>
-                       <span className={`flex-shrink-0 px-1.5 py-0.5 text-[9px] font-extrabold uppercase rounded-sm ${
-                         req.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                         req.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                         req.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                         'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                       }`}>
-                         {req.status}
-                       </span>
-                     </button>
-                  ))}
+                  {!successRequest ? (
+                    <form onSubmit={handleFormSubmit} className="space-y-3">
+                      <div>
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Full Name *</label>
+                        <input 
+                          type="text"
+                          required
+                          placeholder="E.G. RAHUL SHARMA"
+                          value={formData.name}
+                          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                          className="bg-transparent border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Email *</label>
+                          <input 
+                            type="email"
+                            required
+                            placeholder="EMAIL@DOMAIN.COM"
+                            value={formData.email}
+                            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                            className="bg-transparent border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">WhatsApp *</label>
+                          <input 
+                            type="text"
+                            required
+                            placeholder="+91 XXXXX XXXXX"
+                            value={formData.whatsapp}
+                            onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                            className="bg-transparent border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Description of work *</label>
+                        <textarea 
+                          required
+                          rows={3}
+                          placeholder="OUTLINE THE CORE MODULES AND TARGET INTEGRATIONS..."
+                          value={formData.description}
+                          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                          className="bg-transparent border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200 resize-none"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div className="sm:col-span-1">
+                          <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Currency</label>
+                          <select 
+                            value={formData.budgetCurrency}
+                            onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
+                            className="bg-white border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase cursor-pointer"
+                          >
+                            <option value="INR">INR (₹)</option>
+                            <option value="USD">USD ($)</option>
+                          </select>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Estimated Budget *</label>
+                          <input 
+                            type="number"
+                            required
+                            min="1"
+                            placeholder="AMOUNT"
+                            value={formData.budgetAmount}
+                            onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
+                            className="bg-transparent border border-slate-300 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={formSubmitting}
+                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white font-sans font-bold py-3.5 px-6 uppercase w-full tracking-widest text-[11px] transition-colors cursor-pointer disabled:bg-slate-900/30 mt-2"
+                      >
+                        {formSubmitting ? '[ SUBMITTING REQUIREMENTS... ]' : 'SUBMIT PROJECT PROPOSAL'}
+                      </button>
+                    </form>
+                  ) : (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-center py-6 space-y-6"
+                    >
+                      <div className="w-12 h-12 border-2 border-indigo-600 text-indigo-600 flex items-center justify-center mx-auto">
+                        <Check className="w-6 h-6" />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <h3 className="font-display font-black text-lg uppercase text-indigo-600">Proposal received</h3>
+                        <p className="text-[11px] text-slate-700 leading-relaxed max-w-xs mx-auto">
+                          YOUR REQUEST HAS BEEN RECORDED. AN ENGINEER HAS BEEN ALLOCATED FOR TRACKING PROGRESS.
+                        </p>
+                      </div>
+
+                      <div className="bg-slate-50 p-4 border border-slate-300 space-y-2">
+                        <span className="text-slate-400 text-[9px] font-bold uppercase tracking-widest block font-mono">YOUR WORKSPACE TRACKING ID</span>
+                        <strong className="text-lg font-mono text-indigo-600 tracking-widest block select-all font-bold">{successRequest.id}</strong>
+                      </div>
+
+                      <div className="space-y-2 pt-2">
+                        <button
+                          onClick={() => onAccessPortal(successRequest.id)}
+                          className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white font-bold py-2.5 px-6 uppercase w-full tracking-wider text-xs transition-colors cursor-pointer"
+                        >
+                          OPEN CLIENT PORTAL
+                        </button>
+                        <button
+                          onClick={() => setSuccessRequest(null)}
+                          className="bg-transparent text-slate-500 hover:text-slate-900 font-bold py-2 px-4 uppercase w-full text-[10px] tracking-wider transition-colors cursor-pointer"
+                        >
+                          Submit new proposal
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="track-requests"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="space-y-6"
+                >
+                  {/* Track by ID */}
+                  <form onSubmit={handleTrackById} className="space-y-2">
+                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Track with Project ID</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text"
+                        required
+                        placeholder="E.G. BTX-FA39CD"
+                        value={trackId}
+                        onChange={(e) => setTrackId(e.target.value)}
+                        className="flex-1 bg-transparent border border-slate-300 text-slate-900 p-3 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                      />
+                      <button 
+                        type="submit"
+                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white px-4 py-2 font-bold uppercase text-[11px] tracking-widest transition-colors cursor-pointer"
+                      >
+                        FIND
+                      </button>
+                    </div>
+                  </form>
+
+                  <div className="relative flex items-center justify-center py-2">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                    <span className="relative bg-white px-3 text-[9px] uppercase tracking-widest font-mono text-slate-400">OR EMAIL ADDRESS</span>
+                  </div>
+
+                  {/* Track by Email */}
+                  <form onSubmit={handleTrackByEmail} className="space-y-2">
+                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Search Registered Email</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="email"
+                        required
+                        placeholder="CLIENT@EMAIL.COM"
+                        value={trackEmail}
+                        onChange={(e) => setTrackEmail(e.target.value)}
+                        className="flex-1 bg-transparent border border-slate-300 text-slate-900 p-3 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-200"
+                      />
+                      <button 
+                        type="submit"
+                        disabled={searching}
+                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white px-4 py-2 font-bold uppercase text-[11px] tracking-widest transition-colors cursor-pointer disabled:opacity-40"
+                      >
+                        {searching ? '...' : 'SEARCH'}
+                      </button>
+                    </div>
+                  </form>
+
+                  {/* Results */}
+                  <AnimatePresence mode="wait">
+                    {trackError && (
+                      <motion.p 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        className="text-[11px] text-indigo-600 border border-indigo-200 bg-indigo-600/5 p-3 font-mono"
+                      >
+                        [ ERROR: {trackError.toUpperCase()} ]
+                      </motion.p>
+                    )}
+
+                    {matchingRequests.length > 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-2 bg-slate-50 p-3 border border-slate-200 max-h-48 overflow-y-auto"
+                      >
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Workspace:</p>
+                        {matchingRequests.map((req) => (
+                          <button
+                            key={req.id}
+                            onClick={() => onAccessPortal(req.id)}
+                            className="w-full text-left p-3 hover:bg-white border border-slate-200 rounded-sm flex items-center justify-between text-xs transition-colors cursor-pointer font-mono"
+                          >
+                            <div className="truncate pr-2">
+                              <p className="font-bold text-indigo-600 text-[11px] tracking-wide">{req.id}</p>
+                              <p className="text-slate-500 truncate text-[10px] mt-0.5">{req.description.toUpperCase()}</p>
+                            </div>
+                            <span className="flex-shrink-0 px-2 py-0.5 text-[9px] font-black uppercase border border-indigo-200 text-indigo-600 bg-indigo-50">
+                              {req.status}
+                            </span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
- 
+
         </div>
       </section>
 
-      {/* Capabilities / Services */}
-      <section className="py-10 px-4 max-w-7xl mx-auto text-center space-y-6">
-        <div className="max-w-2xl mx-auto space-y-1.5">
-          <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest font-mono">Our Capabilities</p>
-          <h2 className="text-xl sm:text-2xl font-display font-extrabold text-slate-900 tracking-tight">
-            We architect solutions for digital-first enterprises.
+      {/* Capabilities Section */}
+      <section className="py-16 px-6 sm:px-12 max-w-7xl mx-auto text-center space-y-12 border-b-2 border-slate-300">
+        <div className="max-w-2xl mx-auto space-y-3">
+          <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest font-mono">Our capabilities</p>
+          <h2 className="text-2xl sm:text-3xl font-display font-black uppercase tracking-tight text-slate-900">
+            Architected Solutions For High-Growth Ecosystems
           </h2>
-          <p className="text-slate-500 text-xs leading-normal">
-            Bytexon pairs clean product engineering with dynamic data pipelines to deliver production-ready infrastructure.
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-mono">
+            Bytexon pairs clean product engineering with high-capacity transaction pipelines to deliver production-ready software layouts.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded-sm border border-slate-200 text-left shadow-xs space-y-2">
-            <div className="w-9 h-9 bg-indigo-50 rounded-sm flex items-center justify-center text-indigo-600 border border-indigo-100">
-              <Code className="w-4.5 h-4.5" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="border border-slate-200 p-6 bg-white text-left space-y-4">
+            <div className="w-10 h-10 border border-indigo-600 text-indigo-600 flex items-center justify-center font-bold">
+              [C]
             </div>
-            <h3 className="text-sm font-display font-bold text-slate-900">Custom Web Applications</h3>
-            <p className="text-slate-500 text-[11px] leading-relaxed">
-              We design and construct blazing-fast single page architectures with high security standards using React, Vite, and Node.js.
+            <h3 className="text-sm font-display font-black uppercase tracking-wider text-slate-900">Custom Web Architectures</h3>
+            <p className="text-slate-500 text-xs leading-relaxed font-sans">
+              Blazing-fast single page applications constructed with strict, secure code standards using React, Vite, and production-tested API patterns.
             </p>
           </div>
 
-          <div className="bg-white p-4 rounded-sm border border-slate-200 text-left shadow-xs space-y-2">
-            <div className="w-9 h-9 bg-sky-50 rounded-sm flex items-center justify-center text-sky-600 border border-sky-100">
-              <Server className="w-4.5 h-4.5" />
+          <div className="border border-slate-200 p-6 bg-white text-left space-y-4">
+            <div className="w-10 h-10 border border-indigo-600 text-indigo-600 flex items-center justify-center font-bold">
+              [D]
             </div>
-            <h3 className="text-sm font-display font-bold text-slate-900">Cloud & SQL Databases</h3>
-            <p className="text-slate-500 text-[11px] leading-relaxed">
-              From enterprise Firestore setups to highly relational Cloud SQL databases, we architect reliable transaction layers.
+            <h3 className="text-sm font-display font-black uppercase tracking-wider text-slate-900">Relational & Cloud Stores</h3>
+            <p className="text-slate-500 text-xs leading-relaxed font-sans">
+              From Firebase clusters to enterprise Postgres relational servers, we configure highly scalable transaction databases.
             </p>
           </div>
 
-          <div className="bg-white p-4 rounded-sm border border-slate-200 text-left shadow-xs space-y-2">
-            <div className="w-9 h-9 bg-indigo-50 rounded-sm flex items-center justify-center text-indigo-600 border border-indigo-100">
-              <Smartphone className="w-4.5 h-4.5" />
+          <div className="border border-slate-200 p-6 bg-white text-left space-y-4">
+            <div className="w-10 h-10 border border-indigo-600 text-indigo-600 flex items-center justify-center font-bold">
+              [I]
             </div>
-            <h3 className="text-sm font-display font-bold text-slate-900">Custom System Integrations</h3>
-            <p className="text-slate-500 text-[11px] leading-relaxed">
-              We tie together CRM integrations, payment engines (UPI QR/UPI ID), messaging webhooks, and third-party security layers.
+            <h3 className="text-sm font-display font-black uppercase tracking-wider text-slate-900">Bespoke System Integrations</h3>
+            <p className="text-slate-500 text-xs leading-relaxed font-sans">
+              Connecting automated CRM pipelines, secure UPI ledger networks, third-party authentication services, and custom webhook callbacks.
             </p>
           </div>
         </div>
       </section>
 
       {/* Pricing Plans Section */}
-      <section id="pricing" className="py-10 px-4 bg-white border-t border-b border-slate-200">
-        <div className="max-w-7xl mx-auto text-center space-y-6">
-          <div className="max-w-2xl mx-auto space-y-1.5">
-            <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest font-mono">Pricing Tiers</p>
-            <h2 className="text-xl sm:text-2xl font-display font-extrabold text-slate-900 tracking-tight">
-              Honest, Transparent Project Rates
+      <section id="pricing" className="py-16 px-6 sm:px-12 bg-white border-b-2 border-slate-300">
+        <div className="max-w-7xl mx-auto text-center space-y-12">
+          <div className="max-w-2xl mx-auto space-y-3">
+            <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest font-mono">Standard development plans</p>
+            <h2 className="text-2xl sm:text-3xl font-display font-black uppercase tracking-tight text-slate-900">
+              Transparent Structural Pricing Rates
             </h2>
-            <p className="text-slate-500 text-xs leading-normal">
-              Choose an entry tier for baseline prototypes or submit a custom planner for tailor-made full-scale agency squads.
+            <p className="text-slate-500 text-xs leading-relaxed font-sans">
+              Choose a standard developmental blueprint below or initiate the custom project planner to scale up a dedicated multidisciplinary engineering squad.
             </p>
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch max-w-5xl mx-auto text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch max-w-5xl mx-auto text-left">
             {pricingPlans.map((plan, index) => (
               <div 
                 key={index}
-                className={`bg-slate-50 rounded-sm border p-4.5 flex flex-col h-full transition-all ${
+                className={`bg-slate-50 border-2 p-6 flex flex-col h-full transition-all relative ${
                   plan.popular 
-                    ? 'border-indigo-600 border-2 bg-white relative shadow-xs' 
+                    ? 'border-indigo-600 shadow-lg shadow-indigo-500/10' 
                     : 'border-slate-300'
                 }`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-indigo-600 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-sm">
-                    Most Popular
+                  <span className="absolute -top-3 left-6 px-2 py-0.5 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-widest">
+                    RECOMMENDEDBLUEPRINT
                   </span>
                 )}
                 
-                <div className="space-y-3 flex-1">
+                <div className="space-y-4 flex-grow">
                   <div>
-                    <h3 className="text-sm font-display font-bold text-slate-900">{plan.name}</h3>
-                    <p className="text-slate-500 text-[11px] mt-0.5 leading-relaxed">{plan.desc}</p>
+                    <h3 className="text-base font-display font-black uppercase tracking-wider text-slate-900">{plan.name}</h3>
+                    <p className="text-slate-500 text-[11px] mt-1 leading-relaxed font-mono">{plan.desc.toUpperCase()}</p>
                   </div>
-                  
 
-
-                  <ul className="space-y-2 py-2 text-[11px] font-sans text-slate-600">
+                  <ul className="space-y-2 py-4 border-t border-b border-slate-200 text-[11px] font-mono text-slate-700">
                     {plan.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start space-x-1.5">
-                        <Check className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                        <span>{feat}</span>
+                      <li key={fIdx} className="flex items-start space-x-2">
+                        <Check className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span>{feat.toUpperCase()}</span>
                       </li>
                     ))}
                   </ul>
@@ -453,19 +591,23 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
                 <a 
                   href="#quote"
                   onClick={() => {
+                    setBentoTab('create');
                     setFormData(prev => ({
                       ...prev,
                       budgetAmount: plan.price.toString(),
-                      description: `Requesting standard plan: ${plan.name}\n\n[Please describe your specific work features here...]`
+                      description: `Requesting development plan: ${plan.name}\n\n[Outline target features here]`
                     }));
+                    setTimeout(() => {
+                      document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
                   }}
-                  className={`block text-center py-2 rounded-sm font-sans font-bold text-[10px] uppercase tracking-wider transition-all mt-4 cursor-pointer ${
+                  className={`block text-center py-3.5 mt-6 font-mono font-bold text-xs uppercase tracking-widest transition-colors cursor-pointer ${
                     plan.popular
-                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs border border-indigo-700'
-                      : 'bg-slate-800 hover:bg-slate-900 text-white'
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white'
+                      : 'bg-transparent text-slate-900 hover:text-indigo-600 border border-slate-300 hover:border-indigo-600'
                   }`}
                 >
-                  Request This Plan
+                  Acquire plan
                 </a>
               </div>
             ))}
@@ -473,209 +615,16 @@ export default function ClientLanding({ onAccessPortal, adminConfig }: ClientLan
         </div>
       </section>
 
-      {/* Project Request Form Section */}
-      <section id="quote" className="py-10 px-4 max-w-3xl mx-auto">
-        <div className="bg-white rounded-sm border border-slate-350 p-4 sm:p-6 shadow-sm relative overflow-hidden">
-          
-          <div className="absolute top-0 left-0 w-full h-1 bg-indigo-600"></div>
-
-          <AnimatePresence mode="wait">
-            {!successRequest ? (
-              <motion.div 
-                key="form"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="space-y-5"
-              >
-                <div className="text-center space-y-1.5">
-                  <Briefcase className="w-8 h-8 text-indigo-600 mx-auto" />
-                  <h2 className="text-lg font-display font-bold text-slate-900 tracking-tight">Start Your Project Workspace</h2>
-                  <p className="text-slate-500 text-xs max-w-md mx-auto">
-                    Fill out our architectural planner below. We will draft your project milestones and open a direct client-to-admin communication panel.
-                  </p>
-                </div>
-
-                <form onSubmit={handleFormSubmit} className="space-y-3.5">
-                  
-                  {/* Row 1: Name and Email */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                      <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                        Your Full Name <span className="text-rose-500">*</span>
-                      </label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="e.g. Rahul Sharma"
-                        value={formData.name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                        Email Address <span className="text-rose-500">*</span>
-                      </label>
-                      <input 
-                        type="email"
-                        required
-                        placeholder="e.g. rahul@company.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 2: WhatsApp & Company Name */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                      <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                        WhatsApp Contact <span className="text-rose-500">*</span>
-                      </label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="e.g. +91 9876543210"
-                        value={formData.whatsapp}
-                        onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                        Company Name <span className="text-slate-400 font-normal">(Optional)</span>
-                      </label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. Acme Tech Solutions"
-                        value={formData.companyName}
-                        onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Description of work */}
-                  <div>
-                    <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                      Detailed Description of Work Details <span className="text-rose-500">*</span>
-                    </label>
-                    <textarea 
-                      required
-                      rows={4}
-                      placeholder="Please outline the main features, target audience, core modules, and any integrations required."
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
-                    />
-                  </div>
-
-                  {/* Budget input with currency selector */}
-                  <div>
-                    <label className="block text-slate-700 text-[10px] font-bold uppercase tracking-wider mb-1">
-                      Project Estimated Budget <span className="text-rose-500">*</span>
-                    </label>
-                    <div className="flex rounded-sm overflow-hidden border border-slate-300">
-                      <select 
-                        value={formData.budgetCurrency}
-                        onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
-                        className="bg-slate-100 text-slate-800 font-bold px-3 py-1.5 focus:outline-none border-r border-slate-300 text-xs"
-                      >
-                        <option value="INR">INR (₹)</option>
-                        <option value="USD">USD ($)</option>
-                      </select>
-                      <input 
-                        type="number"
-                        required
-                        min="1"
-                        placeholder="Enter budget amount"
-                        value={formData.budgetAmount}
-                        onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
-                        className="flex-grow px-2.5 py-1.5 bg-slate-50 focus:bg-white focus:outline-none text-xs transition-all font-semibold font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={formSubmitting}
-                    id="btn-submit-request"
-                    className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 text-white text-xs font-bold rounded-sm uppercase tracking-wider shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-indigo-700"
-                  >
-                    {formSubmitting ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Submitting Requirements...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Submit Project Proposal</span>
-                      </>
-                    )}
-                  </button>
-
-                </form>
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="success"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-center py-2 space-y-4"
-              >
-                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-sm flex items-center justify-center mx-auto border border-emerald-200">
-                  <Check className="w-5 h-5" />
-                </div>
-
-                <div className="space-y-1">
-                  <h3 className="text-base font-display font-extrabold text-slate-900 tracking-tight">Proposal Received!</h3>
-                  <p className="text-slate-500 text-xs max-w-sm mx-auto leading-normal">
-                    Your request has been successfully saved. An engineer has been allocated to draft your milestone architecture.
-                  </p>
-                </div>
-
-                {/* Tracking Code Highlight Box */}
-                <div className="max-w-md mx-auto bg-slate-50 p-4 rounded-sm border border-slate-300 space-y-2">
-                  <div>
-                    <span className="text-slate-400 text-[9px] font-bold uppercase tracking-widest font-mono block">Your Unique Tracking ID</span>
-                    <strong className="text-xl font-mono text-indigo-700 tracking-wider block mt-0.5 select-all">{successRequest.id}</strong>
-                  </div>
-                  <div className="border-t border-slate-250 pt-2 flex justify-between text-[11px] text-slate-500 font-sans px-1">
-                    <span>WhatsApp: {successRequest.whatsapp}</span>
-                    <span>Budget: {successRequest.budgetCurrency === 'USD' ? '$' : '₹'}{Number(successRequest.budgetAmount).toLocaleString()}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-xs mx-auto pt-2">
-                  <button
-                    onClick={() => onAccessPortal(successRequest.id)}
-                    className="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all cursor-pointer"
-                  >
-                    Open Client Portal
-                  </button>
-                  <button
-                    onClick={() => setSuccessRequest(null)}
-                    className="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-sm text-xs transition-all border border-slate-250 cursor-pointer"
-                  >
-                    Create Another Request
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-slate-250 py-4 bg-white text-center text-slate-400 text-[10px]">
-        <p>&copy; {new Date().getFullYear()} Bytexon Systems Inc. All rights reserved. Premium digital software architecture & development.</p>
+      <footer className="py-12 px-6 sm:px-12 bg-slate-50">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-8">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
+            © 2026 BYTEXON SYSTEMS. SOFTWARE ARCHITECTURE.
+          </div>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
+            ALL CODE DEPLOYMENTS ARE SECURED VIA CRYPTO & UPI TRANSACTIONS.
+          </div>
+        </div>
       </footer>
     </div>
   );

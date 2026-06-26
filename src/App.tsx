@@ -134,53 +134,91 @@ export default function App() {
   }, [view, adminConfig.adminSecretPath]);
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 antialiased">
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans text-slate-900 antialiased">
       
-      {/* Primary Brand Navigation (Sticky Header) - Only on public pages */}
+      {/* Mobile Top Header - Only on public pages on mobile screens */}
       {!view.startsWith('admin') && (
-        <header className="bg-white border-b border-slate-200 px-4 py-2 sticky top-0 z-40 shadow-xs">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div 
-              onClick={() => {
-                setView('client-landing');
-                setActiveRequestId('');
-              }}
-              className="flex items-center space-x-1.5 cursor-pointer select-none group"
-            >
-              <div className="px-2 py-0.5 bg-indigo-600 font-display font-black text-white text-xs rounded-sm tracking-wider group-hover:bg-indigo-700 transition-colors">
-                BYTEXON
-              </div>
-              <span className="text-slate-900 font-display font-extrabold text-sm tracking-tight">Systems</span>
-            </div>
-
-            {/* Public Menu Items */}
-            <nav className="hidden md:flex items-center space-x-5 text-xs font-semibold text-slate-500">
-              <a href="#quote" onClick={() => setView('client-landing')} className="hover:text-slate-950 transition-colors">Project Planner</a>
-              <a href="#pricing" onClick={() => setView('client-landing')} className="hover:text-slate-950 transition-colors">Standard Pricing</a>
-            </nav>
-
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => {
-                  const quoteElement = document.getElementById('quote');
-                  if (quoteElement) {
-                    quoteElement.scrollIntoView({ behavior: 'smooth' });
-                  } else {
-                    setView('client-landing');
-                    setTimeout(() => document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' }), 100);
-                  }
-                }}
-                className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm text-[11px] font-bold font-sans transition-all cursor-pointer shadow-xs"
-              >
-                Create Request
-              </button>
-            </div>
+        <header className="md:hidden border-b border-slate-200 px-6 py-4 flex items-center justify-between bg-white sticky top-0 z-40 select-none">
+          <div 
+            onClick={() => {
+              setView('client-landing');
+              setActiveRequestId('');
+            }}
+            className="font-display font-black text-xl tracking-tighter cursor-pointer text-slate-900 hover:text-indigo-600 transition-colors"
+          >
+            BYTEXON
           </div>
+          <nav className="flex items-center space-x-4 text-[10px] font-mono tracking-widest uppercase text-slate-500">
+            <a 
+              href="#quote" 
+              onClick={(e) => {
+                e.preventDefault();
+                setView('client-landing');
+                setTimeout(() => document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' }), 50);
+              }} 
+              className="hover:text-indigo-600 transition-colors"
+            >
+              Planner
+            </a>
+            <a 
+              href="#pricing" 
+              onClick={(e) => {
+                e.preventDefault();
+                setView('client-landing');
+                setTimeout(() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }), 50);
+              }} 
+              className="hover:text-indigo-600 transition-colors"
+            >
+              Pricing
+            </a>
+          </nav>
         </header>
       )}
 
+      {/* Left Navigation Bar (Desktop Aside) - Only on public/client pages */}
+      {!view.startsWith('admin') && (
+        <aside className="hidden md:flex w-[80px] border-r border-slate-200 flex-col items-center justify-between py-10 shrink-0 min-h-screen sticky top-0 bg-white select-none">
+          <div 
+            onClick={() => {
+              setView('client-landing');
+              setActiveRequestId('');
+            }}
+            className="font-display font-black text-2xl tracking-tighter cursor-pointer text-slate-900 hover:text-indigo-600 transition-colors [writing-mode:vertical-rl] [text-orientation:mixed] uppercase"
+          >
+            BYTEXON
+          </div>
+          <div className="flex flex-col gap-8 my-8 items-center">
+            <a 
+              href="#quote" 
+              onClick={(e) => {
+                e.preventDefault();
+                setView('client-landing');
+                setTimeout(() => document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' }), 50);
+              }} 
+              className="font-mono text-[10px] tracking-widest uppercase [writing-mode:vertical-rl] text-slate-500 hover:text-indigo-600 transition-colors"
+            >
+              Project Planner
+            </a>
+            <a 
+              href="#pricing" 
+              onClick={(e) => {
+                e.preventDefault();
+                setView('client-landing');
+                setTimeout(() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }), 50);
+              }} 
+              className="font-mono text-[10px] tracking-widest uppercase [writing-mode:vertical-rl] text-slate-500 hover:text-indigo-600 transition-colors"
+            >
+              Pricing Plans
+            </a>
+          </div>
+          <div className="font-mono text-[10px] tracking-widest uppercase [writing-mode:vertical-rl] text-slate-400">
+            V 2.06
+          </div>
+        </aside>
+      )}
+
       {/* Main View Transition Frame */}
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col min-w-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={view + activeRequestId}
