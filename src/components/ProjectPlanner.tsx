@@ -264,24 +264,24 @@ export default function ProjectPlanner({
         <div className="lg:col-span-7">
           <div className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
             
-            {/* Tab header buttons */}
-            <div className="flex border-b border-slate-200 pb-4 mb-6">
+            {/* Tab header buttons - Modern Vibrant 3D Capsule */}
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] mb-8">
               <button 
                 onClick={() => setBentoTab('create')}
-                className={`flex-1 text-center py-2 text-xs uppercase tracking-widest font-bold transition-all border-b-2 cursor-pointer ${
+                className={`flex-1 text-center py-3 text-xs uppercase tracking-widest font-black transition-all cursor-pointer rounded-xl font-display ${
                   bentoTab === 'create' 
-                    ? 'border-indigo-600 text-indigo-600' 
-                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                    ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900' 
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200 border-2 border-transparent'
                 }`}
               >
                 [01] START PROJECT
               </button>
               <button 
                 onClick={() => setBentoTab('track')}
-                className={`flex-1 text-center py-2 text-xs uppercase tracking-widest font-bold transition-all border-b-2 cursor-pointer ${
+                className={`flex-1 text-center py-3 text-xs uppercase tracking-widest font-black transition-all cursor-pointer rounded-xl font-display ${
                   bentoTab === 'track' 
-                    ? 'border-indigo-600 text-indigo-600' 
-                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                    ? 'bg-amber-400 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900' 
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200 border-2 border-transparent'
                 }`}
               >
                 [02] TRACK ACCESS
@@ -308,7 +308,7 @@ export default function ProjectPlanner({
                           placeholder="E.G. RAHUL SHARMA"
                           value={formData.name}
                           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                          className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                          className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                         />
                       </div>
 
@@ -321,7 +321,7 @@ export default function ProjectPlanner({
                             placeholder="EMAIL@DOMAIN.COM"
                             value={formData.email}
                             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                            className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                            className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                           />
                         </div>
                         <div>
@@ -332,7 +332,7 @@ export default function ProjectPlanner({
                             placeholder="+91 XXXXX XXXXX"
                             value={formData.whatsapp}
                             onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
-                            className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                            className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                           />
                         </div>
                       </div>
@@ -344,7 +344,7 @@ export default function ProjectPlanner({
                           placeholder="E.G. ACME INC"
                           value={formData.companyName}
                           onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-                          className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                          className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                         />
                       </div>
 
@@ -356,7 +356,7 @@ export default function ProjectPlanner({
                           placeholder="OUTLINE THE CORE MODULES AND TARGET INTEGRATIONS..."
                           value={formData.description}
                           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                          className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 resize-none rounded"
+                          className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 resize-none rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                         />
                       </div>
 
@@ -366,7 +366,7 @@ export default function ProjectPlanner({
                           <select 
                             value={formData.budgetCurrency}
                             onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
-                            className="bg-white border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase cursor-pointer rounded"
+                            className="bg-white border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase cursor-pointer rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)]"
                           >
                             <option value="INR">INR (₹)</option>
                             <option value="USD">USD ($)</option>
@@ -381,7 +381,7 @@ export default function ProjectPlanner({
                             placeholder="AMOUNT"
                             value={formData.budgetAmount}
                             onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
-                            className="bg-transparent border border-slate-250 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                            className="bg-transparent border-2 border-slate-900 text-slate-900 p-3 w-full font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                           />
                         </div>
                       </div>
@@ -389,45 +389,45 @@ export default function ProjectPlanner({
                       <button
                         type="submit"
                         disabled={formSubmitting}
-                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white font-sans font-bold py-3.5 px-6 uppercase w-full tracking-widest text-[11px] transition-colors cursor-pointer disabled:bg-slate-900/30 mt-2 rounded"
+                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-sans font-black py-4 px-6 uppercase tracking-widest text-xs transition-all cursor-pointer disabled:bg-slate-300 border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] mt-4 block text-center"
                       >
                         {formSubmitting ? '[ SUBMITTING REQUIREMENTS... ]' : 'SUBMIT PROJECT PROPOSAL'}
                       </button>
                     </form>
                   ) : (
                     <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-center py-6 space-y-6"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="text-center space-y-6 py-6"
                     >
-                      <div className="w-12 h-12 border-2 border-indigo-600 text-indigo-600 flex items-center justify-center mx-auto">
-                        <Check className="w-6 h-6" />
+                      <div className="w-20 h-20 bg-emerald-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto text-emerald-600 shadow-[4px_4px_0px_0px_rgba(16,185,129,1)] animate-bounce-slow">
+                        <Check className="w-10 h-10 stroke-[3]" />
                       </div>
-                      
+
                       <div className="space-y-2">
-                        <h3 className="font-display font-black text-lg uppercase text-indigo-600">Proposal received</h3>
-                        <p className="text-[11px] text-slate-700 leading-relaxed max-w-xs mx-auto">
+                        <h3 className="font-display font-black uppercase text-xl text-slate-900 tracking-tight">PROPOSAL SECURED!</h3>
+                        <p className="text-slate-600 text-xs leading-relaxed max-w-sm mx-auto">
                           YOUR REQUEST HAS BEEN RECORDED. AN ENGINEER HAS BEEN ALLOCATED FOR TRACKING PROGRESS.
                         </p>
                       </div>
 
-                      <div className="bg-slate-50 p-4 border border-slate-300 space-y-2 rounded">
-                        <span className="text-slate-400 text-[9px] font-bold uppercase tracking-widest block font-mono">YOUR WORKSPACE TRACKING ID</span>
-                        <strong className="text-lg font-mono text-indigo-600 tracking-widest block select-all font-bold">{successRequest.id}</strong>
+                      <div className="bg-emerald-50 p-5 border-2 border-slate-900 space-y-2 rounded-2xl shadow-[4px_4px_0px_0px_rgba(16,185,129,0.2)]">
+                        <span className="text-slate-500 text-[9px] font-bold uppercase tracking-widest block font-mono">YOUR WORKSPACE TRACKING ID</span>
+                        <strong className="text-2xl font-mono text-indigo-600 tracking-widest block select-all font-bold">{successRequest.id}</strong>
                       </div>
 
-                      <div className="space-y-2 pt-2">
+                      <div className="space-y-4 pt-4">
                         <button
                           onClick={() => onAccessPortal(successRequest.id)}
-                          className="bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white font-bold py-2.5 px-6 uppercase w-full tracking-wider text-xs transition-colors cursor-pointer rounded"
+                          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-sans font-bold py-3.5 px-6 uppercase tracking-widest text-xs transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"
                         >
                           OPEN CLIENT PORTAL
                         </button>
                         <button
                           onClick={() => setSuccessRequest(null)}
-                          className="bg-transparent text-slate-500 hover:text-slate-900 font-bold py-2 px-4 uppercase w-full text-[10px] tracking-wider transition-colors cursor-pointer"
+                          className="w-full bg-transparent text-slate-500 hover:text-slate-950 font-bold py-2 px-4 uppercase text-[10px] tracking-wider transition-colors cursor-pointer"
                         >
-                          Submit new proposal
+                          [ SUBMIT NEW PROPOSAL ]
                         </button>
                       </div>
                     </motion.div>
@@ -444,19 +444,19 @@ export default function ProjectPlanner({
                 >
                   {/* Track by ID */}
                   <form onSubmit={handleTrackById} className="space-y-2">
-                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Track with Project ID</label>
-                    <div className="flex gap-2">
+                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Track with Project ID</label>
+                    <div className="flex gap-3">
                       <input 
                         type="text"
                         required
                         placeholder="E.G. BTX-FA39CD"
                         value={trackId}
                         onChange={(e) => setTrackId(e.target.value)}
-                        className="flex-1 bg-transparent border border-slate-250 text-slate-900 p-3 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                        className="flex-1 bg-transparent border-2 border-slate-900 text-slate-900 p-3.5 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                       />
                       <button 
                         type="submit"
-                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white px-5 py-2 font-bold uppercase text-[11px] tracking-widest transition-colors cursor-pointer rounded"
+                        className="bg-amber-400 text-slate-900 font-sans font-black px-6 py-3.5 uppercase text-xs tracking-widest transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5"
                       >
                         FIND
                       </button>
@@ -464,26 +464,26 @@ export default function ProjectPlanner({
                   </form>
 
                   <div className="relative flex items-center justify-center py-2">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t-2 border-slate-200"></div></div>
                     <span className="relative bg-white px-3 text-[9px] uppercase tracking-widest font-mono text-slate-400">OR EMAIL ADDRESS</span>
                   </div>
 
                   {/* Track by Email */}
                   <form onSubmit={handleTrackByEmail} className="space-y-2">
-                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Search Registered Email</label>
-                    <div className="flex gap-2">
+                    <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Search Registered Email</label>
+                    <div className="flex gap-3">
                       <input 
                         type="email"
                         required
                         placeholder="CLIENT@EMAIL.COM"
                         value={trackEmail}
                         onChange={(e) => setTrackEmail(e.target.value)}
-                        className="flex-1 bg-transparent border border-slate-250 text-slate-900 p-3 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-colors uppercase placeholder:text-slate-300 rounded"
+                        className="flex-1 bg-transparent border-2 border-slate-900 text-slate-900 p-3.5 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all uppercase placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
                       />
                       <button 
                         type="submit"
                         disabled={searching}
-                        className="bg-slate-900 text-white hover:bg-indigo-600 hover:text-white px-5 py-2 font-bold uppercase text-[11px] tracking-widest transition-colors cursor-pointer disabled:opacity-40 rounded shrink-0"
+                        className="bg-slate-900 text-white font-sans font-bold px-6 py-3.5 uppercase text-xs tracking-widest transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 shrink-0 disabled:opacity-40"
                       >
                         {searching ? '...' : 'SEARCH'}
                       </button>
@@ -496,7 +496,7 @@ export default function ProjectPlanner({
                       <motion.p 
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
-                        className="text-[11px] text-indigo-600 border border-indigo-200 bg-indigo-600/5 p-3 font-mono rounded"
+                        className="text-[11px] text-pink-600 border-2 border-slate-900 bg-pink-50 p-4 font-mono rounded-xl shadow-[4px_4px_0px_0px_rgba(219,39,119,0.15)]"
                       >
                         [ ERROR: {trackError.toUpperCase()} ]
                       </motion.p>
@@ -506,20 +506,20 @@ export default function ProjectPlanner({
                       <motion.div 
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="space-y-2 bg-slate-50 p-3 border border-slate-200 max-h-48 overflow-y-auto rounded"
+                        className="space-y-3 bg-slate-50 p-4 border-2 border-slate-900 max-h-56 overflow-y-auto rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,0.1)]"
                       >
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Workspace:</p>
+                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Select Workspace:</p>
                         {matchingRequests.map((req) => (
                           <button
                             key={req.id}
                             onClick={() => onAccessPortal(req.id)}
-                            className="w-full text-left p-3 hover:bg-white border border-slate-200 rounded-sm flex items-center justify-between text-xs transition-colors cursor-pointer font-mono"
+                            className="w-full text-left p-4 hover:bg-white border-2 border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all hover:scale-[1.02] cursor-pointer font-mono shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] duration-150"
                           >
                             <div className="truncate pr-2">
                               <p className="font-bold text-indigo-600 text-[11px] tracking-wide">{req.id}</p>
-                              <p className="text-slate-500 truncate text-[10px] mt-0.5">{req.description.toUpperCase()}</p>
+                              <p className="text-slate-600 truncate text-[10px] mt-0.5">{req.description.toUpperCase()}</p>
                             </div>
-                            <span className="flex-shrink-0 px-2 py-0.5 text-[9px] font-black uppercase border border-indigo-200 text-indigo-600 bg-indigo-50">
+                            <span className="flex-shrink-0 px-2.5 py-1 text-[9px] font-black uppercase border-2 border-slate-900 text-indigo-700 bg-indigo-50 rounded-lg shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
                               {req.status}
                             </span>
                           </button>
