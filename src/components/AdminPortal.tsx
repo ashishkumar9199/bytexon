@@ -9,6 +9,7 @@ import {
   Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut
 } from 'lucide-react';
 import { getQrCodeUrl } from '../lib/configHelper';
+import BytexonLogo from './BytexonLogo';
 
 interface AdminPortalProps {
   adminConfig: AdminConfig;
@@ -280,11 +281,9 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       
       {/* Top Banner Header */}
       <header className="bg-white text-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-200">
-        <div className="flex items-center space-x-2">
-          <div className="px-2.5 py-0.5 bg-indigo-600 font-display font-black text-xs text-white tracking-wider">
-            BYTEXON
-          </div>
-          <span className="text-slate-400 font-mono text-[9px] font-bold tracking-widest border-l border-slate-300 pl-2 uppercase">
+        <div className="flex items-center space-x-3">
+          <BytexonLogo theme="light" height={24} />
+          <span className="text-slate-400 font-mono text-[9px] font-bold tracking-widest border-l border-slate-300 pl-3 uppercase">
             Architect Admin Workspace
           </span>
         </div>
