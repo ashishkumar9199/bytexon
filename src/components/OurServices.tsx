@@ -153,35 +153,37 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
   const IconComponent = selectedService.icon;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-indigo-500 selection:text-white pb-16">
       {/* Hero Header */}
-      <section className="bg-white border-b border-slate-200 py-16 px-6 sm:px-12 relative overflow-hidden">
-        {/* Subtle decorative mesh background */}
-        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] opacity-60"></div>
+      <section className="bg-white border-b-4 border-slate-900 py-20 px-6 sm:px-12 relative overflow-hidden">
+        {/* Colorful decorative glow blobs */}
+        <div className="absolute -left-12 -top-12 w-64 h-64 bg-indigo-300 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+        <div className="absolute -right-12 -bottom-12 w-72 h-72 bg-purple-300 rounded-full blur-3xl opacity-35 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-grid-slate-100 opacity-60 pointer-events-none"></div>
         
-        <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
-          <div className="inline-flex items-center space-x-1.5 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full text-indigo-700 text-xs font-semibold font-mono tracking-wide uppercase">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Premium Core Offerings</span>
+        <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-amber-200 border-2 border-slate-900 px-4 py-1.5 rounded-2xl text-slate-900 text-xs font-black font-mono tracking-wider uppercase shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] animate-bounce-slow">
+            <Sparkles className="w-4 h-4 text-indigo-600 animate-pulse" />
+            <span>PREMIUM CORE OFFERINGS</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-            High-Performance Software Services
+          <h1 className="text-4xl sm:text-5xl font-display font-black text-slate-900 tracking-tight uppercase leading-none">
+            HIGH-PERFORMANCE <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">SOFTWARE SERVICES</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed font-sans">
+          <p className="text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-mono uppercase">
             Bytexon translates complex system constraints into clean, high-performance web applications, reliable APIs, and production-hardened database systems.
           </p>
         </div>
       </section>
 
       {/* Main Services Container */}
-      <section className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <section className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Column - Service Selector Menu (Col Span: 4) */}
-        <div className="lg:col-span-4 space-y-3">
-          <div className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase pl-1 mb-2">
-            Service Catalog
+        <div className="lg:col-span-4 space-y-6">
+          <div className="text-[10px] font-mono font-black tracking-widest text-slate-400 uppercase pl-1">
+            // SERVICE CATALOG_
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {SERVICES_DATA.map((service) => {
               const ServiceIcon = service.icon;
               const isSelected = service.id === selectedId;
@@ -190,25 +192,27 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
                 <button
                   key={service.id}
                   onClick={() => setSelectedId(service.id)}
-                  className={`w-full text-left p-4 rounded-lg border transition-all flex items-start gap-3 cursor-pointer group ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-4 cursor-pointer group ${
                     isSelected 
-                      ? 'bg-white border-indigo-600 shadow-sm shadow-indigo-100' 
-                      : 'bg-transparent border-slate-200 hover:bg-white hover:border-slate-300'
+                      ? 'bg-indigo-50/70 border-slate-900 shadow-[4px_4px_0px_0px_rgba(79,70,229,1)] scale-[1.01]' 
+                      : 'bg-white border-slate-200 shadow-[2px_2px_0px_0px_rgba(15,23,42,0.05)] hover:border-slate-900 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5'
                   }`}
                 >
-                  <div className={`p-2 rounded-md shrink-0 transition-colors ${
-                    isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 group-hover:text-slate-700'
+                  <div className={`p-3 rounded-xl border-2 shrink-0 transition-all ${
+                    isSelected 
+                      ? 'bg-indigo-600 border-slate-900 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' 
+                      : 'bg-slate-100 border-transparent text-slate-500 group-hover:bg-amber-100 group-hover:border-slate-900 group-hover:text-slate-900'
                   }`}>
                     <ServiceIcon className="w-5 h-5" />
                   </div>
-                  <div className="min-w-0">
-                    <div className="font-display font-extrabold text-slate-900 text-sm tracking-tight flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-display font-black text-slate-900 text-sm tracking-tight flex items-center justify-between uppercase">
                       <span>{service.title}</span>
                       <ChevronRight className={`w-4 h-4 transition-transform shrink-0 ${
-                        isSelected ? 'text-indigo-600 translate-x-1' : 'text-slate-400 group-hover:translate-x-0.5'
+                        isSelected ? 'text-indigo-600 translate-x-1 stroke-[3]' : 'text-slate-450 group-hover:translate-x-0.5'
                       }`} />
                     </div>
-                    <p className="text-slate-500 text-xs mt-0.5 truncate leading-relaxed">
+                    <p className="text-slate-500 text-xs mt-1 truncate leading-relaxed font-sans">
                       {service.shortDesc}
                     </p>
                   </div>
@@ -217,19 +221,19 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
             })}
           </div>
 
-          <div className="bg-indigo-50/50 border border-indigo-100 rounded-lg p-5 mt-6 space-y-3 text-center lg:text-left">
-            <h4 className="font-display font-bold text-xs text-indigo-900 uppercase tracking-wide">
+          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-slate-900 rounded-3xl p-6 space-y-4 text-center lg:text-left shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+            <h4 className="font-display font-black text-sm text-slate-950 uppercase tracking-tight">
               Have unique specifications?
             </h4>
-            <p className="text-xs text-indigo-700 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Our architects craft tailored plans matching custom requirements. Use our interactive planner to secure an estimation.
             </p>
             <button
               onClick={onPlanProject}
-              className="w-full mt-2 py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-1 cursor-pointer"
+              className="w-full mt-2 py-3 px-4 bg-amber-400 hover:bg-amber-500 text-slate-950 border-2 border-slate-900 font-sans font-black rounded-xl text-xs uppercase tracking-widest transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"
             >
               <span>Launch Project Planner</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
             </button>
           </div>
         </div>
@@ -239,66 +243,66 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedId}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ duration: 0.15 }}
-              className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm space-y-6"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.18 }}
+              className="bg-white border-2 border-slate-900 rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] space-y-8"
             >
               {/* Header Profile */}
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 pb-6">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-slate-100 pb-6">
                 <div className="flex items-start gap-4">
-                  <div className="p-3.5 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-600 shrink-0">
-                    <IconComponent className="w-7 h-7" />
+                  <div className="p-4 bg-indigo-100 border-2 border-slate-900 rounded-2xl text-indigo-700 shrink-0 shadow-[3px_3px_0px_0px_rgba(99,102,241,1)]">
+                    <IconComponent className="w-8 h-8 stroke-[2.5]" />
                   </div>
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-display font-extrabold text-slate-900 tracking-tight">
+                  <div className="space-y-1.5">
+                    <h2 className="text-2xl font-display font-black text-slate-900 tracking-tight uppercase">
                       {selectedService.title}
                     </h2>
-                    <p className="text-xs font-mono font-medium text-indigo-600 uppercase tracking-wider">
+                    <p className="text-xs font-mono font-extrabold text-indigo-600 uppercase tracking-widest bg-indigo-50 border border-indigo-200 px-2 py-0.5 w-fit rounded-md">
                       {selectedService.tagline}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex sm:flex-col gap-2 shrink-0">
-                  <div className="inline-flex items-center space-x-1.5 bg-slate-100 px-3 py-1 rounded-full text-slate-700 text-xs font-semibold">
-                    <Clock className="w-3.5 h-3.5 text-slate-500" />
+                  <div className="inline-flex items-center space-x-1.5 bg-slate-100 border-2 border-slate-900 px-3 py-1 rounded-xl text-slate-900 text-xs font-extrabold font-mono uppercase shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                    <Clock className="w-3.5 h-3.5 text-slate-600 stroke-[2.5]" />
                     <span>{selectedService.duration}</span>
                   </div>
-                  <div className={`inline-flex items-center justify-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                  <div className={`inline-flex items-center justify-center space-x-1.5 px-3 py-1 border-2 border-slate-900 rounded-xl text-xs font-extrabold font-mono uppercase shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${
                     selectedService.difficulty === 'Expert' 
-                      ? 'bg-rose-50 text-rose-700 border border-rose-100'
+                      ? 'bg-rose-100 text-rose-800'
                       : selectedService.difficulty === 'Advanced'
-                      ? 'bg-amber-50 text-amber-700 border border-amber-100'
-                      : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                      ? 'bg-amber-100 text-amber-850'
+                      : 'bg-emerald-100 text-emerald-800'
                   }`}>
-                    <Cpu className="w-3.5 h-3.5" />
-                    <span>{selectedService.difficulty} Stack</span>
+                    <Cpu className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>{selectedService.difficulty}</span>
                   </div>
                 </div>
               </div>
 
               {/* Long Description */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                  Service Description
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-450 border-l-2 border-slate-900 pl-2">
+                  // SERVICE DESCRIPTION_
                 </h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <p className="text-slate-700 text-xs sm:text-sm leading-relaxed font-sans font-medium">
                   {selectedService.longDesc}
                 </p>
               </div>
 
               {/* Technologies Included */}
-              <div className="space-y-2.5">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                  Tech Stack Integration
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-450 border-l-2 border-slate-900 pl-2">
+                  // TECH STACK INTEGRATION_
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {selectedService.techStack.map((tech) => (
                     <span 
                       key={tech} 
-                      className="px-2.5 py-1 bg-slate-50 border border-slate-250 text-slate-700 font-mono text-[10px] font-bold rounded"
+                      className="px-3.5 py-1.5 bg-slate-50 border-2 border-slate-900 text-slate-900 font-mono text-[10px] font-bold rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-amber-100 hover:scale-[1.03] transition-all cursor-default"
                     >
                       {tech}
                     </span>
@@ -307,60 +311,73 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
               </div>
 
               {/* High-Level Deliverables */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                  Standard Deliverables
+              <div className="space-y-3.5">
+                <h3 className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-450 border-l-2 border-slate-900 pl-2">
+                  // STANDARD DELIVERABLES_
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {selectedService.deliverables.map((item, index) => (
                     <div 
                       key={index} 
-                      className="flex items-start gap-2 bg-slate-50/50 border border-slate-100 rounded-md p-3 text-xs text-slate-600"
+                      className="flex items-start gap-3 bg-slate-50 border-2 border-slate-900 rounded-2xl p-4 text-xs font-semibold text-slate-800 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="leading-relaxed font-sans">{item}</span>
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 stroke-[2.5]" />
+                      <span className="leading-relaxed font-mono uppercase text-[10px]">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Architecture Blueprint Section */}
-              <div className="border-t border-slate-100 pt-6 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Recommended Architectural Blueprint</span>
+              <div className="border-t-2 border-dashed border-slate-200 pt-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h3 className="text-xs font-mono font-black uppercase tracking-widest text-slate-900 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-indigo-600 stroke-[2.5]" />
+                    <span>RECOMMENDED ARCHITECTURAL BLUEPRINT</span>
                   </h3>
-                  <span className="text-[9px] font-mono font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded uppercase">
-                    Interactive Preview
+                  <span className="text-[9px] font-mono font-black bg-pink-100 text-pink-700 border-2 border-slate-900 px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] animate-pulse">
+                    LIVE DATA ROUTE
                   </span>
                 </div>
 
-                <div className="bg-slate-900 rounded-lg p-4 font-mono text-[11px] text-slate-300 space-y-3.5 overflow-x-auto select-none">
+                <div className="bg-slate-950 rounded-2xl p-5 font-mono text-[10px] text-slate-300 space-y-4 overflow-x-auto border-2 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] select-none">
                   {/* Layer 1: Client Ingress */}
-                  <div className="flex items-center justify-between bg-slate-800/60 p-2 border border-slate-700/50 rounded-md">
-                    <span className="text-indigo-400 font-bold">Client Side</span>
-                    <span className="text-slate-400">{selectedService.architectureDiagram.client}</span>
+                  <div className="flex items-center justify-between bg-slate-900 p-3 border-2 border-slate-800 rounded-xl hover:border-indigo-500 transition-all duration-150 group">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
+                      <span className="text-indigo-400 font-extrabold uppercase">CLIENT SOURCE</span>
+                    </div>
+                    <span className="text-slate-200 group-hover:text-indigo-300 transition-colors uppercase">{selectedService.architectureDiagram.client}</span>
                   </div>
 
                   {/* Flow Arrow */}
-                  <div className="flex justify-center my-1 text-slate-500 h-3 leading-none">↓ HTTPS API / JSON</div>
+                  <div className="flex justify-center my-1 text-slate-500 font-black animate-pulse uppercase">
+                    ▼ SECURED SSL HANDSHAKE (JWT READY)
+                  </div>
 
                   {/* Layer 2: Routing / Ingress Gateway */}
-                  <div className="flex items-center justify-between bg-slate-800/60 p-2 border border-slate-700/50 rounded-md">
-                    <span className="text-cyan-400 font-bold">Ingress Gateway</span>
-                    <span className="text-slate-400">{selectedService.architectureDiagram.gateway}</span>
+                  <div className="flex items-center justify-between bg-slate-900 p-3 border-2 border-slate-800 rounded-xl hover:border-cyan-500 transition-all duration-150 group">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                      <span className="text-cyan-400 font-extrabold uppercase">INGRESS CONTROL</span>
+                    </div>
+                    <span className="text-slate-200 group-hover:text-cyan-300 transition-colors uppercase">{selectedService.architectureDiagram.gateway}</span>
                   </div>
 
                   {/* Flow Arrow */}
-                  <div className="flex justify-center my-1 text-slate-500 h-3 leading-none">↓ Cluster VPC routing</div>
+                  <div className="flex justify-center my-1 text-slate-500 font-black animate-pulse uppercase">
+                    ▼ VIRTUAL ROUTER (RATE-LIMITED POOL)
+                  </div>
 
                   {/* Layer 3: Services & Controllers */}
-                  <div className="bg-slate-800/60 p-3 border border-slate-700/50 rounded-md space-y-1.5">
-                    <span className="text-emerald-400 font-bold block mb-1 border-b border-slate-700/80 pb-1">Application Layer Services</span>
+                  <div className="bg-slate-900 p-4 border-2 border-slate-800 rounded-xl hover:border-emerald-500 transition-all duration-150 space-y-2.5">
+                    <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-emerald-400 font-extrabold uppercase">DEDICATED SERVICES</span>
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {selectedService.architectureDiagram.services.map((srv, i) => (
-                        <span key={i} className="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-0.5 rounded text-[10px]">
+                        <span key={i} className="bg-slate-950 border-2 border-slate-800 text-slate-250 px-2.5 py-1 rounded-lg uppercase tracking-wide text-[9px] hover:text-white hover:border-slate-700 transition-all">
                           {srv}
                         </span>
                       ))}
@@ -368,27 +385,32 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
                   </div>
 
                   {/* Flow Arrow */}
-                  <div className="flex justify-center my-1 text-slate-500 h-3 leading-none">↓ Database Pool / Secure Sockets</div>
+                  <div className="flex justify-center my-1 text-slate-500 font-black animate-pulse uppercase">
+                    ▼ POOLED CONNECTION (ENCRYPTED)
+                  </div>
 
                   {/* Layer 4: Storage DB */}
-                  <div className="flex items-center justify-between bg-slate-800/60 p-2 border border-slate-700/50 rounded-md">
-                    <span className="text-amber-400 font-bold">Durable Storage</span>
-                    <span className="text-slate-400">{selectedService.architectureDiagram.database}</span>
+                  <div className="flex items-center justify-between bg-slate-900 p-3 border-2 border-slate-800 rounded-xl hover:border-amber-500 transition-all duration-150 group">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                      <span className="text-amber-400 font-extrabold uppercase">DURABLE PERSISTENCE</span>
+                    </div>
+                    <span className="text-slate-200 group-hover:text-amber-300 transition-colors uppercase">{selectedService.architectureDiagram.database}</span>
                   </div>
                 </div>
               </div>
 
               {/* Action Area */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-100 gap-4">
-                <div className="text-xs text-slate-500 text-center sm:text-left leading-relaxed max-w-sm">
+              <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t-2 border-slate-150 gap-4 bg-slate-50 -mx-6 -mb-6 p-6 rounded-b-3xl border-slate-900 mt-4">
+                <div className="text-xs text-slate-600 text-center sm:text-left leading-relaxed max-w-sm font-medium">
                   Ready to draft spec matching this stack? Our project planner lets you calculate cost and secure tracking immediately.
                 </div>
                 <button
                   onClick={onPlanProject}
-                  className="w-full sm:w-auto shrink-0 py-2.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                  className="w-full sm:w-auto shrink-0 py-3.5 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-sans font-black rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"
                 >
                   <span>Select & Launch Planner</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[3]" />
                 </button>
               </div>
 
