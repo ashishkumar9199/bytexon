@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
-import { collection, query, onSnapshot, updateDoc, doc, addDoc, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, updateDoc, doc, addDoc, where, deleteDoc, getDocs } from 'firebase/firestore';
 import { ProjectRequest, ChatMessage, AdminConfig } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
-  Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut
+  Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2
 } from 'lucide-react';
 import { getQrCodeUrl } from '../lib/configHelper';
 import BytexonLogo from './BytexonLogo';
@@ -204,6 +204,31 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
       });
     } catch (err) {
       console.error("Error verifying payment:", err);
+    }
+  };
+
+  // Delete Proposal Request
+  const handleDeleteRequest = async () => {
+    if (!selectedRequest) return;
+    if (!confirm(`Are you sure you want to permanently delete the proposal "${selectedRequest.name}"? This will also delete all associated chat logs. This action cannot be undone.`)) return;
+
+    try {
+      // 1. Delete associated chat messages
+      const chatsRef = collection(db, 'chats');
+      const q = query(chatsRef, where('requestId', '==', selectedRequest.id));
+      const chatSnapshot = await getDocs(q);
+      const chatPromises = chatSnapshot.docs.map(docSnap => deleteDoc(doc(db, 'chats', docSnap.id)));
+      await Promise.all(chatPromises);
+
+      // 2. Delete the request itself
+      const requestDocRef = doc(db, 'requests', selectedRequest.id);
+      await deleteDoc(requestDocRef);
+
+      alert("Proposal and associated chats deleted successfully.");
+      setSelectedRequest(null);
+    } catch (err) {
+      console.error("Error deleting request:", err);
+      handleFirestoreError(err, OperationType.DELETE, `requests/${selectedRequest.id}`);
     }
   };
 
@@ -480,6 +505,15 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
                       >
                         <MessageSquare className="w-3.5 h-3.5" />
                         <span>Open Chat</span>
+                      </button>
+
+                      <button 
+                        onClick={handleDeleteRequest}
+                        className="p-1.5 px-3 bg-rose-50 hover:bg-rose-600/20 text-rose-600 hover:text-rose-700 border border-rose-200 hover:border-rose-300 transition-colors font-mono text-[9px] font-bold uppercase cursor-pointer flex items-center space-x-1"
+                        title="Delete Proposal permanently"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
                       </button>
                     </div>
                   </div>
