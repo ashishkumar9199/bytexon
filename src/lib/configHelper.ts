@@ -10,7 +10,7 @@ export const DEFAULT_CONFIG: AdminConfig = {
   adminUsername: 'admin',
   adminPassword: 'admin123',
   upiId: 'bytexon@upi',
-  adminSecretPath: 'bytexon-secure-gate-abhy2302',
+  adminSecretPath: 'gate-abhya23',
   upiQrBase64: '', // Empty means use dynamically generated UPI QR
   standardPricing: {
     starter: 15000,

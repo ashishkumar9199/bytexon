@@ -87,7 +87,7 @@ export default function App() {
   const handleAdminLogOut = () => {
     setIsAdminLoggedIn(false);
     setView('client-landing');
-    const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate-abhy2302';
+    const secret = adminConfig.adminSecretPath || 'gate-abhya23';
     const expectedHash = '#/admin-' + secret;
     const expectedHashAlt = '#admin-' + secret;
     if (window.location.hash === expectedHash || window.location.hash === expectedHashAlt) {
@@ -100,7 +100,7 @@ export default function App() {
     const handleUrlRoute = () => {
       const hash = window.location.hash;
       const params = new URLSearchParams(window.location.search);
-      const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate-abhy2302';
+      const secret = adminConfig.adminSecretPath || 'gate-abhya23';
       const expectedHash = '#/admin-' + secret;
       const expectedHashAlt = '#admin-' + secret;
       const hasSecretParam = params.get('admin') === secret;
@@ -126,7 +126,7 @@ export default function App() {
 
   // Keep URL updated when view changes
   useEffect(() => {
-    const secret = adminConfig.adminSecretPath || 'bytexon-secure-gate-abhy2302';
+    const secret = adminConfig.adminSecretPath || 'gate-abhya23';
     const expectedHash = '#/admin-' + secret;
     const expectedHashAlt = '#admin-' + secret;
 
