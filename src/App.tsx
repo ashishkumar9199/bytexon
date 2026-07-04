@@ -13,7 +13,7 @@ import WorkProcess from './components/WorkProcess';
 import ProjectPlanner from './components/ProjectPlanner';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, Activity, Briefcase, Layers, FileText } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, Activity, Briefcase, Layers, FileText, Menu, X, Terminal } from 'lucide-react';
 
 export default function App() {
   const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'our-stacks' | 'work-process' | 'project-planner'>('client-landing');
@@ -22,6 +22,7 @@ export default function App() {
   const [plannerPrefillDesc, setPlannerPrefillDesc] = useState<string | undefined>(undefined);
   const [activeRequestId, setActiveRequestId] = useState<string>('');
   const [adminConfig, setAdminConfig] = useState<AdminConfig>(DEFAULT_CONFIG);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Admin Login Inputs
   const [loginUsername, setLoginUsername] = useState('');
@@ -53,10 +54,41 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Centralized Navigation helper that handles pathname updates
+  const navigateTo = (newView: typeof view, extraState?: { tab?: 'create' | 'track'; prefillPrice?: number; prefillDesc?: string }) => {
+    setView(newView);
+    setIsMobileMenuOpen(false);
+    
+    if (extraState) {
+      if (extraState.tab !== undefined) setPlannerTab(extraState.tab);
+      if (extraState.prefillPrice !== undefined) setPlannerPrefillPrice(extraState.prefillPrice);
+      if (extraState.prefillDesc !== undefined) setPlannerPrefillDesc(extraState.prefillDesc);
+    }
+    
+    let path = '/';
+    if (newView === 'project-planner') {
+      path = '/projectplanner';
+    } else if (newView === 'our-services') {
+      path = '/services';
+    } else if (newView === 'our-stacks') {
+      path = '/tech-stacks';
+    } else if (newView === 'work-process') {
+      path = '/work-process';
+    } else if (newView === 'client-portal') {
+      path = '/portal';
+    } else if (newView === 'client-landing') {
+      path = '/';
+    }
+
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+  };
+
   // Handle Client accessing their portal via tracking ID
   const handleAccessPortal = (id: string) => {
     setActiveRequestId(id);
-    setView('client-portal');
+    navigateTo('client-portal');
   };
 
   // Handle Admin configuration updates
@@ -95,9 +127,10 @@ export default function App() {
     }
   };
 
-  // Listen for hash/query/path changes to route to admin login or dashboard
+  // Listen for hash/query/path changes to route to different views
   useEffect(() => {
     const handleUrlRoute = () => {
+      const path = window.location.pathname;
       const hash = window.location.hash;
       const params = new URLSearchParams(window.location.search);
       const secret = adminConfig.adminSecretPath || 'gate-abhya23';
@@ -111,6 +144,22 @@ export default function App() {
         } else {
           setView('admin-login');
         }
+        return;
+      }
+
+      // Check pathname mapping
+      if (path === '/projectplanner' || path === '/project-planner' || path === '/planner') {
+        setView('project-planner');
+      } else if (path === '/services' || path === '/our-services') {
+        setView('our-services');
+      } else if (path === '/tech-stacks' || path === '/our-stacks' || path === '/techstacks') {
+        setView('our-stacks');
+      } else if (path === '/work-process' || path === '/work-process' || path === '/workprocess') {
+        setView('work-process');
+      } else if (path === '/portal' || path === '/client-portal') {
+        setView('client-portal');
+      } else {
+        setView('client-landing');
       }
     };
 
@@ -151,8 +200,8 @@ export default function App() {
           <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-white">
             <div 
               onClick={() => {
-                setView('client-landing');
                 setActiveRequestId('');
+                navigateTo('client-landing');
               }}
               className="cursor-pointer flex items-center"
             >
@@ -168,8 +217,8 @@ export default function App() {
           <nav className="flex items-center space-x-6 px-5 py-2.5 overflow-x-auto scrollbar-none text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-50/55">
             <button 
               onClick={() => {
-                setView('client-landing');
                 setActiveRequestId('');
+                navigateTo('client-landing');
               }}
               className={`shrink-0 transition-colors cursor-pointer ${view === 'client-landing' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
             >
@@ -177,29 +226,26 @@ export default function App() {
             </button>
             <button 
               onClick={() => {
-                setPlannerTab('create');
-                setPlannerPrefillPrice(undefined);
-                setPlannerPrefillDesc(undefined);
-                setView('project-planner');
+                navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
               }}
               className={`shrink-0 transition-colors cursor-pointer ${view === 'project-planner' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
             >
               Planner
             </button>
             <button 
-              onClick={() => setView('our-services')}
+              onClick={() => navigateTo('our-services')}
               className={`shrink-0 transition-colors cursor-pointer ${view === 'our-services' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
             >
               Services
             </button>
             <button 
-              onClick={() => setView('our-stacks')}
+              onClick={() => navigateTo('our-stacks')}
               className={`shrink-0 transition-colors cursor-pointer ${view === 'our-stacks' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
             >
               Tech Stacks
             </button>
             <button 
-              onClick={() => setView('work-process')}
+              onClick={() => navigateTo('work-process')}
               className={`shrink-0 transition-colors cursor-pointer ${view === 'work-process' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
             >
               Work Process
@@ -215,8 +261,8 @@ export default function App() {
             {/* Logo */}
             <div 
               onClick={() => {
-                setView('client-landing');
                 setActiveRequestId('');
+                navigateTo('client-landing');
               }}
               className="cursor-pointer flex items-center justify-start border-b border-slate-100 pb-5"
             >
@@ -231,13 +277,13 @@ export default function App() {
               
               <button 
                 onClick={() => {
-                  setView('client-landing');
                   setActiveRequestId('');
+                  navigateTo('client-landing');
                 }}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   view === 'client-landing' 
                     ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                    : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
                 <Layout className="w-4 h-4" />
@@ -246,15 +292,12 @@ export default function App() {
 
               <button 
                 onClick={() => {
-                  setPlannerTab('create');
-                  setPlannerPrefillPrice(undefined);
-                  setPlannerPrefillDesc(undefined);
-                  setView('project-planner');
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   view === 'project-planner' 
                     ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                    : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
                 <FileText className="w-4 h-4" />
@@ -262,11 +305,11 @@ export default function App() {
               </button>
 
               <button 
-                onClick={() => setView('our-services')}
+                onClick={() => navigateTo('our-services')}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   view === 'our-services' 
                     ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                    : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
                 <Briefcase className="w-4 h-4" />
@@ -274,11 +317,11 @@ export default function App() {
               </button>
 
               <button 
-                onClick={() => setView('our-stacks')}
+                onClick={() => navigateTo('our-stacks')}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   view === 'our-stacks' 
                     ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                    : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
                 <Layers className="w-4 h-4" />
@@ -286,11 +329,11 @@ export default function App() {
               </button>
 
               <button 
-                onClick={() => setView('work-process')}
+                onClick={() => navigateTo('work-process')}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   view === 'work-process' 
                     ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                    : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
                 <Activity className="w-4 h-4" />
@@ -307,10 +350,7 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    setPlannerTab('create');
-                    setPlannerPrefillPrice(undefined);
-                    setPlannerPrefillDesc(undefined);
-                    setView('project-planner');
+                    navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                   }} 
                   className="w-full text-left flex items-center space-x-3 px-3 py-2 text-[11px] font-mono font-bold text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
                 >
@@ -350,10 +390,7 @@ export default function App() {
                 onAccessPortal={handleAccessPortal} 
                 adminConfig={adminConfig}
                 onLaunchPlanner={(tab, price, desc) => {
-                  setPlannerTab(tab || 'create');
-                  setPlannerPrefillPrice(price);
-                  setPlannerPrefillDesc(desc);
-                  setView('project-planner');
+                  navigateTo('project-planner', { tab: tab || 'create', prefillPrice: price, prefillDesc: desc });
                 }}
               />
             )}
@@ -362,10 +399,7 @@ export default function App() {
             {view === 'our-services' && (
               <OurServices 
                 onPlanProject={() => {
-                  setPlannerTab('create');
-                  setPlannerPrefillPrice(undefined);
-                  setPlannerPrefillDesc(undefined);
-                  setView('project-planner');
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
               />
             )}
@@ -374,10 +408,7 @@ export default function App() {
             {view === 'our-stacks' && (
               <OurStacks 
                 onPlanProject={() => {
-                  setPlannerTab('create');
-                  setPlannerPrefillPrice(undefined);
-                  setPlannerPrefillDesc(undefined);
-                  setView('project-planner');
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
               />
             )}
@@ -386,10 +417,7 @@ export default function App() {
             {view === 'work-process' && (
               <WorkProcess 
                 onPlanProject={() => {
-                  setPlannerTab('create');
-                  setPlannerPrefillPrice(undefined);
-                  setPlannerPrefillDesc(undefined);
-                  setView('project-planner');
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
               />
             )}
@@ -496,7 +524,6 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </div>
-
     </div>
   );
 }

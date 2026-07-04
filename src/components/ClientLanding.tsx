@@ -171,17 +171,6 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
           </div>
         </div>
       </section>
-
-
-
-      {/* Footer */}
-      <footer className="py-12 px-6 sm:px-12 bg-slate-50">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-8">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
-            © 2026 BYTEXON SYSTEMS. SOFTWARE ARCHITECTURE.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
