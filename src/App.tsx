@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { AdminConfig } from './types';
 import { getAdminConfig, updateAdminConfig, DEFAULT_CONFIG } from './lib/configHelper';
 import { handleFirestoreError, OperationType } from './lib/firestoreErrorHandler';
+import { sha256 } from './lib/hashHelper';
 import ClientLanding from './components/ClientLanding';
 import ClientPortal from './components/ClientPortal';
 import AdminPortal from './components/AdminPortal';
@@ -98,20 +99,51 @@ export default function App() {
   };
 
   // Admin Login form submit
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
 
-    const matchUsername = adminConfig.adminUsername.trim();
-    const matchPassword = adminConfig.adminPassword.trim();
+    const username = loginUsername.trim();
+    const password = loginPassword.trim();
 
-    if (loginUsername.trim() === matchUsername && loginPassword.trim() === matchPassword) {
-      setIsAdminLoggedIn(true);
-      setView('admin-dashboard');
-      setLoginUsername('');
-      setLoginPassword('');
+    if (!adminConfig.customAuthActive) {
+      // Default config active
+      if (username === 'admin' && password === 'admin123') {
+        const hash = await sha256(`${username}:${password}`);
+        const token = `auth_${hash}`;
+        setIsAdminLoggedIn(true);
+        sessionStorage.setItem('admin_token', token);
+        sessionStorage.setItem('admin_username', username);
+        sessionStorage.setItem('admin_password', password);
+        setView('admin-dashboard');
+        setLoginUsername('');
+        setLoginPassword('');
+      } else {
+        setLoginError('Invalid administrator username or password credentials.');
+      }
     } else {
-      setLoginError('Invalid administrator username or password credentials.');
+      // Custom config active, check auth_XXX doc in firestore
+      try {
+        const hash = await sha256(`${username}:${password}`);
+        const token = `auth_${hash}`;
+        const authDocRef = doc(db, 'config', token);
+        const authDocSnap = await getDoc(authDocRef);
+
+        if (authDocSnap.exists() && authDocSnap.data()?.authorized !== false) {
+          setIsAdminLoggedIn(true);
+          sessionStorage.setItem('admin_token', token);
+          sessionStorage.setItem('admin_username', username);
+          sessionStorage.setItem('admin_password', password);
+          setView('admin-dashboard');
+          setLoginUsername('');
+          setLoginPassword('');
+        } else {
+          setLoginError('Invalid administrator username or password credentials.');
+        }
+      } catch (err) {
+        console.error("Error verifying admin credentials:", err);
+        setLoginError('An error occurred during authentication. Please verify your network.');
+      }
     }
   };
 
@@ -498,7 +530,7 @@ export default function App() {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
 
-                  {adminConfig.adminUsername === 'admin' && adminConfig.adminPassword === 'admin123' && (
+                  {!adminConfig.customAuthActive && (
                     <div className="pt-2 border-t border-slate-200 flex flex-col space-y-1 text-[9px] text-indigo-600 font-semibold leading-relaxed bg-indigo-50/40 p-2 rounded-sm border border-indigo-100">
                       <p>⚠️ Default configuration is active:</p>
                       <div className="flex justify-between font-mono font-bold text-slate-700">

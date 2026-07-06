@@ -38,4 +38,6 @@ export interface AdminConfig {
     professional: number;
     enterprise: number;
   };
+  customAuthActive?: boolean;
+  adminAuthToken?: string;
 }

@@ -36,8 +36,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
   // Settings Forms
   const [settingsForm, setSettingsForm] = useState({
-    username: adminConfig.adminUsername,
-    password: adminConfig.adminPassword,
+    username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || 'admin',
+    password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || 'admin123',
     upiId: adminConfig.upiId,
     adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
     starterPrice: adminConfig.standardPricing?.starter ?? 15000,
@@ -51,8 +51,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
   // Sync form when parent adminConfig is loaded/updated
   useEffect(() => {
     setSettingsForm({
-      username: adminConfig.adminUsername,
-      password: adminConfig.adminPassword,
+      username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || 'admin',
+      password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || 'admin123',
       upiId: adminConfig.upiId,
       adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
       starterPrice: adminConfig.standardPricing?.starter ?? 15000,
@@ -138,12 +138,14 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
     setIsApproving(true);
     try {
+      const adminToken = sessionStorage.getItem('admin_token') || '';
       const docRef = doc(db, 'requests', selectedRequest.id);
       await updateDoc(docRef, {
         status: 'approved',
         approvedAmount: amountNum,
         approvedCurrency: approvalCurrency,
-        approvedAt: Date.now()
+        approvedAt: Date.now(),
+        adminAuthToken: adminToken
       });
 
       // Send automated system chat notice
@@ -168,9 +170,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
     if (!confirm("Are you sure you want to decline this project request?")) return;
 
     try {
+      const adminToken = sessionStorage.getItem('admin_token') || '';
       const docRef = doc(db, 'requests', selectedRequest.id);
       await updateDoc(docRef, {
-        status: 'rejected'
+        status: 'rejected',
+        adminAuthToken: adminToken
       });
 
       await addDoc(collection(db, 'chats'), {
@@ -190,10 +194,12 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
     if (!confirm("Have you verified this transaction in your business UPI bank account?")) return;
 
     try {
+      const adminToken = sessionStorage.getItem('admin_token') || '';
       const docRef = doc(db, 'requests', selectedRequest.id);
       await updateDoc(docRef, {
         status: 'completed',
-        paymentVerifiedAt: Date.now()
+        paymentVerifiedAt: Date.now(),
+        adminAuthToken: adminToken
       });
 
       await addDoc(collection(db, 'chats'), {

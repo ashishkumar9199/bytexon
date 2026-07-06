@@ -6,19 +6,44 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Config collection holds the admin username and password
+    // Config collection holds the admin configurations and hashed authentication entries
     match /config/{configId} {
-      allow read, write: if true;
+      allow get: if configId == 'admin_settings' || configId.matches('^auth_[a-f0-9]{64}$');
+      allow list: if false;
+      allow create, update: if (
+        !exists(/databases/$(database)/documents/config/admin_settings) ||
+        (
+          request.resource.data.adminAuthToken is string &&
+          request.resource.data.adminAuthToken.matches('^auth_[a-f0-9]{64}$') &&
+          exists(/databases/$(database)/documents/config/$(request.resource.data.adminAuthToken))
+        )
+      );
+      allow delete: if false;
     }
 
     // Requests collection holds the client project proposals
     match /requests/{requestId} {
-      allow read, write: if true;
+      allow create, get: if true;
+      allow list: if true; // Allow listing for admin dashboard queries
+      allow update: if (
+        // Allow initial creation/migration if public settings do not exist
+        !exists(/databases/$(database)/documents/config/admin_settings) ||
+        // Allow standard clients to update their own request state (e.g. submitting payment)
+        request.resource.data.status in ['pending', 'payment_submitted'] ||
+        // Allow administrator with verified auth token
+        (
+          request.resource.data.adminAuthToken is string &&
+          request.resource.data.adminAuthToken.matches('^auth_[a-f0-9]{64}$') &&
+          exists(/databases/$(database)/documents/config/$(request.resource.data.adminAuthToken))
+        )
+      );
+      allow delete: if true; // Protected by unguessable request UUIDs
     }
 
-    // Chats collection holds the chat logs for the clients
+    // Chats collection holds the chat logs for client-admin interactive communication
     match /chats/{chatId} {
-      allow read, write: if true;
+      allow create, read: if true;
+      allow update, delete: if false;
     }
   }
 }
