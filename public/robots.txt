@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bytexon.vercel.app/sitemap.xml
