@@ -14,9 +14,13 @@ import WorkProcess from './components/WorkProcess';
 import ProjectPlanner from './components/ProjectPlanner';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, Activity, Briefcase, Layers, FileText, Menu, X, Terminal } from 'lucide-react';
+import LaptopIntro from './components/LaptopIntro';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Laptop } from 'lucide-react';
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
+  });
   const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'our-stacks' | 'work-process' | 'project-planner'>('client-landing');
   const [plannerTab, setPlannerTab] = useState<'create' | 'track'>('create');
   const [plannerPrefillPrice, setPlannerPrefillPrice] = useState<number | undefined>(undefined);
@@ -222,6 +226,17 @@ export default function App() {
     }
   }, [view, adminConfig.adminSecretPath]);
 
+  if (showIntro) {
+    return (
+      <LaptopIntro
+        onComplete={() => {
+          setShowIntro(false);
+          sessionStorage.setItem('bytexon_intro_completed', 'true');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans text-slate-900 antialiased">
       
@@ -400,6 +415,17 @@ export default function App() {
               <span>BYTEXON SYSTEM</span>
               <span>V 2.06</span>
             </div>
+            <button
+              onClick={() => {
+                sessionStorage.removeItem('bytexon_intro_completed');
+                setShowIntro(true);
+              }}
+              className="w-full flex items-center justify-center space-x-2 py-1.5 px-3 border border-slate-200 hover:border-slate-400 bg-slate-50 text-[9px] font-mono font-bold text-slate-500 hover:text-slate-900 rounded-lg transition-colors cursor-pointer mt-1"
+              title="Replay 3D Laptop Startup Simulation"
+            >
+              <Laptop className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+              <span>REPLAY 3D INTRO</span>
+            </button>
           </div>
         </aside>
       )}
