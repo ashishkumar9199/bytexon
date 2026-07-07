@@ -111,15 +111,26 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
   // When zooming, we flatten the angle entirely for screen align
   const laptopRotateX = bootState === 'zooming' ? 0 : (mousePos.y * -18);
   const laptopRotateY = bootState === 'zooming' ? 0 : (mousePos.x * 22);
-  const laptopScale = bootState === 'zooming' ? 4.5 : 1;
-  const laptopTranslateY = bootState === 'zooming' ? 140 : 0;
-  const laptopZ = bootState === 'zooming' ? 1100 : 0;
+  const laptopScale = bootState === 'zooming' ? 2.8 : 1;
+  const laptopTranslateY = bootState === 'zooming' ? 80 : 0;
+  const laptopZ = bootState === 'zooming' ? 600 : 0;
 
   // Screen opens from flat (-95) to upright (-12). Tilts directly upright (0) when zooming.
   const screenRotateX = bootState === 'off' ? -95 : bootState === 'zooming' ? 0 : -12;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center overflow-hidden font-mono select-none">
+    <motion.div 
+      animate={{ 
+        opacity: bootState === 'zooming' ? [1, 1, 0] : 1,
+        backgroundColor: bootState === 'zooming' ? 'rgb(248, 250, 252)' : 'rgb(2, 6, 23)',
+      }}
+      transition={{
+        duration: 2.0,
+        times: [0, 0.75, 1],
+        ease: 'easeInOut'
+      }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden font-mono select-none"
+    >
       
       {/* Background Grid & Ambient Glows */}
       <motion.div 
@@ -453,6 +464,6 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
         <span className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
         <span>GATEPORT HYPERSTATION ACTIVE</span>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
