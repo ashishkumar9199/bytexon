@@ -203,244 +203,194 @@ export default function App() {
 
  window.addEventListener('popstate', handleUrlRoute);
  window.addEventListener('hashchange', handleUrlRoute);
- return () => {
- window.removeEventListener('popstate', handleUrlRoute);
- window.removeEventListener('hashchange', handleUrlRoute);
- };
- }, [isAdminLoggedIn, adminConfig.adminSecretPath]);
+  return () => {
+    window.removeEventListener('popstate', handleUrlRoute);
+    window.removeEventListener('hashchange', handleUrlRoute);
+  };
+  }, [isAdminLoggedIn, adminConfig]);
 
- // Keep URL updated when view changes
- useEffect(() => {
- const secret = adminConfig.adminSecretPath || 'gate-abhya23';
- const expectedHash = '#/admin-' + secret;
- const expectedHashAlt = '#admin-' + secret;
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 antialiased selection:bg-indigo-500/10 selection:text-indigo-900">
+      
+      {/* Premium Apple-inspired Sticky Top Header */}
+      {!view.startsWith('admin') && (
+        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 border-b border-slate-200/40 select-none transition-all">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            {/* Logo */}
+            <div 
+              onClick={() => {
+                setActiveRequestId('');
+                navigateTo('client-landing');
+              }}
+              className="cursor-pointer flex items-center hover:opacity-85 transition-opacity"
+            >
+              <BytexonLogo showText={true} theme="light" height={28} />
+            </div>
 
- if (view === 'admin-login' || view === 'admin-dashboard') {
- if (window.location.hash !== expectedHash && window.location.hash !== expectedHashAlt && window.location.search !== `?admin=${secret}`) {
- window.history.pushState(null, '', expectedHash);
- }
- } else if (view === 'client-landing') {
- if (window.location.hash === expectedHash || window.location.hash === expectedHashAlt) {
- window.history.pushState(null, '', window.location.pathname + window.location.search);
- }
- }
- }, [view, adminConfig.adminSecretPath]);
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center space-x-8 text-[13px] font-medium text-slate-600">
+              <button 
+                onClick={() => {
+                  setActiveRequestId('');
+                  navigateTo('client-landing');
+                }}
+                className={`transition-colors hover:text-indigo-600 ${view === 'client-landing' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Overview
+              </button>
+              <button 
+                onClick={() => navigateTo('our-services')}
+                className={`transition-colors hover:text-indigo-600 ${view === 'our-services' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Services
+              </button>
+              <button 
+                onClick={() => navigateTo('our-stacks')}
+                className={`transition-colors hover:text-indigo-600 ${view === 'our-stacks' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Tech Stacks
+              </button>
+              <button 
+                onClick={() => navigateTo('work-process')}
+                className={`transition-colors hover:text-indigo-600 ${view === 'work-process' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Process
+              </button>
+              <button 
+                onClick={() => {
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+                }}
+                className={`transition-colors hover:text-indigo-600 ${view === 'project-planner' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Planner
+              </button>
+            </nav>
 
- if (showIntro) {
- return (
- <LaptopIntro
- onComplete={() => {
- setShowIntro(false);
- sessionStorage.setItem('bytexon_intro_completed', 'true');
- }}
- />
- );
- }
+            {/* Header Actions */}
+            <div className="hidden md:flex items-center space-x-4">
+              {view !== 'project-planner' && (
+                <button
+                  onClick={() => {
+                    navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
+                  }}
+                  className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
+                >
+                  Track Project
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+                }}
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
+              >
+                Start Workspace
+              </button>
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem('bytexon_intro_completed');
+                  setShowIntro(true);
+                }}
+                className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                title="Replay 3D Intro Animation"
+              >
+                <Laptop className="w-4 h-4" />
+              </button>
+            </div>
 
- return (
- <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans text-slate-900 antialiased">
- 
- {/* Mobile Top Header - Only on public pages on mobile screens */}
- {!view.startsWith('admin') && (
- <header className="md:hidden border-b border-slate-200 bg-white sticky top-0 z-40 select-none flex flex-col">
- {/* Top Bar: Logo */}
- <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-white">
- <div 
- onClick={() => {
- setActiveRequestId('');
- navigateTo('client-landing');
- }}
- className="cursor-pointer flex items-center"
- >
- <BytexonLogo theme="light" height={24} />
- </div>
- 
- <span className="text-[8px] font-mono bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold px-2 py-0.5 rounded ">
- V 2.06
- </span>
- </div>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center space-x-3">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
 
- {/* Sub Navigation Bar: Scrollable Menu */}
- <nav className="flex items-center space-x-6 px-5 py-2.5 overflow-x-auto scrollbar-none text-[10px] font-mono font-bold text-slate-500 bg-slate-50/55">
- <button 
- onClick={() => {
- setActiveRequestId('');
- navigateTo('client-landing');
- }}
- className={`shrink-0 transition-colors cursor-pointer ${view === 'client-landing' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
- >
- Home Portal
- </button>
- <button 
- onClick={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
- }}
- className={`shrink-0 transition-colors cursor-pointer ${view === 'project-planner' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
- >
- Planner
- </button>
- <button 
- onClick={() => navigateTo('our-services')}
- className={`shrink-0 transition-colors cursor-pointer ${view === 'our-services' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
- >
- Services
- </button>
- <button 
- onClick={() => navigateTo('our-stacks')}
- className={`shrink-0 transition-colors cursor-pointer ${view === 'our-stacks' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
- >
- Tech Stacks
- </button>
- <button 
- onClick={() => navigateTo('work-process')}
- className={`shrink-0 transition-colors cursor-pointer ${view === 'work-process' ? 'text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'hover:text-indigo-600'}`}
- >
- Work Process
- </button>
- </nav>
- </header>
- )}
+          {/* Mobile Dropdown Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden border-t border-slate-200/50 bg-white/95 backdrop-blur-lg overflow-hidden"
+              >
+                <div className="px-5 py-4 space-y-3.5 flex flex-col text-sm font-medium text-slate-600">
+                  <button 
+                    onClick={() => {
+                      setActiveRequestId('');
+                      navigateTo('client-landing');
+                    }}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'client-landing' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Overview
+                  </button>
+                  <button 
+                    onClick={() => navigateTo('our-services')}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'our-services' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Services
+                  </button>
+                  <button 
+                    onClick={() => navigateTo('our-stacks')}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'our-stacks' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Tech Stacks
+                  </button>
+                  <button 
+                    onClick={() => navigateTo('work-process')}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'work-process' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Process
+                  </button>
+                  <button 
+                    onClick={() => {
+                      navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+                    }}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'project-planner' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Planner
+                  </button>
+                  <div className="h-[1px] bg-slate-100 my-1" />
+                  <div className="flex items-center justify-between pt-1">
+                    <button
+                      onClick={() => {
+                        navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
+                      }}
+                      className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
+                    >
+                      Track Project
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+                      }}
+                      className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-full transition-all"
+                    >
+                      Start Workspace
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </header>
+      )}
 
- {/* Left Navigation Bar (Desktop Aside) - Only on public/client pages */}
- {!view.startsWith('admin') && (
- <aside className="hidden md:flex w-[240px] border-r border-slate-200 flex-col justify-between p-6 shrink-0 min-h-screen sticky top-0 bg-white select-none">
- <div className="space-y-8">
- {/* Logo */}
- <div 
- onClick={() => {
- setActiveRequestId('');
- navigateTo('client-landing');
- }}
- className="cursor-pointer flex items-center justify-start border-b border-slate-100 pb-5"
- >
- <BytexonLogo showText={true} theme="light" height={34} />
- </div>
-
- {/* Menu Links */}
- <div className="space-y-1.5">
- <div className="text-[9px] font-mono font-bold text-slate-400 pl-3 mb-2">
- Main Menu
- </div>
- 
- <button 
- onClick={() => {
- setActiveRequestId('');
- navigateTo('client-landing');
- }}
- className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
- view === 'client-landing' 
- ? 'bg-indigo-50 text-indigo-700' 
- : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
- }`}
- >
- <Layout className="w-4 h-4" />
- <span>Home Portal</span>
- </button>
-
- <button 
- onClick={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
- }}
- className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
- view === 'project-planner' 
- ? 'bg-indigo-50 text-indigo-700' 
- : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
- }`}
- >
- <FileText className="w-4 h-4" />
- <span>Project Planner</span>
- </button>
-
- <button 
- onClick={() => navigateTo('our-services')}
- className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
- view === 'our-services' 
- ? 'bg-indigo-50 text-indigo-700' 
- : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
- }`}
- >
- <Briefcase className="w-4 h-4" />
- <span>Our Services</span>
- </button>
-
- <button 
- onClick={() => navigateTo('our-stacks')}
- className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
- view === 'our-stacks' 
- ? 'bg-indigo-50 text-indigo-700' 
- : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
- }`}
- >
- <Layers className="w-4 h-4" />
- <span>Our Tech Stacks</span>
- </button>
-
- <button 
- onClick={() => navigateTo('work-process')}
- className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
- view === 'work-process' 
- ? 'bg-indigo-50 text-indigo-700' 
- : 'text-slate-650 hover:bg-slate-50 hover:text-slate-950'
- }`}
- >
- <Activity className="w-4 h-4" />
- <span>Work Process</span>
- </button>
- </div>
-
- {/* Quick Actions / Shortcut Anchor Section */}
- {view === 'client-landing' && (
- <div className="space-y-1.5 pt-4 border-t border-slate-100">
- <div className="text-[9px] font-mono font-bold text-slate-400 pl-3 mb-2">
- Jump To Section
- </div>
- 
- <button 
- onClick={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
- }} 
- className="w-full text-left flex items-center space-x-3 px-3 py-2 text-[11px] font-mono font-bold text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
- >
- <span className="text-slate-300">#</span>
- <span>Project Planner</span>
- </button>
-
- </div>
- )}
- </div>
-
- {/* Sidebar Footer */}
- <div className="border-t border-slate-100 pt-5 space-y-2">
- <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pl-1">
- <span>BYTEXON SYSTEM</span>
- <span>V 2.06</span>
- </div>
- <button
- onClick={() => {
- sessionStorage.removeItem('bytexon_intro_completed');
- setShowIntro(true);
- }}
- className="w-full flex items-center justify-center space-x-2 py-1.5 px-3 border border-slate-200 hover:border-slate-400 bg-slate-50 text-[9px] font-mono font-bold text-slate-500 hover:text-slate-900 rounded-lg transition-colors cursor-pointer mt-1"
- title="Replay 3D Laptop Startup Simulation"
- >
- <Laptop className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
- <span>REPLAY 3D INTRO</span>
- </button>
- </div>
- </aside>
- )}
-
- {/* Main View Transition Frame */}
- <div className="flex-1 flex flex-col min-w-0">
- <AnimatePresence mode="wait">
- <motion.div
- key={view + activeRequestId}
- initial={{ opacity: 0, y: 5 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -5 }}
- transition={{ duration: 0.15 }}
- className="h-full"
- >
+      {/* Main View Transition Frame */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={view + activeRequestId}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.15 }}
+            className="h-full"
+          >
  
  {/* 1. PUBLIC LANDING PAGE */}
  {view === 'client-landing' && (

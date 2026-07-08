@@ -54,37 +54,14 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
  }, []);
 
  // Terminal logging BIOS simulator
- useEffect(() => {
- if (bootState !== 'booting') return;
-
- const logs = [
- "BYTEXON BOOT SYSTEM VERSION 2.06 INIT...",
- "LOADING KERNEL CORRECTIONS... OK",
- "ESTABLISHING FIRESTORE PERSISTENCE CLIENT...",
- "ISOLATING ENVIRONMENT SECURITY RULES [COMPLIANT]",
- "PROVISIONING DUAL CHAT CHANNELS...",
- "LAUNCHING INTERACTIVE METRICS...",
- "PREPARING HIGH-PERFORMANCE 3D INTERFACES...",
- "DECRYPTING SECURE SEED PARAMS...",
- "STARTUP SUCCESSFUL. REDIRECTING ENGINE..."
- ];
-
- let currentLogIndex = 0;
- const interval = setInterval(() => {
- if (currentLogIndex < logs.length) {
- setTerminalLogs((prev) => [...prev, `[system@bytexon-os]:~# ${logs[currentLogIndex]}`]);
- currentLogIndex++;
- } else {
- clearInterval(interval);
- // Step 2: Show Landing page on screen first
- setTimeout(() => {
- setBootState('loaded');
- }, 500);
- }
- }, 250);
-
- return () => clearInterval(interval);
- }, [bootState]);
+ // Elegant macOS-style progress boot timer
+  useEffect(() => {
+    if (bootState !== 'booting') return;
+    const timer = setTimeout(() => {
+      setBootState('loaded');
+    }, 2400);
+    return () => clearTimeout(timer);
+  }, [bootState]);
 
  // Transition from loaded to zooming
  useEffect(() => {
@@ -462,7 +439,7 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
  className="absolute bottom-6 left-6 text-[10px] font-mono text-slate-500 flex items-center space-x-2"
  >
  <span className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
- <span>GATEPORT HYPERSTATION ACTIVE</span>
+ <span>BYTEXON DIGITAL ARCHITECTURE INC.</span>
  </motion.div>
  </motion.div>
  );
