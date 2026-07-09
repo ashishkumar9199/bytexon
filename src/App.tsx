@@ -9,6 +9,7 @@ import ClientLanding from './components/ClientLanding';
 import ClientPortal from './components/ClientPortal';
 import AdminPortal from './components/AdminPortal';
 import OurServices from './components/OurServices';
+import OtherServices from './components/OtherServices';
 import OurStacks from './components/OurStacks';
 import WorkProcess from './components/WorkProcess';
 import ProjectPlanner from './components/ProjectPlanner';
@@ -21,7 +22,7 @@ export default function App() {
  const [showIntro, setShowIntro] = useState<boolean>(() => {
  return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
  });
- const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'our-stacks' | 'work-process' | 'project-planner'>('client-landing');
+ const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'project-planner'>('client-landing');
  const [plannerTab, setPlannerTab] = useState<'create' | 'track'>('create');
  const [plannerPrefillPrice, setPlannerPrefillPrice] = useState<number | undefined>(undefined);
  const [plannerPrefillDesc, setPlannerPrefillDesc] = useState<string | undefined>(undefined);
@@ -75,6 +76,8 @@ export default function App() {
  path = '/projectplanner';
  } else if (newView === 'our-services') {
  path = '/services';
+  } else if (newView === 'other-services') {
+  path = '/other-services';
  } else if (newView === 'our-stacks') {
  path = '/tech-stacks';
  } else if (newView === 'work-process') {
@@ -188,6 +191,8 @@ export default function App() {
  setView('project-planner');
  } else if (path === '/services' || path === '/our-services') {
  setView('our-services');
+  } else if (path === '/other-services' || path === '/otherservices') {
+  setView('other-services');
  } else if (path === '/tech-stacks' || path === '/our-stacks' || path === '/techstacks') {
  setView('our-stacks');
  } else if (path === '/work-process' || path === '/work-process' || path === '/workprocess') {
@@ -243,6 +248,12 @@ export default function App() {
                 className={`transition-colors hover:text-indigo-600 ${view === 'our-services' ? 'text-slate-950 font-semibold' : ''}`}
               >
                 Services
+              </button>
+              <button 
+                onClick={() => navigateTo('other-services')}
+                className={`transition-colors hover:text-indigo-600 ${view === 'other-services' ? 'text-slate-950 font-semibold' : ''}`}
+              >
+                Other Services
               </button>
               <button 
                 onClick={() => navigateTo('our-stacks')}
@@ -335,6 +346,12 @@ export default function App() {
                     Services
                   </button>
                   <button 
+                    onClick={() => navigateTo('other-services')}
+                    className={`text-left py-1 hover:text-indigo-600 ${view === 'other-services' ? 'text-indigo-600 font-semibold' : ''}`}
+                  >
+                    Other Services
+                  </button>
+                  <button 
                     onClick={() => navigateTo('our-stacks')}
                     className={`text-left py-1 hover:text-indigo-600 ${view === 'our-stacks' ? 'text-indigo-600 font-semibold' : ''}`}
                   >
@@ -411,6 +428,16 @@ export default function App() {
  }}
  />
  )}
+
+  {/* 1.55. OTHER SERVICES PAGE */}
+  {view === 'other-services' && (
+  <OtherServices 
+  onBackToLanding={() => navigateTo('client-landing')}
+  onPlanProject={() => {
+  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+  }}
+  />
+  )}
 
  {/* 1.6. OUR STACKS PAGE */}
  {view === 'our-stacks' && (
@@ -531,7 +558,35 @@ export default function App() {
 
  </motion.div>
  </AnimatePresence>
- </div>
- </div>
- );
+  </div>
+
+  {/* Global Footer with Copyright and All Rights Reserved */}
+  {!view.startsWith('admin') && (
+    <footer className="w-full bg-white border-t border-slate-200/40 select-none py-12 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col items-center md:items-start gap-2">
+          <BytexonLogo showText={true} theme="light" height={22} />
+          <p className="text-[11px] text-slate-400 font-sans mt-1">
+            © 2026 BYTEXON. All rights reserved.
+          </p>
+        </div>
+        <div className="flex items-center space-x-8 text-[11px] font-medium text-slate-400">
+          <button onClick={() => navigateTo('client-landing')} className="hover:text-indigo-600 transition-colors cursor-pointer">Overview</button>
+          <button onClick={() => navigateTo('our-services')} className="hover:text-indigo-600 transition-colors cursor-pointer">Services</button>
+          <button onClick={() => navigateTo('other-services')} className="hover:text-indigo-600 transition-colors cursor-pointer">Other Services</button>
+          <button onClick={() => navigateTo('our-stacks')} className="hover:text-indigo-600 transition-colors cursor-pointer">Tech Stacks</button>
+          <button onClick={() => navigateTo('work-process')} className="hover:text-indigo-600 transition-colors cursor-pointer">Process</button>
+          <button 
+            onClick={() => navigateTo('project-planner', { tab: 'create' })}
+            className="hover:text-indigo-600 transition-colors cursor-pointer"
+          >
+            Planner
+          </button>
+        </div>
+      </div>
+    </footer>
+  )}
+
+  </div>
+  );
 }

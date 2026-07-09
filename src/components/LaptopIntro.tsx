@@ -54,13 +54,35 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
  }, []);
 
  // Terminal logging BIOS simulator
- // Elegant macOS-style progress boot timer
   useEffect(() => {
     if (bootState !== 'booting') return;
-    const timer = setTimeout(() => {
-      setBootState('loaded');
-    }, 2400);
-    return () => clearTimeout(timer);
+
+    const logs = [
+      "BYTEXON BOOT SYSTEM VERSION 2.06 INIT...",
+      "LOADING KERNEL CORRECTIONS... OK",
+      "ESTABLISHING FIRESTORE PERSISTENCE CLIENT...",
+      "ISOLATING ENVIRONMENT SECURITY RULES [COMPLIANT]",
+      "PROVISIONING DUAL CHAT CHANNELS...",
+      "LAUNCHING INTERACTIVE METRICS...",
+      "PREPARING HIGH-PERFORMANCE 3D INTERFACES...",
+      "DECRYPTING SECURE SEED PARAMS...",
+      "STARTUP SUCCESSFUL. REDIRECTING ENGINE..."
+    ];
+
+    let currentLogIndex = 0;
+    const interval = setInterval(() => {
+      if (currentLogIndex < logs.length) {
+        setTerminalLogs((prev) => [...prev, `[system@bytexon-os]:~# ${logs[currentLogIndex]}`]);
+        currentLogIndex++;
+      } else {
+        clearInterval(interval);
+        setTimeout(() => {
+          setBootState('loaded');
+        }, 500);
+      }
+    }, 250);
+
+    return () => clearInterval(interval);
   }, [bootState]);
 
  // Transition from loaded to zooming
@@ -85,14 +107,14 @@ export default function LaptopIntro({ onComplete }: LaptopIntroProps) {
  }, [bootState, onComplete]);
 
  // Rotation & Translate parameters based on boot state
- // When zooming, we flatten the angle entirely for screen align
- const laptopRotateX = bootState === 'zooming' ? 0 : (mousePos.y * -18);
- const laptopRotateY = bootState === 'zooming' ? 0 : (mousePos.x * 22);
- const laptopScale = bootState === 'zooming' ? 2.8 : 1;
- const laptopTranslateY = bootState === 'zooming' ? 80 : 0;
- const laptopZ = bootState === 'zooming' ? 600 : 0;
+   // When zooming, we flatten the angle entirely for screen align
+  const laptopRotateX = bootState === 'zooming' ? 0 : (mousePos.y * -14);
+  const laptopRotateY = bootState === 'zooming' ? 0 : (mousePos.x * 16);
+  const laptopScale = bootState === 'zooming' ? 2.1 : 0.85;
+  const laptopTranslateY = bootState === 'zooming' ? 45 : 0;
+  const laptopZ = bootState === 'zooming' ? 400 : 0;
 
- // Screen opens from flat (-95) to upright (-12). Tilts directly upright (0) when zooming.
+// Screen opens from flat (-95) to upright (-12). Tilts directly upright (0) when zooming.
  const screenRotateX = bootState === 'off' ? -95 : bootState === 'zooming' ? 0 : -12;
 
  return (

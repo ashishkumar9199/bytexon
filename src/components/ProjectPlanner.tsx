@@ -409,336 +409,353 @@ export default function ProjectPlanner({
  {/* Right Column - Planner/Tracker Card with full 3D interactive tilt alignment (Col Span: 7) */}
  <div className="lg:col-span-7">
  <Interactive3DCard glowColor="rgba(139, 92, 246, 0.25)" maxTilt={6}>
- <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
- 
- {/* Tab header buttons - Modern Vibrant 3D Capsule */}
- <div className="flex bg-slate-100 p-1.5 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] mb-8">
- <button 
- onClick={() => setBentoTab('create')}
- className={`flex-1 text-center py-3 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans ${
- bentoTab === 'create' 
- ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900' 
- : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200 border-2 border-transparent'
- }`}
- >
- [01] START PROJECT
- </button>
- <button 
- onClick={() => setBentoTab('track')}
- className={`flex-1 text-center py-3 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans ${
- bentoTab === 'track' 
- ? 'bg-amber-400 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900' 
- : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200 border-2 border-transparent'
- }`}
- >
- [02] TRACK ACCESS
- </button>
- </div>
+   <div className="bg-white border border-slate-200/85 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/40 relative overflow-hidden">
+    {/* Dynamic Background Accents */}
+    <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none" />
+    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500/5 rounded-full blur-[80px] pointer-events-none" />
 
- <AnimatePresence mode="wait">
- {isLaunching ? (
- <motion.div
- key="launching-staging"
- initial={{ opacity: 0, scale: 0.95 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 0.95 }}
- >
- <RocketLaunchSimulation />
- </motion.div>
- ) : bentoTab === 'create' ? (
- <motion.div
- key="create-proposal"
- initial={{ opacity: 0, y: 5 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -5 }}
- transition={{ duration: 0.15 }}
- className="space-y-4"
- >
- {!successRequest ? (
- <form onSubmit={handleFormSubmit} className="space-y-4">
- 
- {/* Interactive dual-glowing 3D Input boxes */}
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold flex items-center space-x-1.5">
- <User className="w-3.5 h-3.5 text-indigo-500" />
- <span>Full Name *</span>
- </label>
- <input 
- type="text"
- required
- placeholder="E.G. RAHUL SHARMA"
- value={formData.name}
- onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350"
- />
- </motion.div>
+    {/* Tab header buttons - Premium Modern Capsule */}
+    <div className="relative z-10 flex bg-slate-100/70 p-1 rounded-2xl border border-slate-200/50 mb-8 max-w-md mx-auto">
+      <button 
+        type="button"
+        onClick={() => setBentoTab('create')}
+        className={`flex-1 text-center py-2.5 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans tracking-wider ${
+          bentoTab === 'create' 
+            ? 'bg-white text-indigo-600 shadow-md border border-slate-200/35' 
+            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/40 border border-transparent'
+        }`}
+      >
+        [01] START PROJECT
+      </button>
+      <button 
+        type="button"
+        onClick={() => setBentoTab('track')}
+        className={`flex-1 text-center py-2.5 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans tracking-wider ${
+          bentoTab === 'track' 
+            ? 'bg-indigo-600 text-white shadow-md border border-indigo-700/25' 
+            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/40 border border-transparent'
+        }`}
+      >
+        [02] TRACK ACCESS
+      </button>
+    </div>
 
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold flex items-center space-x-1.5">
- <Mail className="w-3.5 h-3.5 text-indigo-500" />
- <span>Email *</span>
- </label>
- <input 
- type="email"
- required
- placeholder="EMAIL@DOMAIN.COM"
- value={formData.email}
- onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350"
- />
- </motion.div>
+    <AnimatePresence mode="wait">
+      {isLaunching ? (
+        <motion.div
+          key="launching-staging"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="relative z-10"
+        >
+          <RocketLaunchSimulation />
+        </motion.div>
+      ) : bentoTab === 'create' ? (
+        <motion.div
+          key="create-proposal"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.18 }}
+          className="space-y-5 relative z-10 text-left"
+        >
+          {!successRequest ? (
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              
+              {/* Name Input */}
+              <div className="space-y-1.5">
+                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
+                  <User className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Full Name *</span>
+                </label>
+                <input 
+                  type="text"
+                  required
+                  placeholder="Rahul Sharma"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
+                />
+              </div>
 
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold flex items-center space-x-1.5">
- <Zap className="w-3.5 h-3.5 text-indigo-500" />
- <span>WhatsApp *</span>
- </label>
- <input 
- type="text"
- required
- placeholder="+91 XXXXX XXXXX"
- value={formData.whatsapp}
- onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350"
- />
- </motion.div>
- </div>
+              {/* Email & Whatsapp */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
+                    <Mail className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Email *</span>
+                  </label>
+                  <input 
+                    type="email"
+                    required
+                    placeholder="email@domain.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
+                  />
+                </div>
 
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold flex items-center space-x-1.5">
- <Terminal className="w-3.5 h-3.5 text-indigo-500" />
- <span>Company Name (Optional)</span>
- </label>
- <input 
- type="text"
- placeholder="E.G. ACME INC"
- value={formData.companyName}
- onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350"
- />
- </motion.div>
+                <div className="space-y-1.5">
+                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
+                    <Zap className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>WhatsApp *</span>
+                  </label>
+                  <input 
+                    type="text"
+                    required
+                    placeholder="+91 XXXXX XXXXX"
+                    value={formData.whatsapp}
+                    onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
+                  />
+                </div>
+              </div>
 
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold flex items-center space-x-1.5">
- <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
- <span>Description of work *</span>
- </label>
- <textarea 
- required
- rows={4}
- placeholder="OUTLINE THE CORE MODULES AND TARGET INTEGRATIONS..."
- value={formData.description}
- onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350 resize-none"
- />
- </motion.div>
+              {/* Company Name */}
+              <div className="space-y-1.5">
+                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
+                  <Terminal className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Company Name (Optional)</span>
+                </label>
+                <input 
+                  type="text"
+                  placeholder="Acme Inc."
+                  value={formData.companyName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
+                />
+              </div>
 
- <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <div className="sm:col-span-1 border-2 border-slate-900 rounded-xl p-3 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
- <label className="block text-slate-500 text-[10px] font-mono font-bold mb-1">Currency</label>
- <select 
- value={formData.budgetCurrency}
- onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
- className="bg-white text-slate-900 w-full font-mono text-xs focus:outline-none cursor-pointer"
- >
- <option value="INR">INR (₹)</option>
- <option value="USD">USD ($)</option>
- </select>
- </div>
- <motion.div 
- whileHover={{ scale: 1.005 }}
- className="sm:col-span-2 space-y-1.5 focus-within:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)] transition-shadow border-2 border-slate-900 rounded-xl p-3 bg-slate-50/50"
- >
- <label className="block text-slate-500 text-[10px] font-mono font-bold ">Estimated Budget *</label>
- <input 
- type="number"
- required
- min="1"
- placeholder="AMOUNT"
- value={formData.budgetAmount}
- onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
- className="bg-transparent text-slate-950 w-full font-mono text-xs focus:outline-none placeholder:text-slate-350"
- />
- </motion.div>
- </div>
+              {/* Description */}
+              <div className="space-y-1.5">
+                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
+                  <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Description of work *</span>
+                </label>
+                <textarea 
+                  required
+                  rows={4}
+                  placeholder="Outline core modules and integrations (e.g. admin panel, real-time chat, Firestore rules...)"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans resize-none leading-relaxed"
+                />
+              </div>
 
- <button
- type="submit"
- disabled={formSubmitting}
- className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-sans font-bold py-4 px-6 text-xs transition-all cursor-pointer disabled:bg-slate-300 border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] mt-4 block text-center"
- >
- {formSubmitting ? '[ RUNNING COMPLIANCE... ]' : 'SUBMIT PROJECT PROPOSAL'}
- </button>
- </form>
- ) : (
- <motion.div 
- initial={{ opacity: 0, scale: 0.95 }}
- animate={{ opacity: 1, scale: 1 }}
- className="text-center space-y-6 py-6"
- >
- {/* Dynamic Holographic Secure Badge */}
- <div className="w-20 h-20 bg-emerald-100 border-2 border-slate-900 rounded-3xl flex items-center justify-center mx-auto text-emerald-600 shadow-[4px_4px_0px_0px_rgba(16,185,129,1)] animate-bounce" style={{ animationDuration: '3s' }}>
- <Check className="w-10 h-10 stroke-[3]" />
- </div>
+              {/* Currency & Estimated Budget */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-1 space-y-1.5">
+                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Currency</label>
+                  <div className="relative">
+                    <select 
+                      value={formData.budgetCurrency}
+                      onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
+                      className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-semibold font-sans cursor-pointer appearance-none"
+                    >
+                      <option value="INR">INR (₹)</option>
+                      <option value="USD">USD ($)</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 text-[8px]">
+                      ▼
+                    </div>
+                  </div>
+                </div>
 
- <div className="space-y-2">
- <h3 className="font-sans font-bold text-xl text-slate-900 ">Proposal Secured!</h3>
- <p className="text-slate-600 text-[11px] leading-relaxed max-w-sm mx-auto">
- Your proposal has been written to the ledger. An architect has been allocated to review your goals.
- </p>
- </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Estimated Budget *</label>
+                  <input 
+                    type="number"
+                    required
+                    min="1"
+                    placeholder="E.g. 50000"
+                    value={formData.budgetAmount}
+                    onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
+                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-semibold placeholder:text-slate-400 font-sans"
+                  />
+                </div>
+              </div>
 
- {/* Interactive Copyable Project Workspace Ticket */}
- <div className="bg-emerald-50/40 p-5 border-2 border-slate-900 space-y-3 rounded-2xl relative shadow-[4px_4px_0px_0px_rgba(16,185,129,0.2)]">
- <span className="text-slate-400 text-[9px] font-bold block font-mono">WORKSPACE SECURE TICKET ID</span>
- 
- <div className="flex items-center justify-center space-x-2.5">
- <strong className="text-2xl font-mono text-indigo-700 font-bold select-all">{successRequest.id}</strong>
- <button
- onClick={() => handleCopyId(successRequest.id)}
- className="p-1.5 rounded-lg border border-slate-300 hover:border-slate-900 bg-white transition-colors cursor-pointer text-slate-500 hover:text-slate-900 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"
- title="Copy ID to Clipboard"
- >
- {copiedId ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
- </button>
- </div>
- {copiedId && <span className="text-[9px] font-mono text-emerald-600 font-bold block animate-pulse">Copied to Clipboard!</span>}
- </div>
+              {/* Sleek Gradient Submit Button */}
+              <motion.button
+                type="submit"
+                disabled={formSubmitting}
+                whileHover={{ scale: 1.01, boxShadow: '0 10px 25px -5px rgba(99,102,241,0.35)' }}
+                whileTap={{ scale: 0.99 }}
+                className="w-full relative mt-4 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-sans font-bold py-3.5 px-6 text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer disabled:from-slate-300 disabled:to-slate-400 shadow-lg shadow-indigo-500/15"
+              >
+                <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity" />
+                <span className="relative flex items-center justify-center gap-2">
+                  {formSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Running compliance...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Project Proposal</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </span>
+              </motion.button>
+            </form>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center space-y-6 py-6"
+            >
+              {/* Dynamic Holographic Secure Badge */}
+              <div className="w-20 h-20 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center justify-center mx-auto text-emerald-600 shadow-lg shadow-emerald-500/10 animate-bounce" style={{ animationDuration: '3s' }}>
+                <Check className="w-10 h-10 stroke-[2.5]" />
+              </div>
 
- <div className="space-y-4 pt-4">
- <button
- onClick={() => onAccessPortal(successRequest.id)}
- className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-sans font-bold py-3.5 px-6 text-xs transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"
- >
- OPEN CLIENT PORTAL
- </button>
- <button
- onClick={() => setSuccessRequest(null)}
- className="w-full bg-transparent text-slate-500 hover:text-slate-950 font-bold py-2 px-4 text-[10px] transition-colors cursor-pointer font-mono"
- >
- [ SUBMIT NEW PROPOSAL ]
- </button>
- </div>
- </motion.div>
- )}
- </motion.div>
- ) : (
- <motion.div
- key="track-requests"
- initial={{ opacity: 0, y: 5 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -5 }}
- transition={{ duration: 0.15 }}
- className="space-y-6"
- >
- {/* Track by ID */}
- <form onSubmit={handleTrackById} className="space-y-3">
- <label className="block text-slate-500 text-[10px] font-bold font-mono">Track with Project ID</label>
- <div className="flex gap-3">
- <input 
- type="text"
- required
- placeholder="E.G. BTX-FA39CD"
- value={trackId}
- onChange={(e) => setTrackId(e.target.value)}
- className="flex-1 bg-transparent border-2 border-slate-900 text-slate-900 p-3.5 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
- />
- <button 
- type="submit"
- className="bg-amber-400 text-slate-900 font-sans font-bold px-6 py-3.5 text-xs transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5"
- >
- FIND
- </button>
- </div>
- </form>
+              <div className="space-y-2">
+                <h3 className="font-sans font-bold text-xl text-slate-900">Proposal Secured!</h3>
+                <p className="text-slate-500 text-xs leading-relaxed max-w-sm mx-auto">
+                  Your proposal has been written to the ledger. An architect has been allocated to review your goals.
+                </p>
+              </div>
 
- <div className="relative flex items-center justify-center py-2">
- <div className="absolute inset-0 flex items-center"><div className="w-full border-t-2 border-slate-200"></div></div>
- <span className="relative bg-white px-3 text-[9px] font-mono text-slate-400">OR EMAIL ADDRESS</span>
- </div>
+              {/* Interactive Copyable Project Workspace Ticket */}
+              <div className="bg-emerald-50/20 border border-emerald-100 p-5 space-y-3 rounded-2xl relative shadow-sm">
+                <span className="text-slate-400 text-[9px] font-bold block font-mono tracking-wider">WORKSPACE SECURE TICKET ID</span>
+                
+                <div className="flex items-center justify-center space-x-2.5">
+                  <strong className="text-2xl font-mono text-indigo-600 font-bold select-all tracking-wide">{successRequest.id}</strong>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyId(successRequest.id)}
+                    className="p-1.5 rounded-lg border border-slate-200 hover:border-slate-400 bg-white transition-colors cursor-pointer text-slate-500 hover:text-slate-950 shadow-sm"
+                    title="Copy ID to Clipboard"
+                  >
+                    {copiedId ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                {copiedId && <span className="text-[9px] font-mono text-emerald-600 font-bold block animate-pulse">Copied to Clipboard!</span>}
+              </div>
 
- {/* Track by Email */}
- <form onSubmit={handleTrackByEmail} className="space-y-3">
- <label className="block text-slate-500 text-[10px] font-bold font-mono">Search Registered Email</label>
- <div className="flex gap-3">
- <input 
- type="email"
- required
- placeholder="CLIENT@EMAIL.COM"
- value={trackEmail}
- onChange={(e) => setTrackEmail(e.target.value)}
- className="flex-1 bg-transparent border-2 border-slate-900 text-slate-900 p-3.5 font-mono text-xs focus:outline-none focus:border-indigo-600 transition-all placeholder:text-slate-300 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,0.1)] focus:shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]"
- />
- <button 
- type="submit"
- disabled={searching}
- className="bg-slate-900 text-white font-sans font-bold px-6 py-3.5 text-xs transition-all cursor-pointer border-2 border-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 active:translate-y-0.5 active:translate-x-0.5 shrink-0 disabled:opacity-40"
- >
- {searching ? '...' : 'SEARCH'}
- </button>
- </div>
- </form>
+              <div className="space-y-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => onAccessPortal(successRequest.id)}
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-sans font-bold py-3.5 px-6 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-sm"
+                >
+                  Open Client Portal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSuccessRequest(null)}
+                  className="w-full bg-transparent text-slate-400 hover:text-slate-800 font-bold py-2 px-4 text-[10px] transition-colors cursor-pointer font-mono tracking-wider"
+                >
+                  [ SUBMIT NEW PROPOSAL ]
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+      ) : (
+        <motion.div
+          key="track-requests"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.18 }}
+          className="space-y-6 relative z-10 text-left"
+        >
+          {/* Track by ID */}
+          <form onSubmit={handleTrackById} className="space-y-3">
+            <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Track with Project ID</label>
+            <div className="flex gap-3">
+              <input 
+                type="text"
+                required
+                placeholder="E.g. BTX-FA39CD"
+                value={trackId}
+                onChange={(e) => setTrackId(e.target.value)}
+                className="flex-1 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 font-mono text-xs focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-400 rounded-xl"
+              />
+              <button 
+                type="submit"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold px-6 py-3 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-md shadow-indigo-600/10 shrink-0"
+              >
+                Find
+              </button>
+            </div>
+          </form>
 
- {/* Results */}
- <AnimatePresence mode="wait">
- {trackError && (
- <motion.div 
- initial={{ opacity: 0 }} 
- animate={{ opacity: 1 }} 
- className="text-[11px] text-pink-600 border-2 border-slate-900 bg-pink-50 p-4 font-mono rounded-xl shadow-[4px_4px_0px_0px_rgba(219,39,119,0.15)] flex items-center space-x-2"
- >
- <ShieldAlert className="w-4 h-4" />
- <span>[ ERROR: {trackError.toUpperCase()} ]</span>
- </motion.div>
- )}
+          <div className="relative flex items-center justify-center py-2">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+            <span className="relative bg-white px-3 text-[9px] font-mono text-slate-400 tracking-wider">OR EMAIL ADDRESS</span>
+          </div>
 
- {matchingRequests.length > 0 && (
- <motion.div 
- initial={{ opacity: 0, y: 5 }}
- animate={{ opacity: 1, y: 0 }}
- className="space-y-3 bg-slate-50 p-4 border-2 border-slate-900 max-h-56 overflow-y-auto rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,0.1)]"
- >
- <p className="text-[9px] font-bold text-slate-500 font-mono">Select Workspace:</p>
- {matchingRequests.map((req) => (
- <button
- key={req.id}
- onClick={() => onAccessPortal(req.id)}
- className="w-full text-left p-4 hover:bg-white border-2 border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all hover:scale-[1.02] cursor-pointer font-mono shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] duration-150"
- >
- <div className="truncate pr-2">
- <p className="font-bold text-indigo-600 text-[11px] tracking-wide">{req.id}</p>
- <p className="text-slate-600 truncate text-[10px] mt-0.5">{req.description.toUpperCase()}</p>
- </div>
- <span className="flex-shrink-0 px-2.5 py-1 text-[9px] font-bold border-2 border-slate-900 text-indigo-700 bg-indigo-50 rounded-lg shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
- {req.status}
- </span>
- </button>
- ))}
- </motion.div>
- )}
- </AnimatePresence>
- </motion.div>
- )}
- </AnimatePresence>
- </div>
- </Interactive3DCard>
- </div>
+          {/* Track by Email */}
+          <form onSubmit={handleTrackByEmail} className="space-y-3">
+            <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Search Registered Email</label>
+            <div className="flex gap-3">
+              <input 
+                type="email"
+                required
+                placeholder="client@email.com"
+                value={trackEmail}
+                onChange={(e) => setTrackEmail(e.target.value)}
+                className="flex-1 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 font-mono text-xs focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-400 rounded-xl"
+              />
+              <button 
+                type="submit"
+                disabled={searching}
+                className="bg-slate-900 hover:bg-slate-800 text-white font-sans font-bold px-6 py-3 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-sm shrink-0 disabled:opacity-40"
+              >
+                {searching ? '...' : 'Search'}
+              </button>
+            </div>
+          </form>
+
+          {/* Results */}
+          <AnimatePresence mode="wait">
+            {trackError && (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="text-[11px] text-pink-600 border border-pink-200 bg-pink-50/50 p-4 font-mono rounded-xl flex items-center space-x-2"
+              >
+                <ShieldAlert className="w-4 h-4 text-pink-500" />
+                <span>[ ERROR: {trackError.toUpperCase()} ]</span>
+              </motion.div>
+            )}
+
+            {matchingRequests.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-2 bg-slate-50/55 p-4 border border-slate-200 max-h-56 overflow-y-auto rounded-2xl"
+              >
+                <p className="text-[9px] font-bold text-slate-400 font-mono tracking-wider">SELECT WORKSPACE:</p>
+                {matchingRequests.map((req) => (
+                  <button
+                    key={req.id}
+                    onClick={() => onAccessPortal(req.id)}
+                    className="w-full text-left p-3.5 hover:bg-white border border-slate-200/60 hover:border-indigo-300 rounded-xl flex items-center justify-between text-xs transition-all duration-150 cursor-pointer shadow-sm hover:shadow-md"
+                  >
+                    <div className="truncate pr-2">
+                      <p className="font-bold text-indigo-600 text-[11px] tracking-wide font-mono">{req.id}</p>
+                      <p className="text-slate-500 truncate text-[10px] mt-0.5 uppercase font-mono">{req.description}</p>
+                    </div>
+                    <span className="flex-shrink-0 px-2.5 py-1 text-[9px] font-bold border border-indigo-200 text-indigo-700 bg-indigo-50 rounded-lg">
+                      {req.status}
+                    </span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+  </Interactive3DCard>
+  </div>
 
  </section>
  </div>
