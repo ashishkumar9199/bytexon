@@ -16,7 +16,7 @@ import ProjectPlanner from './components/ProjectPlanner';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Laptop, Sun, Moon } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
 export default function App() {
@@ -354,16 +354,7 @@ export default function App() {
                 )}
               </button>
 
-              <button
-                onClick={() => {
-                  sessionStorage.removeItem('bytexon_intro_completed');
-                  setShowIntro(true);
-                }}
-                className="text-slate-400 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-colors p-1"
-                title="Replay 3D Intro Animation"
-              >
-                <Laptop className="w-4 h-4" />
-              </button>
+
             </div>
 
             {/* Mobile Menu & Theme Actions */}
