@@ -307,457 +307,455 @@ export default function ProjectPlanner({
 
  </div>
  );
- };
+ };  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden pb-12">
+      
+      {/* Interactive visual background dots */}
+      <div className="absolute inset-0 bg-grid-slate-100 opacity-60 pointer-events-none z-0" />
 
- return (
- <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden pb-12">
- 
- {/* Interactive visual background dots */}
- <div className="absolute inset-0 bg-grid-slate-100 opacity-60 pointer-events-none z-0" />
+      {/* Header Banner */}
+      <section className="bg-white border-b border-slate-200/80 py-16 px-6 sm:px-12 relative overflow-hidden z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
+          <div className="inline-flex items-center space-x-2 bg-cyan-50/80 border border-cyan-100 px-3.5 py-1.5 rounded-full text-cyan-800 text-[10px] font-bold font-mono tracking-wider uppercase shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-500 animate-spin" style={{ animationDuration: '6s' }} />
+            <span>Interactive Project Board</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-display font-bold text-slate-900 tracking-tight leading-tight">
+            Secure Project Space & Workspace Tracking
+          </h1>
+          <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed font-sans">
+            Formulate your structural requirements below to secure pricing estimates and access your exclusive, real-time lead architect chat room.
+          </p>
+        </div>
+      </section>
 
- {/* Header Banner */}
- <section className="bg-white border-b border-slate-200 py-12 px-6 sm:px-12 relative overflow-hidden z-10">
- <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
- <div className="inline-flex items-center space-x-1.5 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full text-indigo-700 text-xs font-semibold font-mono tracking-wide ">
- <Sparkles className="w-3.5 h-3.5 text-indigo-600 animate-spin" style={{ animationDuration: '4s' }} />
- <span>Interactive Project Board</span>
- </div>
- <h1 className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 ">
- Secure Project Space & Workspace Tracking
- </h1>
- <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
- Formulate your structural requirements below to secure pricing estimates and access your exclusive, real-time lead architect chat room.
- </p>
- </div>
- </section>
+      {/* Main Grid Workspace */}
+      <section className="max-w-7xl w-full mx-auto px-6 py-12 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 relative z-10">
+        
+        {/* Left Column - Instructions and Security Accents with Interactive 3D Perspective Card (Col Span: 5) */}
+        <div className="lg:col-span-5 space-y-6">
+          
+          <Interactive3DCard glowColor="rgba(0, 194, 232, 0.15)">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm h-full">
+              <span className="text-[11px] font-mono font-extrabold text-slate-700 block border-b border-slate-100 pb-3 uppercase tracking-widest">
+                Submission Walkthrough
+              </span>
 
- {/* Main Grid Workspace */}
- <section className="max-w-7xl w-full mx-auto px-6 py-10 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 relative z-10">
- 
- {/* Left Column - Instructions and Security Accents with Interactive 3D Perspective Card (Col Span: 5) */}
- <div className="lg:col-span-5 space-y-6">
- 
- <Interactive3DCard glowColor="rgba(99, 102, 241, 0.25)">
- <div className="bg-white border-2 border-slate-900 rounded-2xl p-6 space-y-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] h-full">
- <span className="text-[9px] font-mono font-bold text-slate-400 block border-b border-slate-100 pb-2">
- Submission Walkthrough
- </span>
-
- <div className="space-y-4">
- <div className="flex gap-3">
- <div className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-indigo-100">
- 1
- </div>
- <div>
- <h4 className="font-sans font-bold text-xs text-slate-900 ">Input parameters</h4>
- <p className="text-[11px] text-slate-500 leading-relaxed font-sans mt-0.5">
- Specify your budget, currency preference, contact details, and outline the general features or backend requirements.
- </p>
- </div>
- </div>
-
- <div className="flex gap-3">
- <div className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-indigo-100">
- 2
- </div>
- <div>
- <h4 className="font-sans font-bold text-xs text-slate-900 ">Secure tracking id</h4>
- <p className="text-[11px] text-slate-500 leading-relaxed font-sans mt-0.5">
- Our system generates a unique identifier (e.g. BTX-4A9FCE) which immediately allocates secure sandbox environments in Firestore.
- </p>
- </div>
- </div>
-
- <div className="flex gap-3">
- <div className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-indigo-100">
- 3
- </div>
- <div>
- <h4 className="font-sans font-bold text-xs text-slate-900 ">Direct Architect Chat</h4>
- <p className="text-[11px] text-slate-500 leading-relaxed font-sans mt-0.5">
- Enter your workspace to chat with our architects, download invoices, review developer logs, and verify payment states via UPI.
- </p>
- </div>
- </div>
- </div>
- </div>
- </Interactive3DCard>
-
- <Interactive3DCard glowColor="rgba(244, 63, 94, 0.2)">
- <div className="bg-slate-900 text-slate-300 border-2 border-slate-950 rounded-2xl p-6 space-y-4 shadow-[4px_4px_0px_0px_rgba(244,63,94,1)]">
- <span className="text-[9px] font-mono font-bold text-slate-500 block border-b border-slate-800 pb-2">
- Vulnerability & Encryption Guard
- </span>
- <div className="space-y-3.5">
- <div className="flex items-start gap-2.5">
- <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
- <span className="text-[11px] leading-relaxed font-sans text-slate-300">
- All requirements, messages, and contact details are fully encrypted and securely isolated using strict Firestore security rules.
- </span>
- </div>
- <div className="flex items-start gap-2.5">
- <Key className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
- <span className="text-[11px] leading-relaxed font-sans text-slate-300">
- Only the assigned tech leads and owners of the secure workspace ID can read or update transaction parameters.
- </span>
- </div>
- </div>
- </div>
- </Interactive3DCard>
- </div>
-
- {/* Right Column - Planner/Tracker Card with full 3D interactive tilt alignment (Col Span: 7) */}
- <div className="lg:col-span-7">
- <Interactive3DCard glowColor="rgba(139, 92, 246, 0.25)" maxTilt={6}>
-   <div className="bg-white border border-slate-200/85 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/40 relative overflow-hidden">
-    {/* Dynamic Background Accents */}
-    <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none" />
-    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500/5 rounded-full blur-[80px] pointer-events-none" />
-
-    {/* Tab header buttons - Premium Modern Capsule */}
-    <div className="relative z-10 flex bg-slate-100/70 p-1 rounded-2xl border border-slate-200/50 mb-8 max-w-md mx-auto">
-      <button 
-        type="button"
-        onClick={() => setBentoTab('create')}
-        className={`flex-1 text-center py-2.5 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans tracking-wider ${
-          bentoTab === 'create' 
-            ? 'bg-white text-indigo-600 shadow-md border border-slate-200/35' 
-            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/40 border border-transparent'
-        }`}
-      >
-        [01] START PROJECT
-      </button>
-      <button 
-        type="button"
-        onClick={() => setBentoTab('track')}
-        className={`flex-1 text-center py-2.5 text-[10px] sm:text-xs font-bold transition-all cursor-pointer rounded-xl font-sans tracking-wider ${
-          bentoTab === 'track' 
-            ? 'bg-indigo-600 text-white shadow-md border border-indigo-700/25' 
-            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/40 border border-transparent'
-        }`}
-      >
-        [02] TRACK ACCESS
-      </button>
-    </div>
-
-    <AnimatePresence mode="wait">
-      {isLaunching ? (
-        <motion.div
-          key="launching-staging"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="relative z-10"
-        >
-          <RocketLaunchSimulation />
-        </motion.div>
-      ) : bentoTab === 'create' ? (
-        <motion.div
-          key="create-proposal"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.18 }}
-          className="space-y-5 relative z-10 text-left"
-        >
-          {!successRequest ? (
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              
-              {/* Name Input */}
-              <div className="space-y-1.5">
-                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
-                  <User className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Full Name *</span>
-                </label>
-                <input 
-                  type="text"
-                  required
-                  placeholder="Rahul Sharma"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
-                />
-              </div>
-
-              {/* Email & Whatsapp */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
-                    <Mail className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Email *</span>
-                  </label>
-                  <input 
-                    type="email"
-                    required
-                    placeholder="email@domain.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
-                    <Zap className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>WhatsApp *</span>
-                  </label>
-                  <input 
-                    type="text"
-                    required
-                    placeholder="+91 XXXXX XXXXX"
-                    value={formData.whatsapp}
-                    onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
-                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
-                  />
-                </div>
-              </div>
-
-              {/* Company Name */}
-              <div className="space-y-1.5">
-                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
-                  <Terminal className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Company Name (Optional)</span>
-                </label>
-                <input 
-                  type="text"
-                  placeholder="Acme Inc."
-                  value={formData.companyName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans"
-                />
-              </div>
-
-              {/* Description */}
-              <div className="space-y-1.5">
-                <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider flex items-center space-x-2">
-                  <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Description of work *</span>
-                </label>
-                <textarea 
-                  required
-                  rows={4}
-                  placeholder="Outline core modules and integrations (e.g. admin panel, real-time chat, Firestore rules...)"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-medium placeholder:text-slate-400 font-sans resize-none leading-relaxed"
-                />
-              </div>
-
-              {/* Currency & Estimated Budget */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="sm:col-span-1 space-y-1.5">
-                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Currency</label>
-                  <div className="relative">
-                    <select 
-                      value={formData.budgetCurrency}
-                      onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
-                      className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-semibold font-sans cursor-pointer appearance-none"
-                    >
-                      <option value="INR">INR (₹)</option>
-                      <option value="USD">USD ($)</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 text-[8px]">
-                      ▼
-                    </div>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-950 font-mono text-xs font-extrabold flex items-center justify-center shrink-0 border border-slate-300">
+                    01
+                  </div>
+                  <div>
+                    <h4 className="font-display font-extrabold text-[15px] text-slate-950 tracking-tight">Input parameters</h4>
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans mt-1.5">
+                      Specify your budget, currency preference, contact details, and outline the general features or backend requirements.
+                    </p>
                   </div>
                 </div>
 
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Estimated Budget *</label>
-                  <input 
-                    type="number"
-                    required
-                    min="1"
-                    placeholder="E.g. 50000"
-                    value={formData.budgetAmount}
-                    onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
-                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none transition-all px-4 py-2.5 rounded-xl text-slate-900 text-xs font-semibold placeholder:text-slate-400 font-sans"
-                  />
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-950 font-mono text-xs font-extrabold flex items-center justify-center shrink-0 border border-slate-300">
+                    02
+                  </div>
+                  <div>
+                    <h4 className="font-display font-extrabold text-[15px] text-slate-950 tracking-tight">Secure tracking id</h4>
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans mt-1.5">
+                      Our system generates a unique identifier (e.g. BTX-4A9FCE) which immediately allocates secure sandbox environments in Firestore.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-950 font-mono text-xs font-extrabold flex items-center justify-center shrink-0 border border-slate-300">
+                    03
+                  </div>
+                  <div>
+                    <h4 className="font-display font-extrabold text-[15px] text-slate-950 tracking-tight">Direct Architect Chat</h4>
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans mt-1.5">
+                      Enter your workspace to chat with our architects, download invoices, review developer logs, and verify payment states via UPI.
+                    </p>
+                  </div>
                 </div>
               </div>
+            </div>
+          </Interactive3DCard>
 
-              {/* Sleek Gradient Submit Button */}
-              <motion.button
-                type="submit"
-                disabled={formSubmitting}
-                whileHover={{ scale: 1.01, boxShadow: '0 10px 25px -5px rgba(99,102,241,0.35)' }}
-                whileTap={{ scale: 0.99 }}
-                className="w-full relative mt-4 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-sans font-bold py-3.5 px-6 text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer disabled:from-slate-300 disabled:to-slate-400 shadow-lg shadow-indigo-500/15"
-              >
-                <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity" />
-                <span className="relative flex items-center justify-center gap-2">
-                  {formSubmitting ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Running compliance...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Submit Project Proposal</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </span>
-              </motion.button>
-            </form>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center space-y-6 py-6"
-            >
-              {/* Dynamic Holographic Secure Badge */}
-              <div className="w-20 h-20 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center justify-center mx-auto text-emerald-600 shadow-lg shadow-emerald-500/10 animate-bounce" style={{ animationDuration: '3s' }}>
-                <Check className="w-10 h-10 stroke-[2.5]" />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-sans font-bold text-xl text-slate-900">Proposal Secured!</h3>
-                <p className="text-slate-500 text-xs leading-relaxed max-w-sm mx-auto">
-                  Your proposal has been written to the ledger. An architect has been allocated to review your goals.
-                </p>
-              </div>
-
-              {/* Interactive Copyable Project Workspace Ticket */}
-              <div className="bg-emerald-50/20 border border-emerald-100 p-5 space-y-3 rounded-2xl relative shadow-sm">
-                <span className="text-slate-400 text-[9px] font-bold block font-mono tracking-wider">WORKSPACE SECURE TICKET ID</span>
-                
-                <div className="flex items-center justify-center space-x-2.5">
-                  <strong className="text-2xl font-mono text-indigo-600 font-bold select-all tracking-wide">{successRequest.id}</strong>
-                  <button
-                    type="button"
-                    onClick={() => handleCopyId(successRequest.id)}
-                    className="p-1.5 rounded-lg border border-slate-200 hover:border-slate-400 bg-white transition-colors cursor-pointer text-slate-500 hover:text-slate-950 shadow-sm"
-                    title="Copy ID to Clipboard"
-                  >
-                    {copiedId ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  </button>
+          <Interactive3DCard glowColor="rgba(11, 76, 140, 0.1)">
+            <div className="bg-slate-900 text-slate-100 border border-slate-950 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
+              <span className="text-[11px] font-mono font-extrabold text-slate-200 block border-b border-slate-800 pb-3 uppercase tracking-widest">
+                Vulnerability & Encryption Guard
+              </span>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0" />
+                  <span className="text-xs sm:text-sm leading-relaxed font-sans text-slate-100 font-medium">
+                    All requirements, messages, and contact details are fully encrypted and securely isolated using strict Firestore security rules.
+                  </span>
                 </div>
-                {copiedId && <span className="text-[9px] font-mono text-emerald-600 font-bold block animate-pulse">Copied to Clipboard!</span>}
+                <div className="flex items-start gap-3">
+                  <Key className="w-5 h-5 text-cyan-300 shrink-0" />
+                  <span className="text-xs sm:text-sm leading-relaxed font-sans text-slate-100 font-medium">
+                    Only the assigned tech leads and owners of the secure workspace ID can read or update transaction parameters.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Interactive3DCard>
+        </div>
+
+        {/* Right Column - Planner/Tracker Card with full 3D interactive tilt alignment (Col Span: 7) */}
+        <div className="lg:col-span-7">
+          <Interactive3DCard glowColor="rgba(0, 194, 232, 0.2)" maxTilt={4}>
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 md:p-10 shadow-lg relative overflow-hidden">
+              {/* Dynamic Background Accents */}
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/5 rounded-full blur-[80px] pointer-events-none" />
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#0B4C8C]/5 rounded-full blur-[80px] pointer-events-none" />
+
+              {/* Tab header buttons - Premium Modern Switcher Capsule */}
+              <div className="relative z-10 flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60 mb-8 max-w-md mx-auto">
+                <button 
+                  type="button"
+                  onClick={() => setBentoTab('create')}
+                  className={`flex-1 text-center py-2.5 text-xs font-extrabold transition-all duration-200 cursor-pointer rounded-xl font-mono tracking-widest ${
+                    bentoTab === 'create' 
+                      ? 'bg-white text-slate-950 shadow-sm border border-slate-200/40' 
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200/40 border border-transparent'
+                  }`}
+                >
+                  [01] START PROJECT
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setBentoTab('track')}
+                  className={`flex-1 text-center py-2.5 text-xs font-extrabold transition-all duration-200 cursor-pointer rounded-xl font-mono tracking-widest ${
+                    bentoTab === 'track' 
+                      ? 'bg-[#132B4F] text-white shadow-sm border border-[#132B4F]/10' 
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200/40 border border-transparent'
+                  }`}
+                >
+                  [02] TRACK ACCESS
+                </button>
               </div>
 
-              <div className="space-y-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => onAccessPortal(successRequest.id)}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-sans font-bold py-3.5 px-6 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-sm"
-                >
-                  Open Client Portal
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSuccessRequest(null)}
-                  className="w-full bg-transparent text-slate-400 hover:text-slate-800 font-bold py-2 px-4 text-[10px] transition-colors cursor-pointer font-mono tracking-wider"
-                >
-                  [ SUBMIT NEW PROPOSAL ]
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-      ) : (
-        <motion.div
-          key="track-requests"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.18 }}
-          className="space-y-6 relative z-10 text-left"
-        >
-          {/* Track by ID */}
-          <form onSubmit={handleTrackById} className="space-y-3">
-            <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Track with Project ID</label>
-            <div className="flex gap-3">
-              <input 
-                type="text"
-                required
-                placeholder="E.g. BTX-FA39CD"
-                value={trackId}
-                onChange={(e) => setTrackId(e.target.value)}
-                className="flex-1 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 font-mono text-xs focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-400 rounded-xl"
-              />
-              <button 
-                type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold px-6 py-3 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-md shadow-indigo-600/10 shrink-0"
-              >
-                Find
-              </button>
-            </div>
-          </form>
-
-          <div className="relative flex items-center justify-center py-2">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-            <span className="relative bg-white px-3 text-[9px] font-mono text-slate-400 tracking-wider">OR EMAIL ADDRESS</span>
-          </div>
-
-          {/* Track by Email */}
-          <form onSubmit={handleTrackByEmail} className="space-y-3">
-            <label className="block text-slate-600 text-[10px] font-bold font-mono uppercase tracking-wider">Search Registered Email</label>
-            <div className="flex gap-3">
-              <input 
-                type="email"
-                required
-                placeholder="client@email.com"
-                value={trackEmail}
-                onChange={(e) => setTrackEmail(e.target.value)}
-                className="flex-1 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 font-mono text-xs focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-400 rounded-xl"
-              />
-              <button 
-                type="submit"
-                disabled={searching}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-sans font-bold px-6 py-3 text-xs tracking-wider uppercase transition-all cursor-pointer rounded-xl shadow-sm shrink-0 disabled:opacity-40"
-              >
-                {searching ? '...' : 'Search'}
-              </button>
-            </div>
-          </form>
-
-          {/* Results */}
-          <AnimatePresence mode="wait">
-            {trackError && (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                className="text-[11px] text-pink-600 border border-pink-200 bg-pink-50/50 p-4 font-mono rounded-xl flex items-center space-x-2"
-              >
-                <ShieldAlert className="w-4 h-4 text-pink-500" />
-                <span>[ ERROR: {trackError.toUpperCase()} ]</span>
-              </motion.div>
-            )}
-
-            {matchingRequests.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-2 bg-slate-50/55 p-4 border border-slate-200 max-h-56 overflow-y-auto rounded-2xl"
-              >
-                <p className="text-[9px] font-bold text-slate-400 font-mono tracking-wider">SELECT WORKSPACE:</p>
-                {matchingRequests.map((req) => (
-                  <button
-                    key={req.id}
-                    onClick={() => onAccessPortal(req.id)}
-                    className="w-full text-left p-3.5 hover:bg-white border border-slate-200/60 hover:border-indigo-300 rounded-xl flex items-center justify-between text-xs transition-all duration-150 cursor-pointer shadow-sm hover:shadow-md"
+              <AnimatePresence mode="wait">
+                {isLaunching ? (
+                  <motion.div
+                    key="launching-staging"
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    className="relative z-10"
                   >
-                    <div className="truncate pr-2">
-                      <p className="font-bold text-indigo-600 text-[11px] tracking-wide font-mono">{req.id}</p>
-                      <p className="text-slate-500 truncate text-[10px] mt-0.5 uppercase font-mono">{req.description}</p>
+                    <RocketLaunchSimulation />
+                  </motion.div>
+                ) : bentoTab === 'create' ? (
+                  <motion.div
+                    key="create-proposal"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-6 relative z-10 text-left"
+                  >
+                    {!successRequest ? (
+                      <form onSubmit={handleFormSubmit} className="space-y-5">
+                        
+                        {/* Name Input */}
+                        <div className="space-y-2">
+                          <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest flex items-center space-x-2">
+                            <User className="w-3.5 h-3.5 text-cyan-600" />
+                            <span>Full Name *</span>
+                          </label>
+                          <input 
+                            type="text"
+                            required
+                            placeholder="Rahul Sharma"
+                            value={formData.name}
+                            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                            className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans"
+                          />
+                        </div>
+
+                        {/* Email & Whatsapp */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                          <div className="space-y-2">
+                            <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest flex items-center space-x-2">
+                              <Mail className="w-3.5 h-3.5 text-cyan-600" />
+                              <span>Email *</span>
+                            </label>
+                            <input 
+                              type="email"
+                              required
+                              placeholder="email@domain.com"
+                              value={formData.email}
+                              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                              className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest flex items-center space-x-2">
+                              <Zap className="w-3.5 h-3.5 text-cyan-600" />
+                              <span>WhatsApp *</span>
+                            </label>
+                            <input 
+                              type="text"
+                              required
+                              placeholder="+91 XXXXX XXXXX"
+                              value={formData.whatsapp}
+                              onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                              className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Company Name */}
+                        <div className="space-y-2">
+                          <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest flex items-center space-x-2">
+                            <Terminal className="w-3.5 h-3.5 text-cyan-600" />
+                            <span>Company Name (Optional)</span>
+                          </label>
+                          <input 
+                            type="text"
+                            placeholder="Acme Inc."
+                            value={formData.companyName}
+                            onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+                            className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans"
+                          />
+                        </div>
+
+                        {/* Description */}
+                        <div className="space-y-2">
+                          <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest flex items-center space-x-2">
+                            <MessageSquare className="w-3.5 h-3.5 text-cyan-600" />
+                            <span>Description of work *</span>
+                          </label>
+                          <textarea 
+                            required
+                            rows={4}
+                            placeholder="Outline core modules and integrations (e.g. admin panel, real-time chat, Firestore rules...)"
+                            value={formData.description}
+                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                            className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3.5 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans resize-none leading-relaxed"
+                          />
+                        </div>
+
+                        {/* Currency & Estimated Budget */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div className="sm:col-span-1 space-y-2">
+                            <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest">Currency</label>
+                            <div className="relative">
+                              <select 
+                                value={formData.budgetCurrency}
+                                onChange={(e) => setFormData(prev => ({ ...prev, budgetCurrency: e.target.value as 'INR' | 'USD' }))}
+                                className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold font-mono cursor-pointer appearance-none"
+                              >
+                                <option value="INR">INR (₹)</option>
+                                <option value="USD">USD ($)</option>
+                              </select>
+                              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 text-[9px] font-bold">
+                                ▼
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-2 space-y-2">
+                            <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest">Estimated Budget *</label>
+                            <input 
+                              type="number"
+                              required
+                              min="1"
+                              placeholder="E.g. 50000"
+                              value={formData.budgetAmount}
+                              onChange={(e) => setFormData(prev => ({ ...prev, budgetAmount: e.target.value }))}
+                              className="w-full bg-slate-50/40 hover:bg-slate-50 border border-slate-300 focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition-all duration-200 px-4 py-3 rounded-2xl text-slate-900 text-sm font-semibold placeholder:text-slate-500 font-sans"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Premium Sleek Brand Action Button */}
+                        <motion.button
+                          type="submit"
+                          disabled={formSubmitting}
+                          whileHover={{ scale: 1.01, boxShadow: '0 10px 30px -5px rgba(0,194,232,0.3)' }}
+                          whileTap={{ scale: 0.99 }}
+                          className="w-full relative mt-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#132B4F] via-[#0D3B6A] to-[#00C2E8] text-white font-mono font-bold py-4 px-6 text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer disabled:from-slate-300 disabled:to-slate-400 shadow-md"
+                        >
+                          <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity" />
+                          <span className="relative flex items-center justify-center gap-2">
+                            {formSubmitting ? (
+                              <>
+                                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <span>Running compliance...</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>Submit Project Proposal</span>
+                                <ArrowRight className="w-4 h-4 text-cyan-300" />
+                              </>
+                            )}
+                          </span>
+                        </motion.button>
+                      </form>
+                    ) : (
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="text-center space-y-6 py-8"
+                      >
+                        {/* Dynamic Holographic Secure Badge */}
+                        <div className="w-20 h-20 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center justify-center mx-auto text-emerald-600 shadow-lg shadow-emerald-500/10 animate-bounce" style={{ animationDuration: '3.5s' }}>
+                          <Check className="w-10 h-10 stroke-[2.5]" />
+                        </div>
+
+                        <div className="space-y-2">
+                          <h3 className="font-display font-bold text-2xl text-slate-900">Proposal Secured!</h3>
+                          <p className="text-slate-600 text-xs leading-relaxed max-w-sm mx-auto font-sans">
+                            Your proposal has been written to the ledger. An architect has been allocated to review your goals.
+                          </p>
+                        </div>
+
+                        {/* Interactive Copyable Project Workspace Ticket */}
+                        <div className="bg-emerald-50/25 border border-emerald-100 p-6 space-y-4 rounded-3xl relative shadow-xs max-w-md mx-auto font-sans">
+                          <span className="text-slate-500 text-[10px] font-bold block font-mono tracking-widest">WORKSPACE SECURE TICKET ID</span>
+                          
+                          <div className="flex items-center justify-center space-x-3">
+                            <strong className="text-2xl font-mono text-[#132B4F] font-bold select-all tracking-wider">{successRequest.id}</strong>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyId(successRequest.id)}
+                              className="p-2 rounded-xl border border-slate-200 hover:border-slate-400 bg-white transition-colors cursor-pointer text-slate-600 hover:text-slate-950 shadow-xs"
+                              title="Copy ID to Clipboard"
+                            >
+                              {copiedId ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                            </button>
+                          </div>
+                          {copiedId && <span className="text-[10px] font-mono text-emerald-600 font-bold block animate-pulse">Copied to Clipboard!</span>}
+                        </div>
+
+                        <div className="space-y-4 pt-6 max-w-sm mx-auto">
+                          <button
+                            type="button"
+                            onClick={() => onAccessPortal(successRequest.id)}
+                            className="w-full bg-[#132B4F] hover:bg-slate-800 text-white font-mono font-bold py-4 px-6 text-xs tracking-widest uppercase transition-all cursor-pointer rounded-2xl shadow-sm"
+                          >
+                            Open Client Portal
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSuccessRequest(null)}
+                            className="w-full bg-transparent text-slate-500 hover:text-slate-800 font-bold py-2 px-4 text-[10px] transition-colors cursor-pointer font-mono tracking-widest"
+                          >
+                            [ SUBMIT NEW PROPOSAL ]
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="track-requests"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-6 relative z-10 text-left"
+                  >
+                    {/* Track by ID */}
+                    <form onSubmit={handleTrackById} className="space-y-3">
+                      <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest">Track with Project ID</label>
+                      <div className="flex gap-3">
+                        <input 
+                          type="text"
+                          required
+                          placeholder="E.g. BTX-FA39CD"
+                          value={trackId}
+                          onChange={(e) => setTrackId(e.target.value)}
+                          className="flex-1 bg-slate-50/40 hover:bg-slate-50 border border-slate-300 text-slate-900 px-4 py-3.5 font-mono text-sm focus:outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-500 rounded-2xl"
+                        />
+                        <button 
+                          type="submit"
+                          className="bg-[#132B4F] hover:bg-[#0D3B6A] text-white font-mono font-bold px-6 py-3.5 text-xs tracking-widest uppercase transition-all cursor-pointer rounded-2xl shadow-sm shrink-0"
+                        >
+                          Find
+                        </button>
+                      </div>
+                    </form>
+
+                    <div className="relative flex items-center justify-center py-4">
+                      <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200/80"></div></div>
+                      <span className="relative bg-white px-4 text-[10px] font-mono text-slate-700 font-extrabold tracking-widest uppercase">OR EMAIL ADDRESS</span>
                     </div>
-                    <span className="flex-shrink-0 px-2.5 py-1 text-[9px] font-bold border border-indigo-200 text-indigo-700 bg-indigo-50 rounded-lg">
-                      {req.status}
-                    </span>
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-  </Interactive3DCard>
-  </div>
 
- </section>
- </div>
- );
+                    {/* Track by Email */}
+                    <form onSubmit={handleTrackByEmail} className="space-y-3">
+                      <label className="block text-slate-900 text-[11px] font-extrabold font-mono uppercase tracking-widest">Search Registered Email</label>
+                      <div className="flex gap-3">
+                        <input 
+                          type="email"
+                          required
+                          placeholder="client@email.com"
+                          value={trackEmail}
+                          onChange={(e) => setTrackEmail(e.target.value)}
+                          className="flex-1 bg-slate-50/40 hover:bg-slate-50 border border-slate-300 text-slate-900 px-4 py-3.5 font-mono text-sm focus:outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-500 rounded-2xl"
+                        />
+                        <button 
+                          type="submit"
+                          disabled={searching}
+                          className="bg-slate-900 hover:bg-slate-800 text-white font-mono font-bold px-6 py-3.5 text-xs tracking-widest uppercase transition-all cursor-pointer rounded-2xl shadow-xs shrink-0 disabled:opacity-40"
+                        >
+                          {searching ? '...' : 'Search'}
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Results */}
+                    <AnimatePresence mode="wait">
+                      {trackError && (
+                        <motion.div 
+                          initial={{ opacity: 0 }} 
+                          animate={{ opacity: 1 }} 
+                          className="text-[11px] text-pink-600 border border-pink-200 bg-pink-50/50 p-4 font-mono rounded-2xl flex items-center space-x-2.5"
+                        >
+                          <ShieldAlert className="w-4 h-4 text-pink-500 shrink-0" />
+                          <span>[ ERROR: {trackError.toUpperCase()} ]</span>
+                        </motion.div>
+                      )}
+
+                      {matchingRequests.length > 0 && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="space-y-2 bg-slate-50/55 p-4 border border-slate-200 max-h-56 overflow-y-auto rounded-2xl"
+                        >
+                          <p className="text-[9px] font-bold text-slate-600 font-mono tracking-widest uppercase mb-1">SELECT WORKSPACE:</p>
+                          {matchingRequests.map((req) => (
+                            <button
+                              key={req.id}
+                              onClick={() => onAccessPortal(req.id)}
+                              className="w-full text-left p-4 hover:bg-white border border-slate-200/80 hover:border-cyan-400 rounded-xl flex items-center justify-between text-xs transition-all duration-150 cursor-pointer shadow-xs hover:shadow-md"
+                            >
+                              <div className="truncate pr-3">
+                                <p className="font-bold text-[#132B4F] text-[12px] tracking-wider font-mono">{req.id}</p>
+                                <p className="text-slate-700 truncate text-[11px] mt-1 uppercase font-mono font-medium">{req.description}</p>
+                              </div>
+                              <span className="flex-shrink-0 px-3 py-1.5 text-[9px] font-bold border border-cyan-200 text-cyan-800 bg-cyan-50/80 rounded-xl font-mono uppercase tracking-wider">
+                                {req.status}
+                              </span>
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </Interactive3DCard>
+        </div>
+
+      </section>
+    </div>
+  );
 }
