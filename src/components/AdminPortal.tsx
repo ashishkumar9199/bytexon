@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { getQrCodeUrl } from '../lib/configHelper';
 import BytexonLogo from './BytexonLogo';
+import { useToast } from '../context/ToastContext';
 
 interface AdminPortalProps {
  adminConfig: AdminConfig;
@@ -18,6 +19,7 @@ interface AdminPortalProps {
 }
 
 export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: AdminPortalProps) {
+ const { showToast } = useToast();
  const [requests, setRequests] = useState<ProjectRequest[]>([]);
  const [selectedRequest, setSelectedRequest] = useState<ProjectRequest | null>(null);
  const [activeTab, setActiveTab] = useState<'requests' | 'chat' | 'settings'>('requests');
@@ -132,7 +134,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  if (!selectedRequest) return;
  const amountNum = parseFloat(approvalAmount);
  if (isNaN(amountNum) || amountNum <= 0) {
- alert("Please enter a valid approved amount.");
+ showToast("Please enter a valid approved amount.", "warning", "Invalid Amount");
  return;
  }
 
@@ -156,9 +158,10 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  timestamp: Date.now()
  });
 
+ showToast('Proposal approved successfully!', 'success', 'Approved');
  } catch (err) {
  console.error("Error approving request:", err);
- alert("Failed to approve request.");
+ showToast("Failed to approve request.", "error", "Error");
  } finally {
  setIsApproving(false);
  }
@@ -183,8 +186,10 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  text: `⚠️ [System Notification] This request has been declined. If you would like to renegotiate the scope or budget, please feel free to message our lead architect directly in this console.`,
  timestamp: Date.now()
  });
+ showToast('Proposal declined successfully.', 'warning', 'Declined');
  } catch (err) {
  console.error("Error rejecting request:", err);
+ showToast("Failed to decline proposal.", "error", "Error");
  }
  };
 
@@ -208,8 +213,10 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  text: `✅ Payment Verified! Thank you for completing your transaction. We have verified reference UTR ${selectedRequest.paymentTxRef}. Your project kickoff has been scheduled.`,
  timestamp: Date.now()
  });
+ showToast('Payment verified successfully!', 'success', 'Payment Verified');
  } catch (err) {
  console.error("Error verifying payment:", err);
+ showToast("Failed to verify payment.", "error", "Error");
  }
  };
 
@@ -230,10 +237,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const requestDocRef = doc(db, 'requests', selectedRequest.id);
  await deleteDoc(requestDocRef);
 
- alert("Proposal and associated chats deleted successfully.");
+ showToast('Proposal and chats deleted successfully.', 'info', 'Deleted');
  setSelectedRequest(null);
  } catch (err) {
  console.error("Error deleting request:", err);
+ showToast("Failed to delete proposal.", "error", "Error");
  handleFirestoreError(err, OperationType.DELETE, `requests/${selectedRequest.id}`);
  }
  };
@@ -292,10 +300,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  }
  });
  setSettingsSuccess(true);
+ showToast('System configuration saved successfully!', 'success', 'Settings Saved');
  setTimeout(() => setSettingsSuccess(false), 3000);
  } catch (err) {
  console.error("Error saving settings:", err);
- alert("Failed to save settings.");
+ showToast('Failed to save settings. Please verify inputs.', 'error', 'Error');
  } finally {
  setUpdatingSettings(false);
  }
@@ -308,27 +317,27 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  });
 
  return (
- <div className="min-h-screen bg-slate-50 font-sans flex flex-col text-slate-900">
+ <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex flex-col text-slate-900 dark:text-slate-100 transition-colors duration-300">
  
  {/* Top Banner Header */}
- <header className="bg-white text-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-200">
+ <header className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
  <div className="flex items-center space-x-3">
  <BytexonLogo theme="light" height={24} />
- <span className="text-slate-400 font-mono text-[9px] font-bold border-l border-slate-300 pl-3 ">
+ <span className="text-slate-400 dark:text-slate-500 font-mono text-[9px] font-bold border-l border-slate-300 dark:border-slate-700 pl-3 ">
  Architect Admin Workspace
  </span>
  </div>
 
  <div className="flex items-center space-x-4">
  <div className="text-right hidden sm:block leading-none">
- <p className="text-xs font-bold text-slate-900 font-mono ">{adminConfig.adminUsername}</p>
+ <p className="text-xs font-bold text-slate-900 dark:text-slate-100 dark:text-white font-mono ">{adminConfig.adminUsername}</p>
  <span className="text-[8px] text-indigo-600 font-mono font-bold ">Root Active</span>
  </div>
 
  <button 
  onClick={onLogOut}
  id="btn-admin-logout"
- className="flex items-center space-x-1 px-3 py-1.5 bg-slate-50 hover:bg-rose-500/25 hover:text-rose-400 border border-slate-200 hover:border-rose-500/50 text-[10px] font-mono transition-all cursor-pointer"
+ className="flex items-center space-x-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900 hover:bg-rose-500/25 hover:text-rose-400 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 text-[10px] font-mono transition-all cursor-pointer text-slate-700 dark:text-slate-300"
  >
  <LogOut className="w-3.5 h-3.5" />
  <span>Sign Out</span>
@@ -337,7 +346,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </header>
 
  {/* Primary Workspace Navigation Tabs */}
- <nav className="bg-white border-b border-slate-200 px-4 py-0 flex items-center justify-between">
+ <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-0 flex items-center justify-between transition-colors duration-300">
  <div className="flex space-x-2">
  <button
  onClick={() => setActiveTab('requests')}
@@ -345,7 +354,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer ${
  activeTab === 'requests' 
  ? 'border-indigo-600 text-indigo-600' 
- : 'border-transparent text-slate-400 hover:text-slate-900'
+ : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white'
  }`}
  >
  Proposals ({requests.length})
@@ -363,7 +372,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer ${
  activeTab === 'chat' 
  ? 'border-indigo-600 text-indigo-600' 
- : 'border-transparent text-slate-400 hover:text-slate-900'
+ : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white'
  }`}
  >
  Chatroom Console
@@ -375,39 +384,39 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer ${
  activeTab === 'settings' 
  ? 'border-indigo-600 text-indigo-600' 
- : 'border-transparent text-slate-400 hover:text-slate-900'
+ : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white'
  }`}
  >
  Billing Config
  </button>
  </div>
 
- <div className="text-slate-900/35 font-mono text-[9px] font-bold hidden md:block ">
+ <div className="text-slate-400/45 dark:text-slate-500/40 font-mono text-[9px] font-bold hidden md:block ">
  SYS STATUS: <span className="text-indigo-600">● SECURE SSL</span>
  </div>
  </nav>
 
  {/* Main Content Area */}
- <main className="flex-1 p-4 overflow-hidden bg-slate-50">
+ <main className="flex-1 p-4 overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
  
  {/* REQUESTS VIEW */}
  {activeTab === 'requests' && (
  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start h-full">
  
  {/* Left Side: Proposal List (5 Columns) */}
- <div className="lg:col-span-5 bg-white border border-slate-200 p-4 flex flex-col max-h-[700px] text-slate-900">
+ <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 flex flex-col max-h-[700px] text-slate-900 dark:text-slate-100 rounded-3xl transition-colors duration-300 shadow-sm">
  
  {/* Header & Filter Row */}
  <div className="space-y-3 mb-4">
  <div className="flex items-center justify-between">
- <h2 className="text-xs font-bold text-slate-900 font-mono">Proposals</h2>
- <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-600 font-bold font-mono text-[9px] ">
+ <h2 className="text-xs font-bold text-slate-900 dark:text-slate-100 dark:text-white font-mono">Proposals</h2>
+ <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-bold font-mono text-[9px] rounded">
  {filteredRequests.length} LISTED
  </span>
  </div>
  
  {/* Filter Grid */}
- <div className="flex flex-wrap gap-1 p-1 bg-slate-50 border border-slate-200">
+ <div className="flex flex-wrap gap-1 p-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-lg">
  {['all', 'pending', 'approved', 'rejected', 'payment_submitted', 'completed'].map((status) => (
  <button
  key={status}
@@ -415,7 +424,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  className={`px-2 py-1 text-[9px] font-bold font-mono transition-all cursor-pointer ${
  statusFilter === status 
  ? 'bg-indigo-600 text-white' 
- : 'text-slate-400 hover:text-slate-900'
+ : 'text-slate-400 hover:text-slate-900 dark:text-slate-100'
  }`}
  >
  {status.replace('_', ' ')}
@@ -450,7 +459,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 		</div>) : filteredRequests.length === 0 ? (
  <div className="py-12 text-center text-slate-400 font-mono space-y-2">
  <Clock className="w-6 h-6 text-indigo-600 mx-auto mb-1" />
- <p className="font-bold text-xs text-slate-900">NO ARCHIVES FOUND</p>
+ <p className="font-bold text-xs text-slate-900 dark:text-slate-100 dark:text-white">NO ARCHIVES FOUND</p>
  <p className="text-[10px] text-slate-400">ADJUST STATUS FILTERS ABOVE</p>
  </div>
  ) : (
@@ -463,12 +472,12 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  onClick={() => setSelectedRequest(req)}
  className={`w-full text-left p-3 border transition-all flex flex-col space-y-2 cursor-pointer font-mono ${
  isSelected 
- ? 'bg-slate-50 border-indigo-600' 
- : 'bg-slate-50 border-slate-200 hover:border-slate-300/35'
+ ? 'bg-slate-100 dark:bg-slate-800 border-indigo-600' 
+ : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-850 hover:border-slate-300/35'
  }`}
  >
  <div className="flex items-center justify-between w-full">
- <span className="font-mono text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5">
+ <span className="font-mono text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 px-1.5 py-0.5 rounded">
  ID: {req.id}
  </span>
  <span className={`px-1.5 py-0.5 text-[8px] font-bold border ${
@@ -483,11 +492,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  <div>
- <p className="font-bold text-slate-900 text-xs truncate">{req.name}</p>
+ <p className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs truncate">{req.name}</p>
  <p className="text-slate-500 text-[10px] truncate max-w-xs">{req.description}</p>
  </div>
 
- <div className="flex items-center justify-between pt-2 border-t border-slate-200 mt-1 text-[9px] text-slate-400 font-bold">
+ <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800 mt-1 text-[9px] text-slate-400 font-bold">
  <span>{new Date(req.createdAt).toLocaleDateString()}</span>
  <span className="text-indigo-600">
  BUDGET: {bSign}{req.budgetAmount.toLocaleString()}
@@ -502,16 +511,16 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Right Side: Request Details, Approvals, & Chats (7 Columns) */}
- <div className="lg:col-span-7 bg-white border border-slate-200 text-slate-900 overflow-hidden max-h-[700px] flex flex-col">
+ <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 overflow-hidden max-h-[700px] flex flex-col rounded-3xl transition-colors duration-300 shadow-sm">
  
  {selectedRequest ? (
  <div className="flex-grow flex flex-col h-full overflow-hidden">
  
  {/* Selected Header */}
- <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+ <div className="p-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40">
  <div>
  <div className="flex items-center space-x-1.5">
- <h3 className="font-bold text-slate-900 text-xs ">{selectedRequest.name}</h3>
+ <h3 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs ">{selectedRequest.name}</h3>
  <span className="text-[10px] text-slate-500 font-mono">({selectedRequest.email.toUpperCase()})</span>
  </div>
  <p className="text-slate-400 text-[9px] mt-1 font-mono">REFERENCE TRACKING ID: {selectedRequest.id}</p>
@@ -544,19 +553,19 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  <div className="flex-grow overflow-y-auto p-4 space-y-4">
  
  {/* Description Details Card */}
- <div className="bg-slate-50 p-4 border border-slate-200">
+ <div className="bg-slate-50 dark:bg-slate-950/40 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl">
  <h4 className="text-[9px] font-bold text-slate-400 mb-2 font-mono">Proposal requirements</h4>
- <p className="text-slate-900 text-xs leading-relaxed whitespace-pre-wrap font-mono">{selectedRequest.description}</p>
+ <p className="text-slate-900 dark:text-slate-100 text-xs leading-relaxed whitespace-pre-wrap font-mono">{selectedRequest.description}</p>
  
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-200 text-[10px] font-mono">
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[10px] font-mono">
  <div>
  <p className="text-slate-400 font-bold text-[8px] font-mono">WHATSAPP</p>
- <p className="text-slate-900 font-bold mt-1 text-xs">{selectedRequest.whatsapp}</p>
+ <p className="text-slate-900 dark:text-slate-100 dark:text-white font-bold mt-1 text-xs">{selectedRequest.whatsapp}</p>
  </div>
  {selectedRequest.companyName && (
  <div>
  <p className="text-slate-400 font-bold text-[8px] font-mono">COMPANY</p>
- <p className="text-slate-900 font-bold mt-1 text-xs truncate ">{selectedRequest.companyName}</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold mt-1 text-xs truncate ">{selectedRequest.companyName}</p>
  </div>
  )}
  <div>
@@ -567,7 +576,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
  <div>
  <p className="text-slate-400 font-bold text-[8px] font-mono">SUBMITTED</p>
- <p className="text-slate-900 font-bold mt-1 text-xs">
+ <p className="text-slate-900 dark:text-slate-100 dark:text-white font-bold mt-1 text-xs">
  {new Date(selectedRequest.createdAt).toLocaleDateString()}
  </p>
  </div>
@@ -576,11 +585,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
  {/* Approved Price details if approved */}
  {(selectedRequest.status === 'approved' || selectedRequest.status === 'payment_submitted' || selectedRequest.status === 'completed') && (
- <div className="bg-indigo-50 border border-indigo-200 p-3">
+ <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 p-3.5 rounded-xl">
  <div className="flex justify-between items-center">
  <div>
  <p className="text-indigo-600 text-[9px] font-bold font-mono">Approved final pricing</p>
- <p className="text-sm font-sans font-bold text-slate-900 mt-0.5">
+ <p className="text-sm font-sans font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-0.5">
  {selectedRequest.approvedCurrency === 'USD' ? '$' : '₹'}{selectedRequest.approvedAmount?.toLocaleString()}
  </p>
  </div>
@@ -593,20 +602,20 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
  {/* Payment Proof Details if submitted */}
  {(selectedRequest.status === 'payment_submitted' || selectedRequest.status === 'completed') && (
- <div className="bg-blue-500/10 border border-blue-500/20 p-3.5 space-y-2.5">
+ <div className="bg-blue-500/10 border border-blue-500/20 p-3.5 space-y-2.5 rounded-2xl">
  <h4 className="text-[9px] font-bold text-blue-400 font-mono">Payment transaction proof</h4>
  
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] font-mono">
  <div>
  <p className="text-blue-400 font-bold text-[9px] ">UTR / UPI REFERENCE ID</p>
- <p className="text-slate-900 font-bold font-mono text-xs select-all bg-slate-50 px-2.5 py-1.5 border border-slate-200 mt-1">
+ <p className="text-slate-900 dark:text-slate-100 font-bold font-mono text-xs select-all bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 rounded-lg">
  {selectedRequest.paymentTxRef}
  </p>
  </div>
  {selectedRequest.paymentNotes && (
  <div>
  <p className="text-blue-400 font-bold text-[9px] ">CLIENT REMARKS</p>
- <p className="text-slate-700 bg-slate-50 px-2.5 py-1.5 border border-slate-200 mt-1 truncate">
+ <p className="text-slate-700 dark:text-slate-350 bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 truncate rounded-lg">
  {selectedRequest.paymentNotes}
  </p>
  </div>
@@ -616,21 +625,21 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  {/* ACTIONS FORM GRID (Changes Based on Status) */}
- <div className="border-t border-slate-200 pt-4 space-y-3">
+ <div className="border-t border-slate-200 dark:border-slate-800 pt-4 space-y-3">
  <h4 className="text-[9px] font-bold text-slate-400 font-mono">Workflow controls</h4>
 
  {selectedRequest.status === 'pending' && (
- <div className="space-y-3.5 bg-slate-50 p-4 border border-slate-200">
+ <div className="space-y-3.5 bg-slate-50 dark:bg-slate-950/40 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl">
  <p className="text-[10px] text-slate-500 font-mono leading-relaxed">SET FINAL APPROVED PRICE (INR/USD) FOR UPI EXECUTION AND CLICK APPROVE, OR DECLINE PROPOSAL.</p>
  
  <div className="flex gap-3 items-end">
  <div className="flex-1">
  <label className="block text-[8px] font-bold text-slate-400 mb-1.5 font-mono">FINAL APPROVED PRICE</label>
- <div className="flex border border-slate-300 bg-white">
+ <div className="flex border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-xl overflow-hidden">
  <select 
  value={approvalCurrency}
  onChange={(e) => setApprovalCurrency(e.target.value as 'INR' | 'USD')}
- className="bg-slate-50 text-slate-900 font-bold px-2 py-1.5 text-[10px] focus:outline-none border-r border-slate-300 font-mono "
+ className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 dark:text-white font-bold px-2 py-1.5 text-[10px] focus:outline-none border-r border-slate-300 dark:border-slate-800 font-mono "
  >
  <option value="INR">INR (₹)</option>
  <option value="USD">USD ($)</option>
@@ -640,7 +649,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  placeholder="APPROVED AMOUNT"
  value={approvalAmount}
  onChange={(e) => setApprovalAmount(e.target.value)}
- className="w-full px-3 py-1.5 bg-white text-slate-900 text-xs focus:outline-none font-bold font-mono placeholder-slate-400"
+ className="w-full px-3 py-1.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs focus:outline-none font-bold font-mono placeholder-slate-400"
  />
  </div>
  </div>
@@ -668,15 +677,15 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  {selectedRequest.status === 'approved' && (
- <div className="bg-slate-50 p-4 border border-slate-200 text-center text-slate-500 text-[10px] py-6 space-y-2">
+ <div className="bg-slate-50 dark:bg-slate-950/45 p-4 border border-slate-200 dark:border-slate-800 text-center text-slate-500 text-[10px] py-6 space-y-2 rounded-2xl">
  <Clock className="w-6 h-6 text-indigo-600 mx-auto" />
- <p className="font-bold text-slate-900 font-mono ">Awaiting Client Payment Execution</p>
+ <p className="font-bold text-slate-900 dark:text-slate-100 dark:text-white font-mono ">Awaiting Client Payment Execution</p>
  <p className="leading-relaxed font-mono">APPROVED AT {selectedRequest.approvedCurrency === 'USD' ? '$' : '₹'}{selectedRequest.approvedAmount?.toLocaleString()}. CLIENT MUST SUBMIT TRANSACTION LOGS TO PROGRESS.</p>
  </div>
  )}
 
  {selectedRequest.status === 'payment_submitted' && (
- <div className="bg-indigo-50 border border-indigo-200 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+ <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl">
  <div className="text-left space-y-1">
  <h5 className="font-bold text-indigo-600 text-xs flex items-center space-x-1.5 font-mono">
  <span>Action Required: Confirm Transaction ID</span>
@@ -700,7 +709,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  {selectedRequest.status === 'completed' && (
- <div className="bg-indigo-50 text-indigo-600 border border-indigo-200 p-3 text-[10px] font-bold font-mono flex items-center space-x-3">
+ <div className="bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/40 p-4 text-[10px] font-bold font-mono flex items-center space-x-3 rounded-2xl">
  <CheckCircle className="w-4 h-4 text-indigo-600 flex-shrink-0" />
  <div>
  <p className=" ">[ TRANSACTION FULLY VERIFIED & COMPLETE ]</p>
@@ -727,7 +736,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  ) : (
  <div className="flex-grow flex flex-col items-center justify-center text-center p-8 text-slate-400 py-36 font-mono">
  <Users className="w-10 h-10 text-indigo-600 mb-3" />
- <h3 className="font-bold text-slate-900 text-xs ">Select a proposal</h3>
+ <h3 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs ">Select a proposal</h3>
  <p className="text-[10px] max-w-sm mt-1 leading-relaxed">CLICK ANY PROPOSAL ON THE LEFT SIDEBAR TO MANAGE ITS STATE, VIEW SPECIFICATIONS, ADJUST PRICES, AND VERIFY TRANSACTIONS.</p>
  </div>
  )}
@@ -742,8 +751,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start h-full max-h-[700px]">
  
  {/* Chat List Sidebar (4 Columns) */}
- <div className="lg:col-span-4 bg-white border border-slate-200 p-3 flex flex-col h-[600px] overflow-hidden">
- <h3 className="text-xs font-bold text-slate-900 mb-3 flex items-center space-x-1.5 font-mono">
+ <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 flex flex-col h-[600px] overflow-hidden rounded-3xl transition-colors duration-300 shadow-sm">
+ <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 dark:text-white mb-3 flex items-center space-x-1.5 font-mono">
  <MessageSquare className="w-4 h-4 text-indigo-600" />
  <span>Client chats</span>
  </h3>
@@ -760,19 +769,19 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  onClick={() => setSelectedRequest(req)}
  className={`w-full text-left p-3 border transition-colors flex items-center space-x-3 cursor-pointer ${
  isSelected 
- ? 'bg-indigo-50 border-indigo-600 text-slate-900' 
- : 'bg-slate-50 hover:bg-slate-50 border-slate-200 text-slate-700'
+ ? 'bg-indigo-50 dark:bg-indigo-950/20 border-indigo-600 text-slate-900 dark:text-slate-100 dark:text-white' 
+ : 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-350'
  }`}
  >
  <div className={`w-8 h-8 flex items-center justify-center font-bold text-[10px] font-mono ${
- isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-900'
+ isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100'
  }`}>
  {req.name.substring(0, 2).toUpperCase()}
  </div>
  <div className="flex-grow min-w-0 font-mono">
  <div className="flex justify-between items-center">
- <span className="font-bold text-slate-900 text-xs truncate ">{req.name}</span>
- <span className="text-[8px] font-mono font-bold text-indigo-600 bg-slate-50 px-1.5 py-0.5 border border-indigo-200">
+ <span className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs truncate ">{req.name}</span>
+ <span className="text-[8px] font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-slate-50 dark:bg-slate-950 px-1.5 py-0.5 border border-indigo-200 dark:border-indigo-800 rounded">
  {req.id}
  </span>
  </div>
@@ -786,19 +795,19 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Main Chat Conversation (8 Columns) */}
- <div className="lg:col-span-8 bg-white border border-slate-200 flex flex-col h-[600px] overflow-hidden">
+ <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col h-[600px] overflow-hidden rounded-3xl transition-colors duration-300 shadow-sm">
  
  {selectedRequest ? (
  <div className="flex-grow flex flex-col h-full overflow-hidden">
  
  {/* Active Chat Header */}
- <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 font-mono">
+ <div className="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40 font-mono">
  <div className="flex items-center space-x-2.5">
  <div className="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
  {selectedRequest.name.substring(0,2).toUpperCase()}
  </div>
  <div>
- <h4 className="font-bold text-slate-900 text-xs ">SECURE SESSION WITH {selectedRequest.name}</h4>
+ <h4 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs ">SECURE SESSION WITH {selectedRequest.name}</h4>
  <p className="text-slate-400 text-[9px] font-mono mt-0.5">REFERENCE: {selectedRequest.id} | WHATSAPP: {selectedRequest.whatsapp}</p>
  </div>
  </div>
@@ -815,7 +824,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Messaging Panel */}
- <div className="flex-grow overflow-y-auto p-4 bg-slate-50 space-y-3">
+ <div className="flex-grow overflow-y-auto p-4 bg-slate-50 dark:bg-slate-950/20 space-y-3">
  {chatMessages.length === 0 ? (
  <div className="text-center py-24 text-slate-300 text-xs font-mono ">[ NO LOGS EXIST. SAY HELLO FIRST ]</div>
  ) : (
@@ -828,8 +837,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  >
  <div className={`max-w-[85%] p-3 text-xs font-mono border ${
  isMe 
- ? 'bg-indigo-600 text-white border-indigo-600' 
- : 'bg-white text-slate-900 border-slate-200'
+ ? 'bg-indigo-600 dark:bg-cyan-600 text-white border-indigo-600 dark:border-cyan-500 rounded-xl rounded-tr-none' 
+ : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-850 rounded-xl rounded-tl-none'
  }`}>
  <p className="leading-relaxed whitespace-pre-wrap font-medium">{msg.text}</p>
  <span className={`block text-[8px] text-right mt-1.5 font-bold ${isMe ? 'text-white/60' : 'text-slate-400'}`}>
@@ -844,13 +853,13 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Reply form */}
- <form onSubmit={handleSendReply} className="p-3 border-t border-slate-200 bg-slate-50 flex items-center space-x-2">
+ <form onSubmit={handleSendReply} className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 flex items-center space-x-2">
  <input 
  type="text"
  value={adminReply}
  onChange={(e) => setAdminReply(e.target.value)}
  placeholder={`REPLY TO CLIENT ${selectedRequest.name.toUpperCase()}...`}
- className="flex-grow px-3.5 py-2 bg-white border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono placeholder-slate-400"
+ className="flex-grow px-3.5 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-850 focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono placeholder-slate-400 rounded-xl"
  />
  <button 
  type="submit"
@@ -864,7 +873,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  ) : (
  <div className="flex-grow flex flex-col items-center justify-center text-center p-8 text-slate-400 py-36 font-mono">
  <MessageSquare className="w-10 h-10 text-indigo-600 mb-3" />
- <h3 className="font-bold text-slate-900 text-xs ">Open a conversation</h3>
+ <h3 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-xs ">Open a conversation</h3>
  <p className="text-[10px] max-w-sm mt-1 leading-relaxed">SELECT ANY CUSTOMER FROM THE SIDEBAR ON THE LEFT TO START SENDING SECURE LIVE CHAT MESSAGES.</p>
  </div>
  )}
@@ -875,13 +884,13 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
  {/* SETTINGS VIEW */}
  {activeTab === 'settings' && (
- <div className="max-w-2xl mx-auto bg-white border border-slate-200 p-6 relative overflow-hidden">
+ <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 relative overflow-hidden rounded-3xl shadow-sm transition-colors duration-300">
  
  <div className="absolute top-0 left-0 w-full h-[2px] bg-indigo-600"></div>
 
  <div className="space-y-6">
  <div className="border-b border-slate-200 pb-4">
- <h2 className="text-xs font-bold text-slate-900 flex items-center space-x-1.5 font-mono">
+ <h2 className="text-xs font-bold text-slate-900 dark:text-slate-100 dark:text-white flex items-center space-x-1.5 font-mono">
  <Settings className="w-4 h-4 text-indigo-600" />
  <span>Platform system settings</span>
  </h2>
@@ -910,7 +919,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.username}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, username: e.target.value }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono font-semibold transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-semibold transition-colors"
  />
  </div>
 
@@ -923,7 +932,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.password}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, password: e.target.value }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono transition-colors"
  />
  </div>
  </div>
@@ -942,7 +951,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  placeholder="e.g. secret-entry"
  value={settingsForm.adminSecretPath}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, adminSecretPath: e.target.value.replace(/[^a-zA-Z0-9_-]/g, '') }))}
- className="w-full px-3 py-2 bg-slate-50 focus:outline-none text-slate-900 text-xs font-mono font-semibold"
+ className="w-full px-3 py-2 bg-slate-50 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-semibold"
  />
  </div>
  <p className="text-[9px] text-slate-400 mt-1.5 leading-relaxed font-mono ">
@@ -952,7 +961,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Billing credentials */}
- <div className="space-y-4 pt-4 border-t border-slate-200">
+ <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
  <h3 className="text-[9px] font-bold text-indigo-600 font-mono">2. UPI PAYMENT GATEWAY CONFIG</h3>
  
  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
@@ -967,12 +976,12 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.upiId}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, upiId: e.target.value }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono font-bold transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
  />
  <p className="text-[9px] text-slate-400 mt-1.5 leading-relaxed font-mono ">When empty or default, we render a dynamic UPI Pay URL scannable by BHIM, GooglePay, and PhonePe.</p>
  </div>
 
- <div className="p-3 bg-slate-50 border border-slate-200 flex items-start space-x-2 text-[9px] text-slate-500 font-mono ">
+ <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl flex items-start space-x-2 text-[9px] text-slate-500 font-mono ">
  <ShieldAlert className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0 mt-0.5" />
  <span>UPI Transactions require instant local UTR ID checks. Keep this UPI target accurate.</span>
  </div>
@@ -1005,7 +1014,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  <div className="w-full">
- <label className="block w-full py-1.5 bg-slate-50 hover:bg-white border border-slate-200 text-[9px] font-bold cursor-pointer text-slate-900 hover:text-indigo-600 transition-colors font-mono">
+ <label className="block w-full py-1.5 bg-slate-50 hover:bg-white border border-slate-200 text-[9px] font-bold cursor-pointer text-slate-900 dark:text-slate-100 hover:text-indigo-600 transition-colors font-mono">
  <input 
  type="file"
  accept="image/*"
@@ -1022,7 +1031,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
 
  {/* Standard Plan Price change */}
- <div className="space-y-4 pt-4 border-t border-slate-200 font-mono">
+ <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800 font-mono">
  <h3 className="text-[9px] font-bold text-indigo-600 font-mono">3. PRICE TABLE UPDATES</h3>
  <p className="text-[10px] text-slate-500 leading-relaxed ">Adjust standard starter template pricing. Changes are applied immediately to standard plan cards on the client landing page.</p>
 
@@ -1036,7 +1045,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.starterPrice}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, starterPrice: Number(e.target.value) }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono font-bold transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
  />
  </div>
 
@@ -1049,7 +1058,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.professionalPrice}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, professionalPrice: Number(e.target.value) }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono font-bold transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
  />
  </div>
 
@@ -1062,11 +1071,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  required
  value={settingsForm.enterprisePrice}
  onChange={(e) => setSettingsForm(prev => ({ ...prev, enterprisePrice: Number(e.target.value) }))}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-200 focus:border-indigo-600 focus:outline-none text-slate-900 text-xs font-mono font-bold transition-colors"
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
  />
  </div>
  </div>
- <div className="pt-4 border-t border-slate-200 flex justify-end">
+ <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
  <button
  type="submit"
  disabled={updatingSettings}

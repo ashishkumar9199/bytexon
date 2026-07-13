@@ -5,6 +5,7 @@ import { ProjectRequest, AdminConfig } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import Interactive3DCard from './Interactive3DCard';
+import { useToast } from '../context/ToastContext';
 import { 
  Sparkles, Check, Key, ArrowRight, ShieldCheck, 
  Database, User, Mail, MessageSquare, Copy, Terminal, Zap, ShieldAlert, Rocket
@@ -25,6 +26,7 @@ export default function ProjectPlanner({
  initialBudgetAmount,
  initialDescription
 }: ProjectPlannerProps) {
+ const { showToast } = useToast();
  // Tabs: 'create' for new requests, 'track' to find existing ones
  const [bentoTab, setBentoTab] = useState<'create' | 'track'>(initialTab);
 
@@ -82,6 +84,7 @@ export default function ProjectPlanner({
  const handleCopyId = (id: string) => {
  navigator.clipboard.writeText(id);
  setCopiedId(true);
+ showToast('Tracking ID copied to clipboard!', 'success', 'ID Copied');
  setTimeout(() => setCopiedId(false), 2000);
  };
 
@@ -143,6 +146,7 @@ export default function ProjectPlanner({
  setSuccessRequest(savedRequest);
  setIsLaunching(true);
  setLaunchStep(0);
+ showToast('Your project request has been launched successfully!', 'success', 'Request Created');
 
  // Advance through steps
  const interval = setInterval(() => {
@@ -161,7 +165,7 @@ export default function ProjectPlanner({
 
  } catch (err) {
  console.error('Error submitting project request:', err);
- alert('Error submitting request. Please try again.');
+ showToast('Error submitting request. Please try again.', 'error', 'Submission Failed');
  } finally {
  setFormSubmitting(false);
  }
@@ -172,6 +176,7 @@ export default function ProjectPlanner({
  e.preventDefault();
  if (!trackId.trim()) return;
  onAccessPortal(trackId.trim().toUpperCase());
+ showToast('Opening secure client portal tracking...', 'info', 'Portal Access');
  };
 
  const handleTrackByEmail = async (e: React.FormEvent) => {
@@ -196,6 +201,7 @@ export default function ProjectPlanner({
  
  if (!snapshot || snapshot.empty) {
  setTrackError('No project requests found with that email address.');
+ showToast('No requests found with that email address.', 'warning', 'No Results');
  } else {
  const list: ProjectRequest[] = [];
  snapshot.forEach((doc) => {
@@ -203,10 +209,12 @@ export default function ProjectPlanner({
  });
  list.sort((a, b) => b.createdAt - a.createdAt);
  setMatchingRequests(list);
+ showToast(`Found ${list.length} project request(s) matching your email!`, 'success', 'Search Complete');
  }
  } catch (err) {
  console.error('Error tracking email:', err);
  setTrackError('An error occurred. Please try again.');
+ showToast('Failed to search project requests. Please try again.', 'error', 'Error');
  } finally {
  setSearching(false);
  }
@@ -308,13 +316,13 @@ export default function ProjectPlanner({
  </div>
  );
  };  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden pb-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col relative overflow-hidden pb-12 transition-colors duration-300">
       
       {/* Interactive visual background dots */}
       <div className="absolute inset-0 bg-grid-slate-100 opacity-60 pointer-events-none z-0" />
 
       {/* Header Banner */}
-      <section className="bg-white border-b border-slate-200/80 py-16 px-6 sm:px-12 relative overflow-hidden z-10">
+      <section className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/80 py-16 px-6 sm:px-12 relative overflow-hidden z-10 transition-colors duration-300">
         <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
           <div className="inline-flex items-center space-x-2 bg-cyan-50/80 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900/50 px-3.5 py-1.5 rounded-full text-cyan-800 dark:text-cyan-400 text-[10px] font-bold font-mono tracking-wider uppercase shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-cyan-500 animate-spin" style={{ animationDuration: '6s' }} />

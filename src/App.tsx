@@ -17,8 +17,10 @@ import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
 import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Laptop, Sun, Moon } from 'lucide-react';
+import { useToast } from './context/ToastContext';
 
 export default function App() {
+ const { showToast } = useToast();
  const [showIntro, setShowIntro] = useState<boolean>(() => {
  return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
  });
@@ -159,8 +161,10 @@ export default function App() {
  setView('admin-dashboard');
  setLoginUsername('');
  setLoginPassword('');
+ showToast('Admin session established successfully!', 'success', 'Admin Signed In');
  } else {
  setLoginError('Invalid administrator username or password credentials.');
+ showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
  }
  } else {
  // Custom config active, check auth_XXX doc in firestore
@@ -178,12 +182,15 @@ export default function App() {
  setView('admin-dashboard');
  setLoginUsername('');
  setLoginPassword('');
+ showToast('Admin session established successfully!', 'success', 'Admin Signed In');
  } else {
  setLoginError('Invalid administrator username or password credentials.');
+ showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
  }
  } catch (err) {
  console.error("Error verifying admin credentials:", err);
  setLoginError('An error occurred during authentication. Please verify your network.');
+ showToast('An error occurred during authentication.', 'error', 'Connection Error');
  }
  }
  };
@@ -198,6 +205,7 @@ export default function App() {
  if (window.location.hash === expectedHash || window.location.hash === expectedHashAlt) {
  window.history.pushState(null, '', window.location.pathname + window.location.search);
  }
+ showToast('Successfully signed out of workspace.', 'info', 'Admin Logged Out');
  };
 
  // Listen for hash/query/path changes to route to different views
