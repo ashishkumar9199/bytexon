@@ -117,6 +117,53 @@
         "text",
         "timestamp"
       ]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Direct user-submitted bug reports or feature requests",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique feedback document ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the user"
+        },
+        "email": {
+          "type": "string",
+          "description": "The contact email of the user"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["bug", "feature", "other"],
+          "description": "Feedback categorization"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Summary of the report"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed explanation of the request"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        },
+        "status": {
+          "type": "string",
+          "description": "Process state (e.g., new, closed)"
+        }
+      },
+      "required": [
+        "type",
+        "subject",
+        "description",
+        "createdAt",
+        "status"
+      ]
     }
   },
   "firestore": {
@@ -131,6 +178,10 @@
     "chats/{chatId}": {
       "schema": "ChatMessage",
       "description": "Instant messaging chat rooms"
+    },
+    "feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Direct user bug reports and feature requests"
     }
   }
 }

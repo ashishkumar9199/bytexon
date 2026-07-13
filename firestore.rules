@@ -45,5 +45,11 @@ service cloud.firestore {
       allow create, read: if true;
       allow update, delete: if false;
     }
+
+    // Feedback collection holds user bug reports and feature requests
+    match /feedback/{feedbackId} {
+      allow create: if true;
+      allow read, update, delete: if true;
+    }
   }
 }

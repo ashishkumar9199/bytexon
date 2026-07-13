@@ -14,6 +14,7 @@ import OurStacks from './components/OurStacks';
 import WorkProcess from './components/WorkProcess';
 import ProjectPlanner from './components/ProjectPlanner';
 import ContactUs from './components/ContactUs';
+import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
@@ -698,6 +699,9 @@ export default function App() {
        </motion.button>
      )}
    </AnimatePresence>
+
+   {/* Persistent Feedback Widget in Bottom-Left */}
+   <FeedbackWidget />
 
   </div>
   );
