@@ -7,6 +7,8 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 /* Custom scrollbar for modern chat interface */
 ::-webkit-scrollbar {
   width: 6px;

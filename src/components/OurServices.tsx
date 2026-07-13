@@ -153,15 +153,15 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
   const IconComponent = selectedService.icon;
 
   return (
-    <div className="min-h-screen bg-[#fbfbfd] text-slate-900 selection:bg-indigo-500/10 selection:text-indigo-900 pb-24">
+    <div className="min-h-screen bg-[#fbfbfd] dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500/10 selection:text-indigo-900 pb-24">
       
       {/* Sleek Minimalist Apple-style Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center space-y-4">
-        <span className="text-xs font-semibold text-indigo-600 tracking-widest uppercase">CORE CATALOG</span>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#1d1d1f]">
+        <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">CORE CATALOG</span>
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#1d1d1f] dark:text-white">
           Architected Software Services
         </h1>
-        <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           Bytexon translates intricate system requirements into polished, scale-ready digital products with optimized latency.
         </p>
       </section>
@@ -171,7 +171,7 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
         
         {/* Left Column - Service Selector list */}
         <div className="lg:col-span-4 space-y-4">
-          <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block pl-1">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block pl-1">
             Browse Services
           </span>
           <div className="flex flex-col gap-2.5">
@@ -185,22 +185,22 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
                   onClick={() => setSelectedId(service.id)}
                   className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center gap-4 cursor-pointer ${
                     isSelected 
-                      ? 'bg-white border-slate-200 shadow-sm' 
-                      : 'bg-transparent border-transparent hover:bg-slate-100/60'
+                      ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm' 
+                      : 'bg-transparent border-transparent hover:bg-slate-100/60 dark:hover:bg-slate-900/40'
                   }`}
                 >
                   <div className={`p-2.5 rounded-xl border shrink-0 transition-all ${
                     isSelected 
-                      ? 'bg-[#1d1d1f] border-[#1d1d1f] text-white' 
-                      : 'bg-[#f5f5f7] border-slate-200/50 text-slate-500'
+                      ? 'bg-[#1d1d1f] dark:bg-slate-850 border-[#1d1d1f] dark:border-slate-750 text-white' 
+                      : 'bg-[#f5f5f7] dark:bg-slate-900 border-slate-200/50 dark:border-slate-800 text-slate-500 dark:text-slate-400'
                   }`}>
                     <ServiceIcon className="w-4.5 h-4.5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-semibold text-[#1d1d1f] text-sm flex items-center justify-between">
+                    <div className="font-semibold text-[#1d1d1f] dark:text-slate-200 text-sm flex items-center justify-between">
                       <span>{service.title}</span>
                       <ChevronRight className={`w-3.5 h-3.5 transition-transform shrink-0 text-slate-400 ${
-                        isSelected ? 'translate-x-0.5 text-indigo-600' : ''
+                        isSelected ? 'translate-x-0.5 text-indigo-600 dark:text-cyan-450' : ''
                       }`} />
                     </div>
                   </div>
@@ -210,16 +210,16 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
           </div>
 
           {/* Quick Info Box */}
-          <div className="bg-[#f5f5f7] border border-black/[0.02] rounded-3xl p-6 space-y-4 mt-8">
-            <h4 className="font-bold text-sm text-[#1d1d1f]">
+          <div className="bg-[#f5f5f7] dark:bg-slate-900/50 border border-black/[0.02] dark:border-slate-850 rounded-3xl p-6 space-y-4 mt-8">
+            <h4 className="font-bold text-sm text-[#1d1d1f] dark:text-white">
               Need specialized systems?
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Our architects craft highly custom digital specifications matching unique corporate criteria. Calculate estimate directly.
             </p>
             <button
               onClick={onPlanProject}
-              className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
+              className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-white font-medium rounded-full text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
             >
               <span>Launch Project Planner</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -236,35 +236,35 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.18 }}
-              className="bg-white border border-slate-200/60 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8"
+              className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8"
             >
               {/* Header Section */}
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-slate-100">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-start gap-4">
-                  <div className="p-3.5 bg-indigo-50 border border-indigo-100 rounded-2xl text-indigo-600 shrink-0">
+                  <div className="p-3.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 shrink-0 rounded-2xl">
                     <IconComponent className="w-7 h-7" />
                   </div>
                   <div className="space-y-1">
-                    <h2 className="text-xl sm:text-2xl font-bold text-[#1d1d1f]">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#1d1d1f] dark:text-white">
                       {selectedService.title}
                     </h2>
-                    <p className="text-xs font-medium text-indigo-600">
+                    <p className="text-xs font-medium text-indigo-600 dark:text-cyan-450">
                       {selectedService.tagline}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex sm:flex-col gap-1.5 shrink-0">
-                  <div className="inline-flex items-center space-x-1 bg-slate-50 border border-slate-200/60 px-2.5 py-1 rounded-full text-slate-600 text-[10px] font-semibold">
+                  <div className="inline-flex items-center space-x-1 bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-750 px-2.5 py-1 rounded-full text-slate-600 dark:text-slate-350 text-[10px] font-semibold">
                     <Clock className="w-3 h-3 text-slate-400 mr-1" />
                     <span>{selectedService.duration}</span>
                   </div>
                   <div className={`inline-flex items-center justify-center space-x-1 px-2.5 py-1 border rounded-full text-[10px] font-semibold ${
                     selectedService.difficulty === 'Expert' 
-                      ? 'bg-rose-50 border-rose-100 text-rose-700'
+                      ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-100 dark:border-rose-900/50 text-rose-700 dark:text-rose-450'
                       : selectedService.difficulty === 'Advanced'
-                      ? 'bg-amber-50 border-amber-100 text-amber-700'
-                      : 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                      ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-100 dark:border-amber-900/50 text-amber-700 dark:text-amber-450'
+                      : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-100 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-450'
                   }`}>
                     <Cpu className="w-3 h-3 mr-1" />
                     <span>{selectedService.difficulty}</span>
@@ -274,24 +274,24 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
 
               {/* Long Description */}
               <div className="space-y-2.5">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block">
                   Service Description
                 </span>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed">
                   {selectedService.longDesc}
                 </p>
               </div>
 
               {/* Technologies Included */}
               <div className="space-y-3">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block">
                   Integrated Technologies
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedService.techStack.map((tech) => (
                     <span 
                       key={tech} 
-                      className="px-3 py-1 bg-slate-50 border border-slate-200/50 text-slate-600 text-xs rounded-full hover:bg-slate-100 transition-colors"
+                      className="px-3 py-1 bg-slate-50 dark:bg-slate-850 border border-slate-200/50 dark:border-slate-750 text-slate-600 dark:text-slate-300 text-xs rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     >
                       {tech}
                     </span>
@@ -301,16 +301,16 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
 
               {/* High-Level Deliverables */}
               <div className="space-y-3">
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block">
                   Standard Deliverables
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {selectedService.deliverables.map((item, index) => (
                     <div 
                       key={index} 
-                      className="flex items-start gap-2.5 bg-slate-50 border border-slate-200/30 rounded-2xl p-3.5 text-xs text-slate-600"
+                      className="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-850 border border-slate-200/30 dark:border-slate-750 rounded-2xl p-3.5 text-xs text-slate-600 dark:text-slate-300"
                     >
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-450 shrink-0 mt-0.5" />
                       <span className="leading-relaxed">{item}</span>
                     </div>
                   ))}
@@ -318,17 +318,17 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
               </div>
 
               {/* Architecture Blueprint Section */}
-              <div className="pt-6 border-t border-slate-100 space-y-4">
+              <div className="pt-6 border-t border-slate-100 dark:border-slate-800 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block">
                     Architectural Blueprint
                   </span>
-                  <span className="text-[9px] font-mono font-bold bg-pink-50 text-pink-600 border border-pink-100/80 px-2 py-0.5 rounded-full">
+                  <span className="text-[9px] font-mono font-bold bg-pink-50 dark:bg-pink-950/40 text-pink-600 dark:text-pink-400 border border-pink-100/80 dark:border-pink-900/50 px-2 py-0.5 rounded-full">
                     LIVE DATA FLOW
                   </span>
                 </div>
 
-                <div className="bg-[#1d1d1f] rounded-2xl p-5 text-slate-300 space-y-4 overflow-x-auto border border-black/10 select-none font-sans text-xs">
+                <div className="bg-[#1d1d1f] dark:bg-slate-950 rounded-2xl p-5 text-slate-300 space-y-4 overflow-x-auto border border-black/10 dark:border-slate-850 select-none font-sans text-xs">
                   {/* Layer 1: Client Ingress */}
                   <div className="flex items-center justify-between bg-white/[0.03] p-3 border border-white/[0.05] rounded-xl hover:bg-white/[0.06] transition-all group">
                     <span className="text-indigo-400 font-semibold tracking-wider uppercase text-[10px]">Client Source</span>
@@ -377,13 +377,13 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
               </div>
 
               {/* Action Area */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 gap-4 bg-slate-50 -mx-6 -mb-6 p-6 rounded-b-3xl mt-4">
-                <div className="text-xs text-slate-500 text-center sm:text-left leading-relaxed max-w-sm">
+              <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800 gap-4 bg-slate-50 dark:bg-slate-850/50 -mx-6 -mb-6 p-6 rounded-b-3xl mt-4">
+                <div className="text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left leading-relaxed max-w-sm">
                   Ready to map this architectural blueprint to your budget? Access our interactive planner to secure pricing.
                 </div>
                 <button
                   onClick={onPlanProject}
-                  className="w-full sm:w-auto shrink-0 py-2.5 px-5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-full text-xs transition-all cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto shrink-0 py-2.5 px-5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 font-semibold rounded-full text-xs transition-all cursor-pointer shadow-sm"
                 >
                   <span>Launch Project Planner</span>
                 </button>

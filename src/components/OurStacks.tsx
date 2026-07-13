@@ -136,33 +136,33 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
   const selectedBlueprint = BLUEPRINTS.find(b => b.id === selectedBlueprintId) || BLUEPRINTS[0];
 
   return (
-    <div className="min-h-screen bg-[#fbfbfd] text-slate-900 selection:bg-indigo-500/10 selection:text-indigo-900 pb-24">
+    <div className="min-h-screen bg-[#fbfbfd] dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500/10 selection:text-indigo-900 pb-24">
       
       {/* Premium Apple-style Header Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center space-y-4">
-        <span className="text-xs font-semibold text-indigo-600 tracking-widest uppercase">STABLE STANDARDS</span>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#1d1d1f]">
+        <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">STABLE STANDARDS</span>
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#1d1d1f] dark:text-white">
           Verified Technology Stacks
         </h1>
-        <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           We construct modular full-stack solutions avoiding brittle dependencies, relying only on industry-tested compilers and storage networks.
         </p>
       </section>
 
       {/* Blueprint Matcher Board */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white border border-slate-200/60 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/85 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
           
-          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-6 gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-6 gap-4">
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-indigo-600 tracking-widest uppercase">System Orchestration</span>
-              <h2 className="text-xl sm:text-2xl font-bold text-[#1d1d1f]">
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">System Orchestration</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1d1d1f] dark:text-white">
                 Architectural Blueprint Matcher
               </h2>
             </div>
             
             {/* Elegant Selector Pill Buttons */}
-            <div className="flex flex-wrap gap-1.5 bg-slate-100/80 p-1 rounded-2xl border border-black/[0.03]">
+            <div className="flex flex-wrap gap-1.5 bg-slate-100/80 dark:bg-slate-800/85 p-1 rounded-2xl border border-black/[0.03] dark:border-slate-750">
               {BLUEPRINTS.map((bp) => {
                 const isSelected = bp.id === selectedBlueprintId;
                 return (
@@ -171,8 +171,8 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
                     onClick={() => setSelectedBlueprintId(bp.id)}
                     className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-white text-slate-900 shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800'
+                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white'
                     }`}
                   >
                     {bp.name.split(' ')[0]}
@@ -195,35 +195,35 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
               <div className="lg:col-span-5 space-y-6 flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-[#1d1d1f]">
+                    <h3 className="text-lg font-bold text-[#1d1d1f] dark:text-white">
                       {selectedBlueprint.name}
                     </h3>
-                    <div className="inline-flex bg-indigo-50/50 border border-indigo-100/50 px-3 py-1 rounded-full text-indigo-600 text-xs font-medium">
+                    <div className="inline-flex bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/50 px-3 py-1 rounded-full text-indigo-600 dark:text-cyan-450 text-xs font-medium">
                       {selectedBlueprint.tagline}
                     </div>
                   </div>
 
-                  <p className="text-slate-500 text-sm leading-relaxed">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
                     {selectedBlueprint.description}
                   </p>
                 </div>
 
                 <div className="space-y-4 pt-4">
-                  <div className="p-4 bg-emerald-50/40 border border-emerald-100/50 rounded-2xl space-y-2">
-                    <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase block">
+                  <div className="p-4 bg-emerald-50/40 dark:bg-emerald-950/20 border border-emerald-100/50 dark:border-emerald-900/40 rounded-2xl space-y-2">
+                    <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-400 tracking-wider uppercase block">
                       Scalability Target
                     </span>
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-                      <span className="text-xs font-bold text-slate-800">{selectedBlueprint.idealScale}</span>
+                      <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-450 shrink-0" />
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{selectedBlueprint.idealScale}</span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase block">
                       Lead Architect Assessment
                     </span>
-                    <p className="text-xs text-slate-600 italic leading-relaxed border-l-2 border-slate-300 pl-4 bg-[#f5f5f7]/60 p-3.5 rounded-r-2xl">
+                    <p className="text-xs text-slate-600 dark:text-slate-350 italic leading-relaxed border-l-2 border-slate-300 dark:border-slate-750 pl-4 bg-[#f5f5f7]/60 dark:bg-slate-950/40 p-3.5 rounded-r-2xl">
                       "{selectedBlueprint.architectJustification}"
                     </p>
                   </div>
@@ -231,21 +231,21 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
               </div>
 
               {/* Resolved Stack Diagram Right Column */}
-              <div className="lg:col-span-7 bg-[#f5f5f7]/60 border border-black/[0.02] rounded-3xl p-5 sm:p-6 space-y-6 flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-[#f5f5f7]/60 dark:bg-slate-950/50 border border-black/[0.02] dark:border-slate-800 rounded-3xl p-5 sm:p-6 space-y-6 flex flex-col justify-between">
                 <div className="space-y-5">
-                  <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase flex items-center gap-2 border-b border-slate-200/50 pb-2.5">
-                    <Layers className="w-4 h-4 text-indigo-600" />
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800 pb-2.5">
+                    <Layers className="w-4 h-4 text-indigo-600 dark:text-cyan-450" />
                     <span>RESOLVED HARDWARE TIER ARCHITECTURE</span>
                   </span>
 
                   <div className="space-y-4">
                     {/* Frontend Tier */}
                     <div className="space-y-1.5">
-                      <span className="text-[9px] font-bold text-slate-400 block tracking-wider">FRONTEND TIER</span>
+                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">FRONTEND TIER</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedBlueprint.techChoices.frontend.map(tech => (
-                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200/60 text-slate-700 text-xs rounded-full cursor-default">
-                            <Code2 className="w-3.5 h-3.5 text-indigo-500" />
+                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs rounded-full cursor-default">
+                            <Code2 className="w-3.5 h-3.5 text-indigo-500 dark:text-cyan-455" />
                             <span>{tech}</span>
                           </span>
                         ))}
@@ -254,10 +254,10 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
 
                     {/* Backend Tier */}
                     <div className="space-y-1.5">
-                      <span className="text-[9px] font-bold text-slate-400 block tracking-wider">BACKEND PIPELINE</span>
+                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">BACKEND PIPELINE</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedBlueprint.techChoices.backend.map(tech => (
-                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200/60 text-slate-700 text-xs rounded-full cursor-default">
+                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs rounded-full cursor-default">
                             <Cpu className="w-3.5 h-3.5 text-cyan-500" />
                             <span>{tech}</span>
                           </span>
@@ -267,10 +267,10 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
 
                     {/* Database Tier */}
                     <div className="space-y-1.5">
-                      <span className="text-[9px] font-bold text-slate-400 block tracking-wider">DATABASE STORAGE</span>
+                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">DATABASE STORAGE</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedBlueprint.techChoices.database.map(tech => (
-                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200/60 text-slate-700 text-xs rounded-full cursor-default">
+                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs rounded-full cursor-default">
                             <Database className="w-3.5 h-3.5 text-amber-500" />
                             <span>{tech}</span>
                           </span>
@@ -280,10 +280,10 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
 
                     {/* Infrastructure Tier */}
                     <div className="space-y-1.5">
-                      <span className="text-[9px] font-bold text-slate-400 block tracking-wider">CONTAINER CLOUD INFRASTRUCTURE</span>
+                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">CONTAINER CLOUD INFRASTRUCTURE</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedBlueprint.techChoices.infra.map(tech => (
-                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200/60 text-slate-700 text-xs rounded-full cursor-default">
+                          <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs rounded-full cursor-default">
                             <Cloud className="w-3.5 h-3.5 text-emerald-500" />
                             <span>{tech}</span>
                           </span>
@@ -294,10 +294,10 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
                     {/* AI Tier (Optional) */}
                     {selectedBlueprint.techChoices.ai && (
                       <div className="space-y-1.5">
-                        <span className="text-[9px] font-bold text-slate-400 block tracking-wider">COGNITIVE INTEGRATION</span>
+                        <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">COGNITIVE INTEGRATION</span>
                         <div className="flex flex-wrap gap-1.5">
                           {selectedBlueprint.techChoices.ai.map(tech => (
-                            <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 border border-purple-100 text-purple-700 text-xs rounded-full cursor-default">
+                            <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/50 text-purple-700 dark:text-purple-300 text-xs rounded-full cursor-default">
                               <Sparkles className="w-3.5 h-3.5 text-purple-500" />
                               <span>{tech}</span>
                             </span>
@@ -309,13 +309,13 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
                 </div>
 
                 {/* Final Cta */}
-                <div className="pt-5 border-t border-slate-200/60 flex items-center justify-between">
-                  <span className="text-xs text-slate-500">
+                <div className="pt-5 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     Ready to build this architecture?
                   </span>
                   <button
                     onClick={onPlanProject}
-                    className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-full text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    className="py-2 px-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 font-semibold rounded-full text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     <span>Use Blueprint</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -329,24 +329,24 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
 
       {/* Tech Catalog Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-200/60 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-200/60 dark:border-slate-800 pb-5">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-indigo-600 tracking-widest uppercase">Verified Catalog</span>
-            <h2 className="text-2xl font-bold text-[#1d1d1f]">
+            <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">Verified Catalog</span>
+            <h2 className="text-2xl font-bold text-[#1d1d1f] dark:text-white">
               Bytexon Standard Modules
             </h2>
           </div>
 
           {/* Filter Categories */}
-          <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-2xl border border-black/[0.03]">
+          <div className="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-black/[0.03] dark:border-slate-750">
             {(['all', 'frontend', 'backend', 'database', 'infra', 'ai'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                   activeCategory === cat
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-855 dark:hover:text-white'
                 }`}
               >
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -363,23 +363,23 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
             return (
               <div 
                 key={tech.name} 
-                className="bg-white border border-slate-250/60 rounded-3xl p-6 space-y-4 hover:border-indigo-500 hover:shadow-sm transition-all duration-300 relative"
+                className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 space-y-4 hover:border-indigo-500 dark:hover:border-cyan-400 hover:shadow-sm transition-all duration-300 relative"
               >
                 {/* Visual badge top right */}
-                <div className="absolute top-5 right-5 text-[9px] font-semibold bg-slate-50 border border-slate-200/50 px-2 py-0.5 rounded-full text-slate-500">
+                <div className="absolute top-5 right-5 text-[9px] font-semibold bg-slate-50 dark:bg-slate-850 border border-slate-200/50 dark:border-slate-750 px-2 py-0.5 rounded-full text-slate-500 dark:text-slate-450">
                   {tech.badge}
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-indigo-500 tracking-wider uppercase block">
+                  <span className="text-[10px] font-bold text-indigo-500 dark:text-cyan-450 tracking-wider uppercase block">
                     {displayCat}
                   </span>
-                  <h3 className="text-base font-bold text-[#1d1d1f]">
+                  <h3 className="text-base font-bold text-[#1d1d1f] dark:text-white">
                     {tech.name}
                   </h3>
                 </div>
 
-                <p className="text-slate-500 text-xs leading-relaxed">
+                <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
                   {tech.desc}
                 </p>
               </div>

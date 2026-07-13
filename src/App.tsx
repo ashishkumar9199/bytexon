@@ -16,7 +16,7 @@ import ProjectPlanner from './components/ProjectPlanner';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Laptop } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Laptop, Sun, Moon } from 'lucide-react';
 
 export default function App() {
  const [showIntro, setShowIntro] = useState<boolean>(() => {
@@ -29,6 +29,40 @@ export default function App() {
  const [activeRequestId, setActiveRequestId] = useState<string>('');
  const [adminConfig, setAdminConfig] = useState<AdminConfig>(DEFAULT_CONFIG);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+ const [showScrollTop, setShowScrollTop] = useState(false);
+ const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+   return (localStorage.getItem('bytexon_theme') as 'light' | 'dark') || 'light';
+ });
+
+ // Apply theme class to document element
+ useEffect(() => {
+   if (theme === 'dark') {
+     document.documentElement.classList.add('dark');
+   } else {
+     document.documentElement.classList.remove('dark');
+   }
+   localStorage.setItem('bytexon_theme', theme);
+ }, [theme]);
+
+ // Scroll listener to toggle visibility of scroll to top button
+ useEffect(() => {
+   const handleScroll = () => {
+     if (window.scrollY > 400) {
+       setShowScrollTop(true);
+     } else {
+       setShowScrollTop(false);
+     }
+   };
+   window.addEventListener('scroll', handleScroll, { passive: true });
+   return () => window.removeEventListener('scroll', handleScroll);
+ }, []);
+
+ const scrollToTop = () => {
+   window.scrollTo({
+     top: 0,
+     behavior: 'smooth'
+   });
+ };
  
  // Admin Login Inputs
  const [loginUsername, setLoginUsername] = useState('');
@@ -215,11 +249,11 @@ export default function App() {
   }, [isAdminLoggedIn, adminConfig]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 antialiased selection:bg-indigo-500/10 selection:text-indigo-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500/10 selection:text-indigo-900">
       
       {/* Premium Apple-inspired Sticky Top Header */}
       {!view.startsWith('admin') && (
-        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 border-b border-slate-200/40 select-none transition-all">
+        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 dark:bg-slate-950/80 border-b border-slate-200/40 dark:border-slate-800/80 select-none transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             {/* Logo */}
             <div 
@@ -229,41 +263,41 @@ export default function App() {
               }}
               className="cursor-pointer flex items-center hover:opacity-85 transition-opacity"
             >
-              <BytexonLogo showText={true} theme="light" height={28} />
+              <BytexonLogo showText={true} theme={theme} height={28} />
             </div>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-8 text-[13px] font-medium text-slate-600">
+            <nav className="hidden md:flex items-center space-x-8 text-[13px] font-medium text-slate-600 dark:text-slate-350">
               <button 
                 onClick={() => {
                   setActiveRequestId('');
                   navigateTo('client-landing');
                 }}
-                className={`transition-colors hover:text-indigo-600 ${view === 'client-landing' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'client-landing' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Overview
               </button>
               <button 
                 onClick={() => navigateTo('our-services')}
-                className={`transition-colors hover:text-indigo-600 ${view === 'our-services' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'our-services' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Services
               </button>
               <button 
                 onClick={() => navigateTo('other-services')}
-                className={`transition-colors hover:text-indigo-600 ${view === 'other-services' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'other-services' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Other Services
               </button>
               <button 
                 onClick={() => navigateTo('our-stacks')}
-                className={`transition-colors hover:text-indigo-600 ${view === 'our-stacks' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'our-stacks' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Tech Stacks
               </button>
               <button 
                 onClick={() => navigateTo('work-process')}
-                className={`transition-colors hover:text-indigo-600 ${view === 'work-process' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'work-process' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Process
               </button>
@@ -271,7 +305,7 @@ export default function App() {
                 onClick={() => {
                   navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
-                className={`transition-colors hover:text-indigo-600 ${view === 'project-planner' ? 'text-slate-950 font-semibold' : ''}`}
+                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'project-planner' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
               >
                 Planner
               </button>
@@ -284,7 +318,7 @@ export default function App() {
                   onClick={() => {
                     navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
                   }}
-                  className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
+                  className="text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-350 dark:hover:text-cyan-400 transition-colors"
                 >
                   Track Project
                 </button>
@@ -293,27 +327,56 @@ export default function App() {
                 onClick={() => {
                   navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                 }}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
+                className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-white text-xs font-medium px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
               >
                 Start Workspace
               </button>
+              
+              {/* Theme Toggle Button */}
+              <button
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                aria-label="Toggle Theme"
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-4 h-4" />
+                ) : (
+                  <Sun className="w-4 h-4 text-cyan-400" />
+                )}
+              </button>
+
               <button
                 onClick={() => {
                   sessionStorage.removeItem('bytexon_intro_completed');
                   setShowIntro(true);
                 }}
-                className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                className="text-slate-400 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-colors p-1"
                 title="Replay 3D Intro Animation"
               >
                 <Laptop className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center space-x-3">
+            {/* Mobile Menu & Theme Actions */}
+            <div className="md:hidden flex items-center space-x-2">
+              {/* Theme Toggle Button */}
+              <button
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className="text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                aria-label="Toggle Theme"
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-4.5 h-4.5" />
+                ) : (
+                  <Sun className="w-4.5 h-4.5 text-cyan-400" />
+                )}
+              </button>
+
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-350 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -327,39 +390,39 @@ export default function App() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="md:hidden border-t border-slate-200/50 bg-white/95 backdrop-blur-lg overflow-hidden"
+                className="md:hidden border-t border-slate-200/50 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-lg overflow-hidden"
               >
-                <div className="px-5 py-4 space-y-3.5 flex flex-col text-sm font-medium text-slate-600">
+                <div className="px-5 py-4 space-y-3.5 flex flex-col text-sm font-medium text-slate-600 dark:text-slate-350">
                   <button 
                     onClick={() => {
                       setActiveRequestId('');
                       navigateTo('client-landing');
                     }}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'client-landing' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'client-landing' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Overview
                   </button>
                   <button 
                     onClick={() => navigateTo('our-services')}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'our-services' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'our-services' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Services
                   </button>
                   <button 
                     onClick={() => navigateTo('other-services')}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'other-services' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'other-services' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Other Services
                   </button>
                   <button 
                     onClick={() => navigateTo('our-stacks')}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'our-stacks' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'our-stacks' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Tech Stacks
                   </button>
                   <button 
                     onClick={() => navigateTo('work-process')}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'work-process' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'work-process' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Process
                   </button>
@@ -367,17 +430,17 @@ export default function App() {
                     onClick={() => {
                       navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                     }}
-                    className={`text-left py-1 hover:text-indigo-600 ${view === 'project-planner' ? 'text-indigo-600 font-semibold' : ''}`}
+                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'project-planner' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
                   >
                     Planner
                   </button>
-                  <div className="h-[1px] bg-slate-100 my-1" />
+                  <div className="h-[1px] bg-slate-100 dark:bg-slate-800 my-1" />
                   <div className="flex items-center justify-between pt-1">
                     <button
                       onClick={() => {
                         navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
                       }}
-                      className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
+                      className="text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-350 dark:hover:text-cyan-400 transition-colors"
                     >
                       Track Project
                     </button>
@@ -385,7 +448,7 @@ export default function App() {
                       onClick={() => {
                         navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
                       }}
-                      className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-full transition-all"
+                      className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-white text-xs font-medium px-4 py-2 rounded-full transition-all"
                     >
                       Start Workspace
                     </button>
@@ -586,6 +649,25 @@ export default function App() {
       </div>
     </footer>
   )}
+
+   {/* Floating Smooth Scroll to Top Button */}
+   <AnimatePresence>
+     {showScrollTop && (
+       <motion.button
+         initial={{ opacity: 0, scale: 0.8, y: 15 }}
+         animate={{ opacity: 1, scale: 1, y: 0 }}
+         exit={{ opacity: 0, scale: 0.8, y: 15 }}
+         transition={{ type: "spring", stiffness: 260, damping: 20 }}
+         onClick={scrollToTop}
+         id="scroll-to-top"
+         className="fixed bottom-6 right-6 z-50 p-3.5 bg-[#132B4F] hover:bg-[#00c2e8] text-white hover:text-slate-950 rounded-full shadow-2xl cursor-pointer transition-all duration-250 flex items-center justify-center border border-slate-700/20 group outline-none focus:ring-4 focus:ring-[#00c2e8]/30"
+         title="Scroll to Top"
+         aria-label="Scroll to Top"
+       >
+         <ArrowUp className="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5" />
+       </motion.button>
+     )}
+   </AnimatePresence>
 
   </div>
   );

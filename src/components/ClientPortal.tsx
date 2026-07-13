@@ -138,13 +138,135 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  };
 
  if (loading) {
- return (
- <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 bg-slate-50 text-slate-900">
- <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
- <p className="text-slate-500 font-mono text-xs ">Connecting to Secure Portal...</p>
- </div>
- );
- }
+	return (
+		<div className="max-w-7xl mx-auto px-6 py-8 font-sans text-slate-900 dark:text-slate-100 animate-pulse">
+			{/* Top Navigation Back Button Skeleton */}
+			<div className="flex items-center space-x-2 mb-6">
+				<div className="w-4 h-4 bg-slate-300 dark:bg-slate-700 rounded-full" />
+				<div className="w-28 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+			</div>
+
+			{/* Header Panel Skeleton */}
+			<div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 mb-6 rounded-3xl">
+				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+					<div className="space-y-3 flex-1">
+						<div className="flex items-center gap-2">
+							<div className="w-20 h-5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+							<div className="w-24 h-5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+						</div>
+						<div className="w-2/3 h-7 bg-slate-300 dark:bg-slate-700 rounded-lg" />
+						<div className="w-1/2 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+					</div>
+					
+					<div className="w-40 h-16 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl flex items-center space-x-3">
+						<div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-lg" />
+						<div className="space-y-2 flex-1">
+							<div className="w-16 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+						</div>
+					</div>
+				</div>
+
+				{/* Dynamic Progress Tracker Skeleton */}
+				<div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-6">
+					<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+						{[1, 2, 3, 4].map((step) => (
+							<div key={step} className="flex items-center space-x-2.5">
+								<div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-xl flex-shrink-0" />
+								<div className="space-y-2 flex-1 min-w-0">
+									<div className="w-20 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+									<div className="w-16 h-2.5 bg-slate-300 dark:bg-slate-700 rounded" />
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+
+			{/* Main Body Grid Skeleton */}
+			<div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+				{/* Left Column: Details (6 Columns) */}
+				<div className="lg:col-span-6 space-y-4">
+					{/* Status Alert Banner Skeleton */}
+					<div className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-5 rounded-3xl flex items-start space-x-3">
+						<div className="w-5 h-5 bg-slate-300 dark:bg-slate-700 rounded-full flex-shrink-0" />
+						<div className="space-y-2 flex-1">
+							<div className="w-32 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+						</div>
+					</div>
+
+					{/* Scope Details Card Skeleton */}
+					<div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-3xl space-y-5">
+						<div className="flex items-center space-x-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+							<div className="w-4 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-36 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+						</div>
+						
+						<div className="space-y-4">
+							<div className="space-y-2">
+								<div className="w-24 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-40 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+							</div>
+							<div className="space-y-2.5">
+								<div className="w-28 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 rounded-2xl">
+									<div className="w-full h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+									<div className="w-11/12 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+									<div className="w-4/5 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Right Column: Chat Panel (6 Columns) */}
+				<div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col h-[520px] overflow-hidden">
+					{/* Chat Header Skeleton */}
+					<div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40">
+						<div className="flex items-center space-x-3">
+							<div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-full" />
+							<div className="space-y-1.5">
+								<div className="w-28 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-16 h-2.5 bg-slate-300 dark:bg-slate-700 rounded" />
+							</div>
+						</div>
+						<div className="w-16 h-5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+					</div>
+
+					{/* Chat Messages Skeleton */}
+					<div className="flex-grow p-5 bg-slate-50/50 dark:bg-slate-950/10 space-y-4 overflow-y-auto">
+						<div className="flex justify-start">
+							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl space-y-2 w-48">
+								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-2/3 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							</div>
+						</div>
+						<div className="flex justify-end">
+							<div className="max-w-[70%] p-3 bg-slate-300 dark:bg-slate-700 rounded-2xl space-y-2 w-52">
+								<div className="w-full h-3 bg-slate-400 dark:bg-slate-600 rounded" />
+								<div className="w-1/2 h-3 bg-slate-400 dark:bg-slate-600 rounded" />
+							</div>
+						</div>
+						<div className="flex justify-start">
+							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl space-y-2 w-56">
+								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							</div>
+						</div>
+					</div>
+
+					{/* Chat Input Skeleton */}
+					<div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center space-x-3">
+						<div className="flex-grow h-10 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-850" />
+						<div className="w-10 h-10 bg-slate-300 dark:bg-slate-700 rounded-2xl flex-shrink-0" />
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
 
  if (error || !request) {
  return (

@@ -427,11 +427,27 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  {/* Scrollable list */}
  <div className="flex-grow overflow-y-auto space-y-2 pr-1">
  {loadingRequests ? (
- <div className="py-12 text-center text-slate-400 font-mono">
- <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
- <span className="text-xs">FETCHING ARCHIVE...</span>
- </div>
- ) : filteredRequests.length === 0 ? (
+		<div className="space-y-2.5 animate-pulse">
+			{[1, 2, 3, 4].map((i) => (
+				<div
+					key={i}
+					className="w-full p-3 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 rounded-xl flex flex-col space-y-2.5"
+				>
+					<div className="flex items-center justify-between w-full">
+						<div className="w-16 h-4 bg-slate-300 dark:bg-slate-700 rounded-md" />
+						<div className="w-16 h-4 bg-slate-300 dark:bg-slate-700 rounded-md" />
+					</div>
+					<div className="space-y-1.5">
+						<div className="w-2/3 h-4 bg-slate-300 dark:bg-slate-700 rounded-md" />
+						<div className="w-1/2 h-3 bg-slate-200 dark:bg-slate-800 rounded-md" />
+					</div>
+					<div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-800/50 mt-1">
+						<div className="w-14 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+						<div className="w-20 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+					</div>
+				</div>
+			))}
+		</div>) : filteredRequests.length === 0 ? (
  <div className="py-12 text-center text-slate-400 font-mono space-y-2">
  <Clock className="w-6 h-6 text-indigo-600 mx-auto mb-1" />
  <p className="font-bold text-xs text-slate-900">NO ARCHIVES FOUND</p>
