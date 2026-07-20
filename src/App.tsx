@@ -18,7 +18,7 @@ import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2 } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
 export default function App() {
@@ -74,6 +74,8 @@ export default function App() {
  const [loginError, setLoginError] = useState<string | null>(null);
  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
  const [isAdminSubmitting, setIsAdminSubmitting] = useState(false);
+ const [showLoginPassword, setShowLoginPassword] = useState(false);
+ const [shouldShakeAdmin, setShouldShakeAdmin] = useState(false);
 
  // Sync admin configuration in real-time
  useEffect(() => {
@@ -171,6 +173,8 @@ export default function App() {
    showToast('Admin session established successfully!', 'success', 'Admin Signed In');
    } else {
    setLoginError('Invalid administrator username or password credentials.');
+   setShouldShakeAdmin(true);
+   setTimeout(() => setShouldShakeAdmin(false), 500);
    showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
    }
    } else {
@@ -192,11 +196,15 @@ export default function App() {
    showToast('Admin session established successfully!', 'success', 'Admin Signed In');
    } else {
    setLoginError('Invalid administrator username or password credentials.');
+   setShouldShakeAdmin(true);
+   setTimeout(() => setShouldShakeAdmin(false), 500);
    showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
    }
    } catch (err) {
    console.error("Error verifying admin credentials:", err);
    setLoginError('An error occurred during authentication. Please verify your network.');
+   setShouldShakeAdmin(true);
+   setTimeout(() => setShouldShakeAdmin(false), 500);
    showToast('An error occurred during authentication.', 'error', 'Connection Error');
    }
    }
@@ -576,7 +584,7 @@ export default function App() {
 
  {/* 3. ADMIN PORTAL LOGIN */}
  {view === 'admin-login' && (
- <div className="max-w-sm mx-auto my-12 bg-white border border-slate-350 p-5 rounded-md shadow-sm relative overflow-hidden">
+ <div className={`max-w-sm mx-auto my-12 bg-white border border-slate-350 p-5 rounded-md shadow-sm relative overflow-hidden ${shouldShakeAdmin ? 'animate-shake' : ''}`}>
  <div className="absolute top-0 left-0 w-full h-1 bg-slate-900"></div>
 
  <div className="text-center space-y-1.5 mb-5">
@@ -608,14 +616,25 @@ export default function App() {
 
  <div>
  <label className="block text-slate-700 text-[10px] font-bold mb-1">Password Credentials</label>
+ <div className="relative">
  <input 
- type="password"
+ type={showLoginPassword ? 'text' : 'password'}
  required
  placeholder="e.g. admin123"
  value={loginPassword}
  onChange={(e) => setLoginPassword(e.target.value)}
- className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono"
+ className="w-full pl-2.5 pr-8 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono"
  />
+ <button
+ type="button"
+ id="btn-toggle-login-password-visibility"
+ onClick={() => setShowLoginPassword(!showLoginPassword)}
+ className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center justify-center focus:outline-none"
+ title={showLoginPassword ? 'Hide password' : 'Show password'}
+ >
+ {showLoginPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+ </button>
+ </div>
  </div>
 
  <button
