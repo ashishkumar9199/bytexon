@@ -218,6 +218,12 @@ export default function App() {
    }
  };
 
+ if (username === 'admin' && password === 'admin123') {
+   setIsAdminSubmitting(false);
+   handleLoginFailure('Default credentials (admin/admin123) are permanently deactivated for security.');
+   return;
+ }
+
  try {
    if (!adminConfig.customAuthActive) {
    // Default config active using environment variables
