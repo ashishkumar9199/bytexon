@@ -38,8 +38,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
 
  // Settings Forms
  const [settingsForm, setSettingsForm] = useState({
- username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || 'admin',
- password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || 'admin123',
+ username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || '',
+ password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || '',
  upiId: adminConfig.upiId,
  adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
  starterPrice: adminConfig.standardPricing?.starter ?? 15000,
@@ -53,8 +53,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  // Sync form when parent adminConfig is loaded/updated
  useEffect(() => {
  setSettingsForm({
- username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || 'admin',
- password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || 'admin123',
+ username: sessionStorage.getItem('admin_username') || adminConfig.adminUsername || '',
+ password: sessionStorage.getItem('admin_password') || adminConfig.adminPassword || '',
  upiId: adminConfig.upiId,
  adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
  starterPrice: adminConfig.standardPricing?.starter ?? 15000,

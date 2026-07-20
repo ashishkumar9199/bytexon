@@ -77,6 +77,37 @@ export default function App() {
  const [showLoginPassword, setShowLoginPassword] = useState(false);
  const [shouldShakeAdmin, setShouldShakeAdmin] = useState(false);
 
+ // Rate limiter state
+ const [failedAttempts, setFailedAttempts] = useState<number>(() => {
+   return Number(localStorage.getItem('admin_failed_attempts') || 0);
+ });
+ const [lockoutUntil, setLockoutUntil] = useState<number>(() => {
+   return Number(localStorage.getItem('admin_lockout_until') || 0);
+ });
+ const [lockoutCountdown, setLockoutCountdown] = useState<number>(0);
+
+ // Countdown timer for rate limiting lockout
+ useEffect(() => {
+   if (!lockoutUntil || lockoutUntil <= Date.now()) {
+     setLockoutCountdown(0);
+     return;
+   }
+
+   const updateCountdown = () => {
+     const remaining = Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
+     setLockoutCountdown(remaining);
+     if (remaining === 0) {
+       clearInterval(interval);
+     }
+   };
+
+   updateCountdown();
+   const interval = setInterval(updateCountdown, 1000);
+   return () => clearInterval(interval);
+ }, [lockoutUntil]);
+
+ const isEnvCredentialsMissing = !adminConfig.customAuthActive && (!import.meta.env.VITE_ADMIN_USERNAME || !import.meta.env.VITE_ADMIN_PASSWORD);
+
  // Sync admin configuration in real-time
  useEffect(() => {
  // Initial fetch and setup
@@ -151,19 +182,55 @@ export default function App() {
  // Admin Login form submit
  const handleAdminLogin = async (e: React.FormEvent) => {
  e.preventDefault();
+
+ if (lockoutCountdown > 0) {
+   setLoginError(`Too many failed attempts. Locked out for ${lockoutCountdown} more seconds.`);
+   return;
+ }
+
  setLoginError(null);
  setIsAdminSubmitting(true);
 
  const username = loginUsername.trim();
  const password = loginPassword.trim();
 
+ const handleLoginFailure = (customMsg?: string) => {
+   const nextAttempts = failedAttempts + 1;
+   setFailedAttempts(nextAttempts);
+   localStorage.setItem('admin_failed_attempts', String(nextAttempts));
+
+   setShouldShakeAdmin(true);
+   setTimeout(() => setShouldShakeAdmin(false), 500);
+
+   if (nextAttempts >= 5) {
+     const unlockTime = Date.now() + 60000;
+     setLockoutUntil(unlockTime);
+     localStorage.setItem('admin_lockout_until', String(unlockTime));
+     setFailedAttempts(0);
+     localStorage.setItem('admin_failed_attempts', '0');
+
+     setLoginError('Too many failed attempts. Access locked for 60 seconds.');
+     showToast('Brute-force protection activated. Form locked for 60 seconds.', 'error', 'Security Lockout');
+   } else {
+     const remaining = 5 - nextAttempts;
+     setLoginError(customMsg || `Invalid administrator username or password credentials. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
+     showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
+   }
+ };
+
  try {
    if (!adminConfig.customAuthActive) {
-   // Default config active
-   if (username === 'admin' && password === 'admin123') {
+   // Default config active using environment variables
+   const allowedUser = import.meta.env.VITE_ADMIN_USERNAME;
+   const allowedPass = import.meta.env.VITE_ADMIN_PASSWORD;
+   if (allowedUser && allowedPass && username === allowedUser && password === allowedPass) {
    const hash = await sha256(`${username}:${password}`);
    const token = `auth_${hash}`;
    setIsAdminLoggedIn(true);
+   localStorage.removeItem('admin_failed_attempts');
+   localStorage.removeItem('admin_lockout_until');
+   setFailedAttempts(0);
+   setLockoutUntil(0);
    sessionStorage.setItem('admin_token', token);
    sessionStorage.setItem('admin_username', username);
    sessionStorage.setItem('admin_password', password);
@@ -172,10 +239,7 @@ export default function App() {
    setLoginPassword('');
    showToast('Admin session established successfully!', 'success', 'Admin Signed In');
    } else {
-   setLoginError('Invalid administrator username or password credentials.');
-   setShouldShakeAdmin(true);
-   setTimeout(() => setShouldShakeAdmin(false), 500);
-   showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
+   handleLoginFailure();
    }
    } else {
    // Custom config active, check auth_XXX doc in firestore
@@ -187,6 +251,10 @@ export default function App() {
 
    if (authDocSnap.exists() && authDocSnap.data()?.authorized !== false) {
    setIsAdminLoggedIn(true);
+   localStorage.removeItem('admin_failed_attempts');
+   localStorage.removeItem('admin_lockout_until');
+   setFailedAttempts(0);
+   setLockoutUntil(0);
    sessionStorage.setItem('admin_token', token);
    sessionStorage.setItem('admin_username', username);
    sessionStorage.setItem('admin_password', password);
@@ -195,17 +263,11 @@ export default function App() {
    setLoginPassword('');
    showToast('Admin session established successfully!', 'success', 'Admin Signed In');
    } else {
-   setLoginError('Invalid administrator username or password credentials.');
-   setShouldShakeAdmin(true);
-   setTimeout(() => setShouldShakeAdmin(false), 500);
-   showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
+   handleLoginFailure();
    }
    } catch (err) {
    console.error("Error verifying admin credentials:", err);
-   setLoginError('An error occurred during authentication. Please verify your network.');
-   setShouldShakeAdmin(true);
-   setTimeout(() => setShouldShakeAdmin(false), 500);
-   showToast('An error occurred during authentication.', 'error', 'Connection Error');
+   handleLoginFailure('An error occurred during authentication. Please verify your network.');
    }
    }
  } finally {
@@ -596,6 +658,12 @@ export default function App() {
  </div>
 
  <form onSubmit={handleAdminLogin} className="space-y-3">
+ {isEnvCredentialsMissing && (
+ <div className="mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded text-[10px] text-amber-800 leading-relaxed font-medium">
+ ⚠️ <span className="font-bold">Security Action Required:</span> Default credentials have been fully removed. Please configure the <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_USERNAME</code> and <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_PASSWORD</code> environment variables to establish secure access.
+ </div>
+ )}
+
  {loginError && (
  <p className="text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 p-2 rounded-sm">
  {loginError}
@@ -607,10 +675,11 @@ export default function App() {
  <input 
  type="text"
  required
- placeholder="e.g. admin"
+ disabled={lockoutCountdown > 0}
+ placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your username"}
  value={loginUsername}
  onChange={(e) => setLoginUsername(e.target.value)}
- className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium"
+ className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium disabled:opacity-60 disabled:cursor-not-allowed"
  />
  </div>
 
@@ -620,16 +689,18 @@ export default function App() {
  <input 
  type={showLoginPassword ? 'text' : 'password'}
  required
- placeholder="e.g. admin123"
+ disabled={lockoutCountdown > 0}
+ placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your password"}
  value={loginPassword}
  onChange={(e) => setLoginPassword(e.target.value)}
- className="w-full pl-2.5 pr-8 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono"
+ className="w-full pl-2.5 pr-8 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono disabled:opacity-60 disabled:cursor-not-allowed"
  />
  <button
  type="button"
  id="btn-toggle-login-password-visibility"
+ disabled={lockoutCountdown > 0}
  onClick={() => setShowLoginPassword(!showLoginPassword)}
- className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center justify-center focus:outline-none"
+ className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center justify-center focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
  title={showLoginPassword ? 'Hide password' : 'Show password'}
  >
  {showLoginPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -640,10 +711,15 @@ export default function App() {
  <button
  type="submit"
  id="btn-submit-login"
- disabled={isAdminSubmitting}
+ disabled={isAdminSubmitting || lockoutCountdown > 0 || isEnvCredentialsMissing}
  className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
  >
- {isAdminSubmitting ? (
+ {lockoutCountdown > 0 ? (
+   <>
+     <Shield className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+     <span>Locked Out ({lockoutCountdown}s)</span>
+   </>
+ ) : isAdminSubmitting ? (
    <>
      <Loader2 className="w-3.5 h-3.5 animate-spin" />
      <span>Authenticating...</span>
@@ -656,16 +732,7 @@ export default function App() {
  )}
  </button>
 
- {!adminConfig.customAuthActive && (
- <div className="pt-2 border-t border-slate-200 flex flex-col space-y-1 text-[9px] text-indigo-600 font-semibold leading-relaxed bg-indigo-50/40 p-2 rounded-sm border border-indigo-100">
- <p>⚠️ Default configuration is active:</p>
- <div className="flex justify-between font-mono font-bold text-slate-700">
- <span>User: admin</span>
- <span>Pass: admin123</span>
- </div>
- <p className="text-[8px] text-slate-400 font-normal">Change this in "System & Billing Config" settings after signing in.</p>
- </div>
- )}
+
  </form>
  </div>
  )}
