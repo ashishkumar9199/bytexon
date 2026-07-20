@@ -18,7 +18,7 @@ import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import LaptopIntro from './components/LaptopIntro';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2 } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
 export default function App() {
@@ -73,6 +73,7 @@ export default function App() {
  const [loginPassword, setLoginPassword] = useState('');
  const [loginError, setLoginError] = useState<string | null>(null);
  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+ const [isAdminSubmitting, setIsAdminSubmitting] = useState(false);
 
  // Sync admin configuration in real-time
  useEffect(() => {
@@ -149,53 +150,58 @@ export default function App() {
  const handleAdminLogin = async (e: React.FormEvent) => {
  e.preventDefault();
  setLoginError(null);
+ setIsAdminSubmitting(true);
 
  const username = loginUsername.trim();
  const password = loginPassword.trim();
 
- if (!adminConfig.customAuthActive) {
- // Default config active
- if (username === 'admin' && password === 'admin123') {
- const hash = await sha256(`${username}:${password}`);
- const token = `auth_${hash}`;
- setIsAdminLoggedIn(true);
- sessionStorage.setItem('admin_token', token);
- sessionStorage.setItem('admin_username', username);
- sessionStorage.setItem('admin_password', password);
- setView('admin-dashboard');
- setLoginUsername('');
- setLoginPassword('');
- showToast('Admin session established successfully!', 'success', 'Admin Signed In');
- } else {
- setLoginError('Invalid administrator username or password credentials.');
- showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
- }
- } else {
- // Custom config active, check auth_XXX doc in firestore
  try {
- const hash = await sha256(`${username}:${password}`);
- const token = `auth_${hash}`;
- const authDocRef = doc(db, 'config', token);
- const authDocSnap = await getDoc(authDocRef);
+   if (!adminConfig.customAuthActive) {
+   // Default config active
+   if (username === 'admin' && password === 'admin123') {
+   const hash = await sha256(`${username}:${password}`);
+   const token = `auth_${hash}`;
+   setIsAdminLoggedIn(true);
+   sessionStorage.setItem('admin_token', token);
+   sessionStorage.setItem('admin_username', username);
+   sessionStorage.setItem('admin_password', password);
+   setView('admin-dashboard');
+   setLoginUsername('');
+   setLoginPassword('');
+   showToast('Admin session established successfully!', 'success', 'Admin Signed In');
+   } else {
+   setLoginError('Invalid administrator username or password credentials.');
+   showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
+   }
+   } else {
+   // Custom config active, check auth_XXX doc in firestore
+   try {
+   const hash = await sha256(`${username}:${password}`);
+   const token = `auth_${hash}`;
+   const authDocRef = doc(db, 'config', token);
+   const authDocSnap = await getDoc(authDocRef);
 
- if (authDocSnap.exists() && authDocSnap.data()?.authorized !== false) {
- setIsAdminLoggedIn(true);
- sessionStorage.setItem('admin_token', token);
- sessionStorage.setItem('admin_username', username);
- sessionStorage.setItem('admin_password', password);
- setView('admin-dashboard');
- setLoginUsername('');
- setLoginPassword('');
- showToast('Admin session established successfully!', 'success', 'Admin Signed In');
- } else {
- setLoginError('Invalid administrator username or password credentials.');
- showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
- }
- } catch (err) {
- console.error("Error verifying admin credentials:", err);
- setLoginError('An error occurred during authentication. Please verify your network.');
- showToast('An error occurred during authentication.', 'error', 'Connection Error');
- }
+   if (authDocSnap.exists() && authDocSnap.data()?.authorized !== false) {
+   setIsAdminLoggedIn(true);
+   sessionStorage.setItem('admin_token', token);
+   sessionStorage.setItem('admin_username', username);
+   sessionStorage.setItem('admin_password', password);
+   setView('admin-dashboard');
+   setLoginUsername('');
+   setLoginPassword('');
+   showToast('Admin session established successfully!', 'success', 'Admin Signed In');
+   } else {
+   setLoginError('Invalid administrator username or password credentials.');
+   showToast('Authentication failed. Please verify credentials.', 'error', 'Login Failed');
+   }
+   } catch (err) {
+   console.error("Error verifying admin credentials:", err);
+   setLoginError('An error occurred during authentication. Please verify your network.');
+   showToast('An error occurred during authentication.', 'error', 'Connection Error');
+   }
+   }
+ } finally {
+   setIsAdminSubmitting(false);
  }
  };
 
@@ -615,10 +621,20 @@ export default function App() {
  <button
  type="submit"
  id="btn-submit-login"
- className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1 cursor-pointer border border-slate-800"
+ disabled={isAdminSubmitting}
+ className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
  >
- <span>Sign In Securely</span>
- <ArrowRight className="w-3.5 h-3.5" />
+ {isAdminSubmitting ? (
+   <>
+     <Loader2 className="w-3.5 h-3.5 animate-spin" />
+     <span>Authenticating...</span>
+   </>
+ ) : (
+   <>
+     <span>Sign In Securely</span>
+     <ArrowRight className="w-3.5 h-3.5" />
+   </>
+ )}
  </button>
 
  {!adminConfig.customAuthActive && (
