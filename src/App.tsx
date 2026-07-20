@@ -17,8 +17,8 @@ import ContactUs from './components/ContactUs';
 import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
-import LaptopIntro from './components/LaptopIntro';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff } from 'lucide-react';
+import { verifyTotp } from './lib/totpHelper';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff, Key, QrCode } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
 export default function App() {
@@ -85,6 +85,11 @@ export default function App() {
    return Number(localStorage.getItem('admin_lockout_until') || 0);
  });
  const [lockoutCountdown, setLockoutCountdown] = useState<number>(0);
+
+ // TOTP Challenge login state
+ const [showTotpChallenge, setShowTotpChallenge] = useState(false);
+ const [pendingAuth, setPendingAuth] = useState<{ token: string; username: string; password: string; secret: string } | null>(null);
+ const [totpInputCode, setTotpInputCode] = useState('');
 
  // Countdown timer for rate limiting lockout
  useEffect(() => {
@@ -179,21 +184,7 @@ export default function App() {
  // Local state will update via the onSnapshot listener
  };
 
- // Admin Login form submit
- const handleAdminLogin = async (e: React.FormEvent) => {
- e.preventDefault();
-
- if (lockoutCountdown > 0) {
-   setLoginError(`Too many failed attempts. Locked out for ${lockoutCountdown} more seconds.`);
-   return;
- }
-
- setLoginError(null);
- setIsAdminSubmitting(true);
-
- const username = loginUsername.trim();
- const password = loginPassword.trim();
-
+ // Shared handler for failed administration authentication attempts
  const handleLoginFailure = (customMsg?: string) => {
    const nextAttempts = failedAttempts + 1;
    setFailedAttempts(nextAttempts);
@@ -218,6 +209,65 @@ export default function App() {
    }
  };
 
+ // Verify TOTP 2FA challenge code
+ const handleVerifyTotpChallenge = async (e: React.FormEvent) => {
+   e.preventDefault();
+   if (!pendingAuth) return;
+
+   if (lockoutCountdown > 0) {
+     setLoginError(`Too many failed attempts. Locked out for ${lockoutCountdown} more seconds.`);
+     return;
+   }
+
+   setIsAdminSubmitting(true);
+   setLoginError(null);
+
+   try {
+     const isValid = await verifyTotp(pendingAuth.secret, totpInputCode);
+     if (isValid) {
+       setIsAdminLoggedIn(true);
+       localStorage.removeItem('admin_failed_attempts');
+       localStorage.removeItem('admin_lockout_until');
+       setFailedAttempts(0);
+       setLockoutUntil(0);
+       sessionStorage.setItem('admin_token', pendingAuth.token);
+       sessionStorage.setItem('admin_username', pendingAuth.username);
+       sessionStorage.setItem('admin_password', pendingAuth.password);
+       setView('admin-dashboard');
+
+       setLoginUsername('');
+       setLoginPassword('');
+       setTotpInputCode('');
+       setShowTotpChallenge(false);
+       setPendingAuth(null);
+       showToast('Two-Factor authentication passed. Welcome to admin workspace!', 'success', 'Admin Signed In');
+     } else {
+       setTotpInputCode('');
+       handleLoginFailure('Incorrect 6-digit verification code. Please check your authenticator.');
+     }
+   } catch (err) {
+     console.error("Error verifying TOTP challenge:", err);
+     handleLoginFailure('An error occurred during multi-factor validation.');
+   } finally {
+     setIsAdminSubmitting(false);
+   }
+ };
+
+ // Admin Login form submit
+ const handleAdminLogin = async (e: React.FormEvent) => {
+ e.preventDefault();
+
+ if (lockoutCountdown > 0) {
+   setLoginError(`Too many failed attempts. Locked out for ${lockoutCountdown} more seconds.`);
+   return;
+ }
+
+ setLoginError(null);
+ setIsAdminSubmitting(true);
+
+ const username = loginUsername.trim();
+ const password = loginPassword.trim();
+
  if (username === 'admin' && password === 'admin123') {
    setIsAdminSubmitting(false);
    handleLoginFailure('Default credentials (admin/admin123) are permanently deactivated for security.');
@@ -232,6 +282,22 @@ export default function App() {
    if (allowedUser && allowedPass && username === allowedUser && password === allowedPass) {
    const hash = await sha256(`${username}:${password}`);
    const token = `auth_${hash}`;
+
+   // Check if TOTP is enabled for default credentials too (stored in its private doc)
+   const docRef = doc(db, 'config', token);
+   const docSnap = await getDoc(docRef);
+   if (docSnap.exists() && docSnap.data()?.totpEnabled) {
+     setPendingAuth({
+       token,
+       username,
+       password,
+       secret: docSnap.data().totpSecret || ''
+     });
+     setShowTotpChallenge(true);
+     showToast('Two-Factor Authentication is required for this administrator account.', 'info', 'MFA Required');
+     return;
+   }
+
    setIsAdminLoggedIn(true);
    localStorage.removeItem('admin_failed_attempts');
    localStorage.removeItem('admin_lockout_until');
@@ -256,6 +322,18 @@ export default function App() {
    const authDocSnap = await getDoc(authDocRef);
 
    if (authDocSnap.exists() && authDocSnap.data()?.authorized !== false) {
+   if (authDocSnap.data()?.totpEnabled) {
+     setPendingAuth({
+       token,
+       username,
+       password,
+       secret: authDocSnap.data().totpSecret || ''
+     });
+     setShowTotpChallenge(true);
+     showToast('Two-Factor Authentication is required for this administrator account.', 'info', 'MFA Required');
+     return;
+   }
+
    setIsAdminLoggedIn(true);
    localStorage.removeItem('admin_failed_attempts');
    localStorage.removeItem('admin_lockout_until');
@@ -655,91 +733,165 @@ export default function App() {
  <div className={`max-w-sm mx-auto my-12 bg-white border border-slate-350 p-5 rounded-md shadow-sm relative overflow-hidden ${shouldShakeAdmin ? 'animate-shake' : ''}`}>
  <div className="absolute top-0 left-0 w-full h-1 bg-slate-900"></div>
 
- <div className="text-center space-y-1.5 mb-5">
- <div className="w-8 h-8 bg-slate-100 text-slate-900 rounded-sm flex items-center justify-center mx-auto border border-slate-250">
- <Lock className="w-4 h-4" />
- </div>
- <h2 className="text-base font-sans font-bold text-slate-900 ">Bytexon Administrator Login</h2>
- <p className="text-[11px] text-slate-500 max-w-xs mx-auto">Authorize root environment settings using platform credentials.</p>
- </div>
-
- <form onSubmit={handleAdminLogin} className="space-y-3">
- {isEnvCredentialsMissing && (
- <div className="mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded text-[10px] text-amber-800 leading-relaxed font-medium">
- ⚠️ <span className="font-bold">Security Action Required:</span> Default credentials have been fully removed. Please configure the <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_USERNAME</code> and <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_PASSWORD</code> environment variables to establish secure access.
- </div>
- )}
-
- {loginError && (
- <p className="text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 p-2 rounded-sm">
- {loginError}
- </p>
- )}
-
- <div>
- <label className="block text-slate-700 text-[10px] font-bold mb-1">Username Credentials</label>
- <input 
- type="text"
- required
- disabled={lockoutCountdown > 0}
- placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your username"}
- value={loginUsername}
- onChange={(e) => setLoginUsername(e.target.value)}
- className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium disabled:opacity-60 disabled:cursor-not-allowed"
- />
- </div>
-
- <div>
- <label className="block text-slate-700 text-[10px] font-bold mb-1">Password Credentials</label>
- <div className="relative">
- <input 
- type={showLoginPassword ? 'text' : 'password'}
- required
- disabled={lockoutCountdown > 0}
- placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your password"}
- value={loginPassword}
- onChange={(e) => setLoginPassword(e.target.value)}
- className="w-full pl-2.5 pr-8 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono disabled:opacity-60 disabled:cursor-not-allowed"
- />
- <button
- type="button"
- id="btn-toggle-login-password-visibility"
- disabled={lockoutCountdown > 0}
- onClick={() => setShowLoginPassword(!showLoginPassword)}
- className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center justify-center focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
- title={showLoginPassword ? 'Hide password' : 'Show password'}
- >
- {showLoginPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
- </button>
- </div>
- </div>
-
- <button
- type="submit"
- id="btn-submit-login"
- disabled={isAdminSubmitting || lockoutCountdown > 0 || isEnvCredentialsMissing}
- className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
- >
- {lockoutCountdown > 0 ? (
+ {showTotpChallenge ? (
    <>
-     <Shield className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-     <span>Locked Out ({lockoutCountdown}s)</span>
-   </>
- ) : isAdminSubmitting ? (
-   <>
-     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-     <span>Authenticating...</span>
+     <div className="text-center space-y-1.5 mb-5">
+       <div className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-sm flex items-center justify-center mx-auto border border-indigo-150 animate-pulse">
+         <Key className="w-4 h-4" />
+       </div>
+       <h2 className="text-base font-sans font-bold text-slate-900">2FA Verification Required</h2>
+       <p className="text-[11px] text-slate-500 max-w-xs mx-auto">Please enter the 6-digit verification code from your authenticator app to authorize this session.</p>
+     </div>
+
+     <form onSubmit={handleVerifyTotpChallenge} className="space-y-4">
+       {loginError && (
+         <p className="text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 p-2 rounded-sm">
+           {loginError}
+         </p>
+       )}
+
+       <div>
+         <label className="block text-slate-700 text-[10px] font-bold mb-1.5 text-center font-mono">6-DIGIT AUTHENTICATOR CODE</label>
+         <input 
+           type="text"
+           required
+           autoFocus
+           maxLength={6}
+           disabled={lockoutCountdown > 0}
+           placeholder={lockoutCountdown > 0 ? "LOCKED" : "000000"}
+           value={totpInputCode}
+           onChange={(e) => setTotpInputCode(e.target.value.replace(/\s/g, '').replace(/[^0-9]/g, ''))}
+           className="w-full text-center px-3 py-2 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-lg tracking-[0.25em] transition-all font-mono font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+         />
+       </div>
+
+       <button
+         type="submit"
+         id="btn-submit-totp-challenge"
+         disabled={isAdminSubmitting || lockoutCountdown > 0}
+         className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+       >
+         {lockoutCountdown > 0 ? (
+           <>
+             <Shield className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+             <span>Locked Out ({lockoutCountdown}s)</span>
+           </>
+         ) : isAdminSubmitting ? (
+           <>
+             <Loader2 className="w-3.5 h-3.5 animate-spin" />
+             <span>Verifying Code...</span>
+           </>
+         ) : (
+           <>
+             <span>Verify & Continue</span>
+             <ArrowRight className="w-3.5 h-3.5" />
+           </>
+         )}
+       </button>
+
+       <button
+         type="button"
+         onClick={() => {
+           setShowTotpChallenge(false);
+           setPendingAuth(null);
+           setTotpInputCode('');
+           setLoginError(null);
+         }}
+         className="w-full text-center text-[10px] text-slate-500 hover:text-indigo-600 transition-colors font-semibold py-1 focus:outline-none"
+       >
+         Cancel and return to login
+       </button>
+     </form>
    </>
  ) : (
    <>
-     <span>Sign In Securely</span>
-     <ArrowRight className="w-3.5 h-3.5" />
+     <div className="text-center space-y-1.5 mb-5">
+     <div className="w-8 h-8 bg-slate-100 text-slate-900 rounded-sm flex items-center justify-center mx-auto border border-slate-250">
+     <Lock className="w-4 h-4" />
+     </div>
+     <h2 className="text-base font-sans font-bold text-slate-900 ">Bytexon Administrator Login</h2>
+     <p className="text-[11px] text-slate-500 max-w-xs mx-auto">Authorize root environment settings using platform credentials.</p>
+     </div>
+
+     <form onSubmit={handleAdminLogin} className="space-y-3">
+     {isEnvCredentialsMissing && (
+     <div className="mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded text-[10px] text-amber-800 leading-relaxed font-medium">
+     ⚠️ <span className="font-bold">Security Action Required:</span> Default credentials have been fully removed. Please configure the <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_USERNAME</code> and <code className="font-mono bg-amber-100 px-1 rounded">VITE_ADMIN_PASSWORD</code> environment variables to establish secure access.
+     </div>
+     )}
+
+     {loginError && (
+     <p className="text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 p-2 rounded-sm">
+     {loginError}
+     </p>
+     )}
+
+     <div>
+     <label className="block text-slate-700 text-[10px] font-bold mb-1">Username Credentials</label>
+     <input 
+     type="text"
+     required
+     disabled={lockoutCountdown > 0}
+     placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your username"}
+     value={loginUsername}
+     onChange={(e) => setLoginUsername(e.target.value)}
+     className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+     />
+     </div>
+
+     <div>
+     <label className="block text-slate-700 text-[10px] font-bold mb-1">Password Credentials</label>
+     <div className="relative">
+     <input 
+     type={showLoginPassword ? 'text' : 'password'}
+     required
+     disabled={lockoutCountdown > 0}
+     placeholder={lockoutCountdown > 0 ? "Form locked out" : "Enter your password"}
+     value={loginPassword}
+     onChange={(e) => setLoginPassword(e.target.value)}
+     className="w-full pl-2.5 pr-8 py-1.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-600 focus:outline-none rounded-sm text-xs transition-all font-mono disabled:opacity-60 disabled:cursor-not-allowed"
+     />
+     <button
+     type="button"
+     id="btn-toggle-login-password-visibility"
+     disabled={lockoutCountdown > 0}
+     onClick={() => setShowLoginPassword(!showLoginPassword)}
+     className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center justify-center focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+     title={showLoginPassword ? 'Hide password' : 'Show password'}
+     >
+     {showLoginPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+     </button>
+     </div>
+     </div>
+
+     <button
+     type="submit"
+     id="btn-submit-login"
+     disabled={isAdminSubmitting || lockoutCountdown > 0 || isEnvCredentialsMissing}
+     className="w-full py-2 bg-slate-900 hover:bg-indigo-700 text-white font-bold rounded-sm text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+     >
+     {lockoutCountdown > 0 ? (
+       <>
+         <Shield className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+         <span>Locked Out ({lockoutCountdown}s)</span>
+       </>
+     ) : isAdminSubmitting ? (
+       <>
+         <Loader2 className="w-3.5 h-3.5 animate-spin" />
+         <span>Authenticating...</span>
+       </>
+     ) : (
+       <>
+         <span>Sign In Securely</span>
+         <ArrowRight className="w-3.5 h-3.5" />
+       </>
+     )}
+     </button>
+
+
+     </form>
    </>
  )}
- </button>
-
-
- </form>
  </div>
  )}
 

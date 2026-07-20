@@ -27,17 +27,19 @@ export interface ChatMessage {
 }
 
 export interface AdminConfig {
- id: string;
- adminUsername: string;
- adminPassword: string;
- upiId: string;
- adminSecretPath?: string;
- upiQrBase64?: string; // Stored as data URL
- standardPricing?: {
- starter: number;
- professional: number;
- enterprise: number;
- };
- customAuthActive?: boolean;
- adminAuthToken?: string;
+  id: string;
+  adminUsername: string;
+  adminPassword: string;
+  upiId: string;
+  adminSecretPath?: string;
+  upiQrBase64?: string; // Stored as data URL
+  standardPricing?: {
+    starter: number;
+    professional: number;
+    enterprise: number;
+  };
+  customAuthActive?: boolean;
+  adminAuthToken?: string;
+  totpEnabled?: boolean;
+  totpSecret?: string;
 }

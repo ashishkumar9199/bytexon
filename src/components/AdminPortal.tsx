@@ -6,9 +6,11 @@ import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandle
 import { motion, AnimatePresence } from 'motion/react';
 import { 
  Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
- Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2
+ Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode
 } from 'lucide-react';
-import { getQrCodeUrl } from '../lib/configHelper';
+import { getQrCodeUrl, getAdminTotpConfig, updateAdminTotpConfig } from '../lib/configHelper';
+import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/totpHelper';
+import QRCode from 'qrcode';
 import BytexonLogo from './BytexonLogo';
 import { useToast } from '../context/ToastContext';
 
@@ -49,6 +51,92 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const [qrFileBase64, setQrFileBase64] = useState<string>(adminConfig.upiQrBase64 || '');
  const [updatingSettings, setUpdatingSettings] = useState(false);
  const [settingsSuccess, setSettingsSuccess] = useState(false);
+
+ // TOTP Two-Factor Authentication states
+ const [totpEnabled, setTotpEnabled] = useState(false);
+ const [totpSecret, setTotpSecret] = useState('');
+ const [showTotpSetup, setShowTotpSetup] = useState(false);
+ const [totpSetupSecret, setTotpSetupSecret] = useState('');
+ const [totpQrCodeDataUrl, setTotpQrCodeDataUrl] = useState('');
+ const [totpVerificationCode, setTotpVerificationCode] = useState('');
+ const [isVerifyingTotpSetup, setIsVerifyingTotpSetup] = useState(false);
+
+ // Sync TOTP state whenever we enter settings tab
+ useEffect(() => {
+   const loadTotpConfig = async () => {
+     const token = sessionStorage.getItem('admin_token') || '';
+     if (token) {
+       const conf = await getAdminTotpConfig(token);
+       setTotpEnabled(!!conf.totpEnabled);
+       setTotpSecret(conf.totpSecret || '');
+     }
+   };
+   if (activeTab === 'settings') {
+     loadTotpConfig();
+   }
+ }, [activeTab]);
+
+ // Generate TOTP setup session
+ const handleInitiateTotpSetup = async () => {
+   try {
+     const secret = generateBase32Secret(16);
+     const username = sessionStorage.getItem('admin_username') || 'admin';
+     const uri = generateOtpauthUri(secret, username, 'Bytexon');
+     const qrData = await QRCode.toDataURL(uri, { margin: 2, scale: 6 });
+     
+     setTotpSetupSecret(secret);
+     setTotpQrCodeDataUrl(qrData);
+     setTotpVerificationCode('');
+     setShowTotpSetup(true);
+     showToast('Scan the QR code with Google Authenticator or any 2FA app.', 'info', 'Setup Initiated');
+   } catch (err) {
+     console.error("Error setting up TOTP:", err);
+     showToast('Could not initialize 2FA setup. Please try again.', 'error', 'MFA Setup Error');
+   }
+ };
+
+ // Confirm and Save TOTP Setup
+ const handleConfirmTotpSetup = async () => {
+   if (!totpSetupSecret || !totpVerificationCode) return;
+   setIsVerifyingTotpSetup(true);
+   try {
+     const isValid = await verifyTotp(totpSetupSecret, totpVerificationCode);
+     if (isValid) {
+       const token = sessionStorage.getItem('admin_token') || '';
+       await updateAdminTotpConfig(token, true, totpSetupSecret);
+       setTotpEnabled(true);
+       setTotpSecret(totpSetupSecret);
+       setShowTotpSetup(false);
+       setTotpVerificationCode('');
+       showToast('Two-Factor Authentication (TOTP) is now active and protecting your account!', 'success', '2FA Enabled');
+     } else {
+       showToast('Invalid verification code. Please make sure the code matches your authenticator app.', 'error', 'Verification Failed');
+     }
+   } catch (err) {
+     console.error("Error confirming TOTP:", err);
+     showToast('Failed to verify multi-factor authentication setup.', 'error', 'MFA Error');
+   } finally {
+     setIsVerifyingTotpSetup(false);
+   }
+ };
+
+ // Disable TOTP
+ const handleDisableTotp = async () => {
+   if (!window.confirm("Are you sure you want to deactivate Two-Factor Authentication? This severely compromises admin portal security.")) {
+     return;
+   }
+   try {
+     const token = sessionStorage.getItem('admin_token') || '';
+     await updateAdminTotpConfig(token, false, '');
+     setTotpEnabled(false);
+     setTotpSecret('');
+     setShowTotpSetup(false);
+     showToast('Two-Factor Authentication (TOTP) has been successfully deactivated.', 'info', '2FA Disabled');
+   } catch (err) {
+     console.error("Error disabling TOTP:", err);
+     showToast('Could not deactivate 2FA settings.', 'error', 'MFA Error');
+   }
+ };
 
  // Sync form when parent adminConfig is loaded/updated
  useEffect(() => {
@@ -1075,6 +1163,138 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  />
  </div>
  </div>
+
+ {/* Two-Factor Authentication (MFA / TOTP) Section */}
+ <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800 font-mono">
+   <div className="flex items-center space-x-2">
+     <h3 className="text-[9px] font-bold text-indigo-600 font-mono">4. TWO-FACTOR AUTHENTICATION (MFA / TOTP)</h3>
+     <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-sm ${totpEnabled ? 'bg-emerald-50 text-emerald-700 border border-emerald-150' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}>
+       {totpEnabled ? '● SECURED' : 'UNCONFIGURED'}
+     </span>
+   </div>
+   <p className="text-[10px] text-slate-500 leading-relaxed max-w-2xl">
+     Enhance administrative portal access security. By enabling a Time-based One-Time Password (TOTP) authenticator option, login prompts will require a dynamic 6-digit cryptographic verification code from Google Authenticator, Authy, or Microsoft Authenticator.
+   </p>
+
+   {showTotpSetup ? (
+     <div className="p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-4 max-w-xl">
+       <h4 className="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
+         <QrCode className="w-4 h-4 text-indigo-600" />
+         <span>Authenticator Configuration Wizard</span>
+       </h4>
+       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+         <div className="md:col-span-5 flex flex-col items-center p-2 bg-white border border-slate-200 rounded-lg shadow-sm">
+           {totpQrCodeDataUrl ? (
+             <img src={totpQrCodeDataUrl} alt="TOTP Setup QR Code" className="w-32 h-32" />
+           ) : (
+             <div className="w-32 h-32 flex items-center justify-center text-[10px] text-slate-400">Loading...</div>
+           )}
+           <p className="text-[8px] text-slate-400 font-mono mt-1 text-center font-bold">SCAN QR CODE</p>
+         </div>
+         <div className="md:col-span-7 space-y-3">
+           <p className="text-[10px] text-slate-600 leading-relaxed">
+             1. Scan the QR code using your mobile device's authenticator app.
+           </p>
+           <div>
+             <p className="text-[10px] text-slate-600 mb-1">
+               2. If you cannot scan the QR, input this secret key manually:
+             </p>
+             <div className="flex items-center space-x-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-sm">
+               <code className="text-[10px] text-slate-800 font-bold tracking-wider break-all flex-1">{totpSetupSecret}</code>
+               <button
+                 type="button"
+                 onClick={() => {
+                   navigator.clipboard.writeText(totpSetupSecret);
+                   showToast('Secret key copied to clipboard!', 'success', 'Copied');
+                 }}
+                 className="p-1 hover:bg-slate-50 rounded text-slate-500 hover:text-indigo-600 transition-colors"
+                 title="Copy secret key"
+               >
+                 <Copy className="w-3.5 h-3.5" />
+               </button>
+             </div>
+           </div>
+           <div className="space-y-1.5">
+             <label className="block text-[9px] font-bold text-slate-500">
+               3. Enter 6-digit confirmation code:
+             </label>
+             <div className="flex space-x-2">
+               <input
+                 type="text"
+                 maxLength={6}
+                 placeholder="000000"
+                 value={totpVerificationCode}
+                 onChange={(e) => setTotpVerificationCode(e.target.value.replace(/[^0-9]/g, ''))}
+                 className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-mono font-bold tracking-[0.2em] focus:border-indigo-600 focus:outline-none text-slate-900 w-32"
+               />
+               <button
+                 type="button"
+                 disabled={isVerifyingTotpSetup || totpVerificationCode.length !== 6}
+                 onClick={handleConfirmTotpSetup}
+                 className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold rounded-lg transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
+               >
+                 {isVerifyingTotpSetup ? (
+                   <>
+                     <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                     <span>Verifying...</span>
+                   </>
+                 ) : (
+                   <span>Verify & Enable</span>
+                 )}
+               </button>
+               <button
+                 type="button"
+                 onClick={() => setShowTotpSetup(false)}
+                 className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded-lg transition-colors"
+               >
+                 Cancel
+               </button>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   ) : (
+     <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-2xl">
+       <div className="space-y-1">
+         <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5">
+           {totpEnabled ? (
+             <CheckCircle className="w-4 h-4 text-emerald-600" />
+           ) : (
+             <ShieldAlert className="w-4 h-4 text-amber-500" />
+           )}
+           <span>{totpEnabled ? 'Two-Factor Authentication is Active' : 'Two-Factor Authentication is Deactivated'}</span>
+         </h4>
+         <p className="text-[10px] text-slate-500 leading-relaxed">
+           {totpEnabled 
+             ? 'Your account is secured with standard Time-based One-Time Password multi-factor protection.' 
+             : 'Add an extra cryptographic barrier to block unauthorized credential login attempts.'}
+         </p>
+       </div>
+       <div className="flex-shrink-0">
+         {totpEnabled ? (
+           <button
+             type="button"
+             onClick={handleDisableTotp}
+             className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-[10px] font-bold rounded-xl transition-all cursor-pointer"
+           >
+             Disable 2FA Security
+           </button>
+         ) : (
+           <button
+             type="button"
+             onClick={handleInitiateTotpSetup}
+             className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm"
+           >
+             <Key className="w-3.5 h-3.5" />
+             <span>Configure 2FA Security</span>
+           </button>
+         )}
+       </div>
+     </div>
+   )}
+ </div>
+
  <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
  <button
  type="submit"

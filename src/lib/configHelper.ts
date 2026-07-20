@@ -111,10 +111,44 @@ export function generateUpiUrl(upiId: string, amount: number, payeeName: string 
 
 // Generate QR Code image URL using a free, high-performance API or custom helper
 export function getQrCodeUrl(upiId: string, amount: number, customQrBase64?: string): string {
- if (customQrBase64 && customQrBase64.startsWith('data:image')) {
- return customQrBase64;
- }
- const upiUrl = generateUpiUrl(upiId, amount);
- return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
+  if (customQrBase64 && customQrBase64.startsWith('data:image')) {
+  return customQrBase64;
+  }
+  const upiUrl = generateUpiUrl(upiId, amount);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
+}
+
+// Read secure admin TOTP settings from their private auth document
+export async function getAdminTotpConfig(adminToken: string): Promise<{ totpEnabled?: boolean; totpSecret?: string }> {
+  if (!adminToken) return {};
+  try {
+    const docRef = doc(db, 'config', adminToken);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        totpEnabled: !!data.totpEnabled,
+        totpSecret: data.totpSecret || ''
+      };
+    }
+  } catch (err) {
+    console.error("Error reading TOTP config:", err);
+  }
+  return {};
+}
+
+// Write secure admin TOTP settings to their private auth document
+export async function updateAdminTotpConfig(adminToken: string, enabled: boolean, secret: string): Promise<void> {
+  if (!adminToken) throw new Error("Unauthorized: Missing admin session token");
+  try {
+    const docRef = doc(db, 'config', adminToken);
+    await setDoc(docRef, {
+      totpEnabled: enabled,
+      totpSecret: secret
+    }, { merge: true });
+  } catch (err) {
+    console.error("Error updating TOTP config:", err);
+    throw err;
+  }
 }
 
