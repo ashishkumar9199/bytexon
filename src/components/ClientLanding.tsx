@@ -131,7 +131,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
                     <Code className="w-5 h-5" />
                   </div>
                   <h3 className="text-lg font-bold text-[#1d1d1f] dark:text-white">Custom Web Frameworks</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                  <p className="text-slate-950 dark:text-slate-100 text-sm leading-relaxed font-medium">
                     Lightning-fast, highly responsive single page applications engineered with strict type parameters, modular components, and premium motion flows.
                   </p>
                 </div>
