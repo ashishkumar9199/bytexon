@@ -493,25 +493,6 @@ export default function App() {
 
             {/* Header Actions */}
             <div className="hidden md:flex items-center space-x-4">
-              {view !== 'project-planner' && (
-                <button
-                  onClick={() => {
-                    navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
-                  }}
-                  className="text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-350 dark:hover:text-cyan-400 transition-colors"
-                >
-                  Track Project
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
-                }}
-                className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-white text-xs font-medium px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
-              >
-                Start Workspace
-              </button>
-              
               {/* Theme Toggle Button */}
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
@@ -525,8 +506,6 @@ export default function App() {
                   <Sun className="w-4 h-4 text-cyan-400" />
                 )}
               </button>
-
-
             </div>
 
             {/* Mobile Menu & Theme Actions */}
@@ -611,25 +590,7 @@ export default function App() {
                   >
                     Contact
                   </button>
-                  <div className="h-[1px] bg-slate-100 dark:bg-slate-800 my-1" />
-                  <div className="flex items-center justify-between pt-1">
-                    <button
-                      onClick={() => {
-                        navigateTo('project-planner', { tab: 'track', prefillPrice: undefined, prefillDesc: undefined });
-                      }}
-                      className="text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-350 dark:hover:text-cyan-400 transition-colors"
-                    >
-                      Track Project
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
-                      }}
-                      className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-white text-xs font-medium px-4 py-2 rounded-full transition-all"
-                    >
-                      Start Workspace
-                    </button>
-                  </div>
+
                 </div>
               </motion.div>
             )}
