@@ -6,7 +6,7 @@ import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandle
 import { motion, AnimatePresence } from 'motion/react';
 import { 
  Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
- Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode
+ Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode, Activity
 } from 'lucide-react';
 import { getQrCodeUrl, getAdminTotpConfig, updateAdminTotpConfig } from '../lib/configHelper';
 import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/totpHelper';
@@ -37,6 +37,12 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const [approvalAmount, setApprovalAmount] = useState<string>('');
  const [approvalCurrency, setApprovalCurrency] = useState<'INR' | 'USD'>('INR');
  const [isApproving, setIsApproving] = useState(false);
+
+ // Daily updates state
+ const [newUpdateTitle, setNewUpdateTitle] = useState('');
+ const [newUpdateNotes, setNewUpdateNotes] = useState('');
+ const [newUpdateStatus, setNewUpdateStatus] = useState<'Update' | 'In Progress' | 'Completed' | 'Blocked'>('Update');
+ const [isSubmittingUpdate, setIsSubmittingUpdate] = useState(false);
 
  // Settings Forms
  const [settingsForm, setSettingsForm] = useState({
@@ -332,6 +338,78 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  showToast("Failed to delete proposal.", "error", "Error");
  handleFirestoreError(err, OperationType.DELETE, `requests/${selectedRequest.id}`);
  }
+ };
+
+ // Add Daily Work Update
+ const handleAddUpdate = async (e: React.FormEvent) => {
+   e.preventDefault();
+   if (!selectedRequest) return;
+   if (!newUpdateTitle.trim() || !newUpdateNotes.trim()) {
+     showToast("Please fill in both the title and notes for the update.", "warning", "Incomplete Form");
+     return;
+   }
+
+   setIsSubmittingUpdate(true);
+   try {
+     const adminToken = sessionStorage.getItem('admin_token') || '';
+     const newUpdate = {
+       id: 'upd_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+       timestamp: Date.now(),
+       title: newUpdateTitle.trim(),
+       status: newUpdateStatus,
+       notes: newUpdateNotes.trim()
+     };
+
+     const updatedList = selectedRequest.dailyUpdates ? [...selectedRequest.dailyUpdates, newUpdate] : [newUpdate];
+     const docRef = doc(db, 'requests', selectedRequest.id);
+     await updateDoc(docRef, {
+       dailyUpdates: updatedList,
+       adminAuthToken: adminToken
+     });
+
+     // Update locally immediately
+     setSelectedRequest({
+       ...selectedRequest,
+       dailyUpdates: updatedList
+     });
+
+     setNewUpdateTitle('');
+     setNewUpdateNotes('');
+     setNewUpdateStatus('Update');
+     showToast('Daily work log added successfully!', 'success', 'Update Added');
+   } catch (err) {
+     console.error("Error adding daily update:", err);
+     showToast("Failed to add daily update. Try again.", "error", "Error");
+   } finally {
+     setIsSubmittingUpdate(false);
+   }
+ };
+
+ // Delete Daily Work Update
+ const handleDeleteUpdate = async (updateId: string) => {
+   if (!selectedRequest || !selectedRequest.dailyUpdates) return;
+   if (!confirm("Are you sure you want to permanently delete this daily update log?")) return;
+
+   try {
+     const adminToken = sessionStorage.getItem('admin_token') || '';
+     const updatedList = selectedRequest.dailyUpdates.filter(upd => upd.id !== updateId);
+     const docRef = doc(db, 'requests', selectedRequest.id);
+     await updateDoc(docRef, {
+       dailyUpdates: updatedList,
+       adminAuthToken: adminToken
+     });
+
+     // Update locally immediately
+     setSelectedRequest({
+       ...selectedRequest,
+       dailyUpdates: updatedList
+     });
+
+     showToast('Daily work log deleted successfully.', 'info', 'Deleted');
+   } catch (err) {
+     console.error("Error deleting daily update:", err);
+     showToast("Failed to delete update.", "error", "Error");
+   }
  };
 
  // Send Admin Chat Reply
@@ -816,6 +894,119 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
  )}
 
+ </div>
+
+ {/* Project Daily Updates Manager */}
+ <div className="border-t border-slate-200 dark:border-slate-800 pt-4 space-y-4">
+ <h4 className="text-[10px] font-bold text-slate-400 font-mono flex items-center space-x-1.5 uppercase">
+ <Activity className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
+ <span>Project Daily Updates & Feed</span>
+ </h4>
+
+ <form onSubmit={handleAddUpdate} className="space-y-3 bg-slate-50 dark:bg-slate-950/40 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl">
+ <p className="text-[9px] text-slate-500 font-mono">PUBLISH REAL-TIME WORK LOGS, STREAKS, COMPLETED TASKS, OR BLOCKED STATUS FOR THE CLIENT TO TRACK.</p>
+ 
+ <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+ <div className="sm:col-span-8">
+ <label className="block text-[8px] font-bold text-slate-400 mb-1 font-mono">UPDATE TITLE</label>
+ <input 
+ type="text"
+ required
+ value={newUpdateTitle}
+ onChange={(e) => setNewUpdateTitle(e.target.value)}
+ placeholder="E.G. Figma Design Approved, Backend Setup"
+ className="w-full px-3 py-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs border border-slate-300 dark:border-slate-800 focus:outline-none focus:border-indigo-600 font-mono placeholder-slate-400 rounded-xl"
+ />
+ </div>
+ <div className="sm:col-span-4">
+ <label className="block text-[8px] font-bold text-slate-400 mb-1 font-mono">STATUS STATE</label>
+ <select 
+ value={newUpdateStatus}
+ onChange={(e) => setNewUpdateStatus(e.target.value as any)}
+ className="w-full px-3 py-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs border border-slate-300 dark:border-slate-800 focus:outline-none focus:border-indigo-600 font-mono rounded-xl"
+ >
+ <option value="Update">Update</option>
+ <option value="In Progress">In Progress</option>
+ <option value="Completed">Completed</option>
+ <option value="Blocked">Blocked</option>
+ </select>
+ </div>
+ </div>
+
+ <div>
+ <label className="block text-[8px] font-bold text-slate-400 mb-1 font-mono">LOG NOTES / DESCRIPTION</label>
+ <textarea 
+ required
+ value={newUpdateNotes}
+ onChange={(e) => setNewUpdateNotes(e.target.value)}
+ placeholder="Explain details about this work update..."
+ className="w-full px-3 py-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs border border-slate-300 dark:border-slate-800 focus:outline-none focus:border-indigo-600 h-16 resize-none font-mono placeholder-slate-400 rounded-xl"
+ />
+ </div>
+
+ <button
+ type="submit"
+ disabled={isSubmittingUpdate}
+ className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-mono font-bold text-[10px] transition-all flex items-center justify-center space-x-1 cursor-pointer rounded-xl"
+ >
+ {isSubmittingUpdate ? (
+ <>
+ <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+ <span>PUBLISHING UPDATE...</span>
+ </>
+ ) : (
+ <span>PUBLISH WORK LOG</span>
+ )}
+ </button>
+ </form>
+
+ {/* Live Updates List */}
+ <div className="space-y-2.5">
+ <h5 className="text-[9px] font-bold text-slate-400 font-mono">ACTIVE UPDATE TIMELINE ({selectedRequest.dailyUpdates?.length || 0})</h5>
+ 
+ {!selectedRequest.dailyUpdates || selectedRequest.dailyUpdates.length === 0 ? (
+ <p className="text-center py-6 text-slate-400 text-[10px] font-mono bg-slate-50 dark:bg-slate-950/20 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+ No daily updates published yet. Add a log above to update the client.
+ </p>
+ ) : (
+ <div className="space-y-2.5">
+ {selectedRequest.dailyUpdates
+ .slice()
+ .sort((a, b) => b.timestamp - a.timestamp)
+ .map((update) => (
+ <div key={update.id} className="bg-slate-50 dark:bg-slate-950/45 p-3 border border-slate-200 dark:border-slate-800 rounded-xl flex items-start justify-between gap-3">
+ <div className="space-y-1 flex-1 min-w-0">
+ <div className="flex flex-wrap items-center gap-1.5">
+ <span className={`px-1 py-0.5 text-[7px] font-bold rounded-sm ${
+ update.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-150 dark:bg-emerald-950/45 dark:text-emerald-450' :
+ update.status === 'Blocked' ? 'bg-rose-50 text-rose-700 border border-rose-150 dark:bg-rose-950/45 dark:text-rose-450 animate-pulse' :
+ update.status === 'In Progress' ? 'bg-amber-50 text-amber-700 border border-amber-150 dark:bg-amber-950/45 dark:text-amber-450' :
+ 'bg-indigo-50 text-indigo-700 border border-indigo-150 dark:bg-indigo-950/45 dark:text-indigo-450'
+ }`}>
+ {update.status.toUpperCase()}
+ </span>
+ <strong className="font-mono text-xs text-slate-900 dark:text-white truncate">{update.title}</strong>
+ <span className="text-[9px] text-slate-400 font-mono">
+ {new Date(update.timestamp).toLocaleString()}
+ </span>
+ </div>
+ <p className="text-[10px] text-slate-600 dark:text-slate-400 font-mono whitespace-pre-wrap leading-relaxed">
+ {update.notes}
+ </p>
+ </div>
+
+ <button 
+ onClick={() => handleDeleteUpdate(update.id)}
+ className="p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-colors cursor-pointer"
+ title="Delete Work Log"
+ >
+ <Trash2 className="w-3.5 h-3.5" />
+ </button>
+ </div>
+ ))}
+ </div>
+ )}
+ </div>
  </div>
 
  </div>

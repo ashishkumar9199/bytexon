@@ -1,3 +1,11 @@
+export interface ProjectUpdate {
+ id: string;
+ timestamp: number;
+ title: string;
+ status: 'In Progress' | 'Completed' | 'Blocked' | 'Update';
+ notes: string;
+}
+
 export interface ProjectRequest {
  id: string;
  name: string;
@@ -16,6 +24,7 @@ export interface ProjectRequest {
  paymentNotes?: string;
  paymentSubmittedAt?: number;
  paymentVerifiedAt?: number;
+ dailyUpdates?: ProjectUpdate[];
 }
 
 export interface ChatMessage {

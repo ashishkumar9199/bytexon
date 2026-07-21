@@ -6,7 +6,7 @@ import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandle
 import { motion, AnimatePresence } from 'motion/react';
 import { 
  ArrowLeft, CheckCircle2, AlertCircle, Clock, Send, CreditCard, 
- Copy, Check, MessageSquare, Briefcase, FileText, UploadCloud, IndianRupee, DollarSign 
+ Copy, Check, MessageSquare, Briefcase, FileText, UploadCloud, IndianRupee, DollarSign, Activity 
 } from 'lucide-react';
 import { getQrCodeUrl, getAdminConfig } from '../lib/configHelper';
 import { useToast } from '../context/ToastContext';
@@ -505,6 +505,64 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  </dd>
  </div>
  </dl>
+ </div>
+
+ {/* Daily Project Updates Timeline */}
+ <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-3xl shadow-sm transition-colors duration-300 space-y-4">
+ <h2 className="text-xs font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center space-x-1.5">
+ <Activity className="w-4 h-4 text-indigo-600" />
+ <span>Daily Work Updates & Logs</span>
+ </h2>
+ 
+ {!request.dailyUpdates || request.dailyUpdates.length === 0 ? (
+ <div className="text-center py-6 text-slate-400 font-mono">
+ <Clock className="w-5 h-5 mx-auto mb-2 text-slate-300 animate-pulse" />
+ <p className="text-[10px] font-bold">Awaiting Engineering Logs</p>
+ <p className="text-[9px] text-slate-500 max-w-xs mx-auto mt-1 leading-relaxed">
+ Once our developer team begins work, daily status updates, logs, and milestone updates will populate here.
+ </p>
+ </div>
+ ) : (
+ <div className="relative border-l border-slate-200 dark:border-slate-800 pl-4 space-y-4 py-1 ml-1.5">
+ {request.dailyUpdates
+ .slice()
+ .sort((a, b) => b.timestamp - a.timestamp)
+ .map((update) => (
+ <div key={update.id} className="relative">
+ {/* Dot indicator */}
+ <span className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-slate-900 ${
+ update.status === 'Completed' ? 'bg-emerald-500' :
+ update.status === 'Blocked' ? 'bg-rose-500 animate-pulse' :
+ update.status === 'In Progress' ? 'bg-amber-500' : 'bg-indigo-500'
+ }`} />
+ 
+ <div className="space-y-1">
+ <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+ <h3 className="font-bold text-xs text-slate-900 dark:text-white font-mono">
+ {update.title}
+ </h3>
+ <div className="flex items-center space-x-1.5">
+ <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-sm ${
+ update.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-150 dark:bg-emerald-950/45 dark:text-emerald-450 dark:border-emerald-900/50' :
+ update.status === 'Blocked' ? 'bg-rose-50 text-rose-700 border border-rose-150 animate-pulse dark:bg-rose-950/45 dark:text-rose-450 dark:border-rose-900/50' :
+ update.status === 'In Progress' ? 'bg-amber-50 text-amber-700 border border-amber-150 dark:bg-amber-950/45 dark:text-amber-450 dark:border-amber-900/50' :
+ 'bg-indigo-50 text-indigo-700 border border-indigo-150 dark:bg-indigo-950/45 dark:text-indigo-450 dark:border-indigo-900/50'
+ }`}>
+ {update.status.toUpperCase()}
+ </span>
+ <span className="text-[9px] text-slate-400 font-mono">
+ {new Date(update.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+ </span>
+ </div>
+ </div>
+ <p className="text-[11px] text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed font-mono">
+ {update.notes}
+ </p>
+ </div>
+ </div>
+ ))}
+ </div>
+ )}
  </div>
 
  {/* Payment Panel: Only visible if Approved / Payment Submitted / Completed */}
