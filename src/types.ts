@@ -6,6 +6,13 @@ export interface ProjectUpdate {
  notes: string;
 }
 
+export interface ProjectFile {
+  name: string;
+  type: string;
+  size: number;
+  dataUrl: string; // base64 representation of file
+}
+
 export interface ProjectRequest {
  id: string;
  name: string;
@@ -25,6 +32,7 @@ export interface ProjectRequest {
  paymentSubmittedAt?: number;
  paymentVerifiedAt?: number;
  dailyUpdates?: ProjectUpdate[];
+ files?: ProjectFile[];
 }
 
 export interface ChatMessage {

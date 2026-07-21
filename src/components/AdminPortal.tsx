@@ -6,7 +6,8 @@ import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandle
 import { motion, AnimatePresence } from 'motion/react';
 import { 
  Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
- Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode, Activity
+ Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode, Activity,
+ Paperclip, FileText
 } from 'lucide-react';
 import { getQrCodeUrl, getAdminTotpConfig, updateAdminTotpConfig } from '../lib/configHelper';
 import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/totpHelper';
@@ -722,6 +723,36 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  <div className="bg-slate-50 dark:bg-slate-950/40 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl">
  <h4 className="text-[9px] font-bold text-slate-400 mb-2 font-mono">Proposal requirements</h4>
  <p className="text-slate-900 dark:text-slate-100 text-xs leading-relaxed whitespace-pre-wrap font-mono">{selectedRequest.description}</p>
+
+ {selectedRequest.files && selectedRequest.files.length > 0 && (
+  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[10px]">
+   <p className="text-slate-400 font-bold text-[8px] font-mono mb-2 uppercase tracking-wider flex items-center gap-1.5">
+    <Paperclip className="w-3.5 h-3.5 text-indigo-500" />
+    <span>CLIENT ATTACHMENTS ({selectedRequest.files.length})</span>
+   </p>
+   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+    {selectedRequest.files.map((file, idx) => (
+     <a 
+      key={idx}
+      href={file.dataUrl}
+      download={file.name}
+      className="flex items-center justify-between p-2.5 bg-white dark:bg-slate-950 hover:bg-indigo-50/20 dark:hover:bg-indigo-950/25 border border-slate-200 dark:border-slate-850 rounded-xl transition-all duration-200 group text-xs cursor-pointer"
+     >
+      <div className="flex items-center gap-2 overflow-hidden mr-2">
+       <FileText className="w-4 h-4 text-indigo-500 shrink-0 group-hover:scale-110 transition-transform duration-200" />
+       <div className="truncate text-left font-mono">
+        <p className="font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{file.name}</p>
+        <p className="text-[10px] text-slate-400 dark:text-slate-500">{(file.size / 1024).toFixed(1)} KB</p>
+       </div>
+      </div>
+      <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold font-mono group-hover:underline shrink-0">
+       DOWNLOAD
+      </span>
+     </a>
+    ))}
+   </div>
+  </div>
+ )}
  
  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[10px] font-mono">
  <div>
