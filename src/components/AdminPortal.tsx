@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { collection, query, onSnapshot, updateDoc, doc, addDoc, where, deleteDoc, getDocs } from 'firebase/firestore';
-import { ProjectRequest, ChatMessage, AdminConfig } from '../types';
+import { ProjectRequest, ChatMessage, AdminConfig, PaymentRecord } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -305,12 +305,49 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  try {
  const adminToken = sessionStorage.getItem('admin_token') || '';
  const docRef = doc(db, 'requests', selectedRequest.id);
+
+ // Update payments list
+ const currentPayments = selectedRequest.payments || [];
+ const updatedPayments = [...currentPayments];
+ 
+ // Try to find a pending payment matching the submitted amount and txRef
+ let matchedIndex = updatedPayments.findIndex(
+   p => p.status === 'pending' && 
+   (p.txRef === selectedRequest.paymentTxRef || p.amount === submittedAmt)
+ );
+ 
+ if (matchedIndex === -1) {
+   matchedIndex = updatedPayments.findIndex(p => p.status === 'pending');
+ }
+
+ if (matchedIndex !== -1) {
+   updatedPayments[matchedIndex] = {
+     ...updatedPayments[matchedIndex],
+     status: 'verified',
+     verifiedAt: Date.now()
+   };
+ } else {
+   // Synth fallback
+   const synthPayment: PaymentRecord = {
+     id: `pay_${Date.now()}_synth`,
+     amount: submittedAmt,
+     currency: selectedRequest.approvedCurrency ?? selectedRequest.budgetCurrency,
+     status: 'verified',
+     txRef: selectedRequest.paymentTxRef || 'PRE-MIGRATED',
+     notes: selectedRequest.paymentNotes || 'Direct verification',
+     submittedAt: selectedRequest.paymentSubmittedAt || Date.now(),
+     verifiedAt: Date.now()
+   };
+   updatedPayments.push(synthPayment);
+ }
+
  await updateDoc(docRef, {
  status: isFullyPaid ? 'completed' : 'approved',
  paidAmount: newPaidTotal,
  paymentAmountSubmitted: 0,
  paymentVerifiedAt: Date.now(),
- adminAuthToken: adminToken
+ adminAuthToken: adminToken,
+ payments: updatedPayments
  });
 
  await addDoc(collection(db, 'chats'), {

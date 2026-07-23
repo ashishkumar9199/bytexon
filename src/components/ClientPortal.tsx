@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { ProjectRequest, ChatMessage, AdminConfig } from '../types';
+import { ProjectRequest, ChatMessage, AdminConfig, PaymentRecord } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -123,13 +123,27 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
 
  setSubmittingPayment(true);
  try {
+ const newPayment: PaymentRecord = {
+   id: `pay_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+   amount: targetPaymentAmount,
+   currency: displayCurrency,
+   status: 'pending',
+   txRef: txRef.trim(),
+   notes: payNotes.trim(),
+   submittedAt: Date.now()
+ };
+
+ const currentPayments = request.payments || [];
+ const updatedPayments = [...currentPayments, newPayment];
+
  const docRef = doc(db, 'requests', request.id);
  await updateDoc(docRef, {
  status: 'payment_submitted',
  paymentTxRef: txRef.trim(),
  paymentNotes: payNotes.trim(),
  paymentAmountSubmitted: targetPaymentAmount,
- paymentSubmittedAt: Date.now()
+ paymentSubmittedAt: Date.now(),
+ payments: updatedPayments
  });
 
  // Send automated system chat notice
@@ -848,6 +862,83 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  </div>
  </div>
  )}
+
+ {/* Installment Payment History Timeline */}
+ <div className="mt-6 pt-5 border-t border-slate-150 dark:border-slate-800/80 space-y-3.5">
+  <div className="flex justify-between items-center">
+   <h3 className="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono uppercase tracking-wider">
+    Installment Ledger & Timeline
+   </h3>
+   <span className="text-[9px] font-mono text-indigo-600 dark:text-cyan-400 font-bold">
+    {(request.payments?.length || 0)} {request.payments?.length === 1 ? 'Record' : 'Records'}
+   </span>
+  </div>
+
+  {(!request.payments || request.payments.length === 0) ? (
+   <div className="bg-slate-50 dark:bg-slate-950/30 p-4 border border-slate-200/60 dark:border-slate-850 text-center rounded-xl">
+    <p className="text-[10px] text-slate-400 font-mono leading-relaxed">
+     NO TRANSACTIONS RECORDED YET. CHOOSE AN OPTION ABOVE TO SUBMIT YOUR KICKOFF INSTALLMENT.
+    </p>
+   </div>
+  ) : (
+   <div className="relative pl-4 space-y-5 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800">
+    {request.payments.map((payment, idx) => (
+     <div key={payment.id || idx} className="relative group flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">
+      {/* Timeline Node Icon */}
+      <div className="absolute -left-[13px] top-1.5 w-2 h-2 rounded-full border border-white dark:border-slate-900 transition-colors duration-200 z-10"
+           style={{
+            backgroundColor: payment.status === 'verified' ? '#10b981' : payment.status === 'pending' ? '#f59e0b' : '#ef4444'
+           }}
+      />
+      
+      <div className="space-y-1">
+       <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs font-mono font-bold text-slate-950 dark:text-slate-150">
+         {displaySign}{payment.amount.toLocaleString()} {payment.currency}
+        </span>
+        <span className={`px-1.5 py-0.5 text-[8px] font-mono font-bold uppercase rounded border ${
+         payment.status === 'verified'
+          ? 'bg-emerald-50 text-emerald-700 border-emerald-150 dark:bg-emerald-950/40 dark:text-emerald-450 dark:border-emerald-900/40'
+          : payment.status === 'pending'
+          ? 'bg-amber-50 text-amber-700 border-amber-150 dark:bg-amber-950/40 dark:text-amber-450 dark:border-amber-900/40 animate-pulse'
+          : 'bg-rose-50 text-rose-700 border-rose-150 dark:bg-rose-950/40 dark:text-rose-450 dark:border-rose-900/40'
+        }`}>
+         {payment.status === 'verified' ? 'Verified' : payment.status === 'pending' ? 'Pending Audit' : 'Declined'}
+        </span>
+       </div>
+       
+       <p className="text-[10px] text-slate-500 font-mono">
+        Submitted: {new Date(payment.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+       </p>
+
+       {payment.txRef && (
+        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-mono flex items-center gap-1">
+         UTR: <span className="select-all font-bold text-slate-800 dark:text-slate-200">{payment.txRef}</span>
+        </p>
+       )}
+
+       {payment.notes && (
+        <p className="text-[10px] text-slate-500 italic font-mono mt-0.5 bg-slate-50 dark:bg-slate-950 p-1.5 rounded-lg border border-slate-200/50 dark:border-slate-850/50">
+         &ldquo;{payment.notes}&rdquo;
+        </p>
+       )}
+      </div>
+
+      {payment.verifiedAt && (
+       <div className="sm:text-right shrink-0">
+        <p className="text-[9px] text-emerald-600 dark:text-emerald-400 font-mono font-bold uppercase">
+         VERIFIED
+        </p>
+        <p className="text-[9px] text-slate-400 font-mono">
+         {new Date(payment.verifiedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+        </p>
+       </div>
+      )}
+     </div>
+    ))}
+   </div>
+  )}
+ </div>
 
  </div>
  </motion.div>

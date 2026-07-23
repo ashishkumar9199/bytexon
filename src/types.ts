@@ -13,6 +13,17 @@ export interface ProjectFile {
   dataUrl: string; // base64 representation of file
 }
 
+export interface PaymentRecord {
+ id: string;
+ amount: number;
+ currency: 'INR' | 'USD';
+ status: 'pending' | 'verified' | 'rejected';
+ txRef: string;
+ notes?: string;
+ submittedAt: number;
+ verifiedAt?: number;
+}
+
 export interface ProjectRequest {
  id: string;
  name: string;
@@ -35,6 +46,7 @@ export interface ProjectRequest {
  paymentAmountSubmitted?: number;
  dailyUpdates?: ProjectUpdate[];
  files?: ProjectFile[];
+ payments?: PaymentRecord[];
 }
 
 export interface ChatMessage {
