@@ -223,8 +223,40 @@ export default function App() {
    setLoginError(null);
 
    try {
+     const cleanCode = totpInputCode.trim().replace(/\s/g, '');
+     
+     // Structure check & length limit to prevent long-input CPU hogging
+     if (cleanCode.length > 10) {
+       setTotpInputCode('');
+       handleLoginFailure('MFA Error: Invalid code structure.');
+       return;
+     }
+
+     // Replay Attack protection: check and record tokens within validity steps
+     const usedTotpCodesKey = `used_totp_codes_${pendingAuth.token}`;
+     const usedCodesStr = sessionStorage.getItem(usedTotpCodesKey) || '[]';
+     let usedCodes: { code: string; timestamp: number }[] = [];
+     try {
+       usedCodes = JSON.parse(usedCodesStr);
+     } catch (err) {
+       usedCodes = [];
+     }
+     
+     const now = Date.now();
+     const validUsedCodes = usedCodes.filter(item => (now - item.timestamp) < 90000);
+     
+     if (validUsedCodes.some(item => item.code === cleanCode)) {
+       setTotpInputCode('');
+       handleLoginFailure('MFA Error: Login Replay Attack Detected. Each verification code can only be used once.');
+       return;
+     }
+
      const isValid = await verifyTotp(pendingAuth.secret, totpInputCode);
      if (isValid) {
+       // Mark this token as consumed in current active period
+       validUsedCodes.push({ code: cleanCode, timestamp: now });
+       sessionStorage.setItem(usedTotpCodesKey, JSON.stringify(validUsedCodes));
+
        setIsAdminLoggedIn(true);
        localStorage.removeItem('admin_failed_attempts');
        localStorage.removeItem('admin_lockout_until');
@@ -267,6 +299,21 @@ export default function App() {
 
  const username = loginUsername.trim();
  const password = loginPassword.trim();
+
+ // Secure input length restrictions to mitigate CPU exhaustion / Long Password DoS
+ if (username.length > 64) {
+   setIsAdminSubmitting(false);
+   setLoginError('Security violation: Username exceeds maximum allowed length of 64 characters.');
+   showToast('Input length violation.', 'error', 'Security Block');
+   return;
+ }
+
+ if (password.length > 128) {
+   setIsAdminSubmitting(false);
+   setLoginError('Security violation: Password exceeds maximum allowed length of 128 characters.');
+   showToast('Password length restricted to prevent CPU exhaustion DoS.', 'error', 'Security Block');
+   return;
+ }
 
  if (username === 'admin' && password === 'admin123') {
    setIsAdminSubmitting(false);
