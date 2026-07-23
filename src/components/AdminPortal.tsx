@@ -291,13 +291,24 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  // Verify Payment
  const handleVerifyPayment = async () => {
  if (!selectedRequest) return;
- if (!confirm("Have you verified this transaction in your business UPI bank account?")) return;
+ 
+ const totalApproved = selectedRequest.approvedAmount ?? selectedRequest.budgetAmount;
+ const submittedAmt = selectedRequest.paymentAmountSubmitted ?? totalApproved;
+ const currentPaid = selectedRequest.paidAmount ?? 0;
+ const newPaidTotal = currentPaid + submittedAmt;
+ const remaining = totalApproved - newPaidTotal;
+ const isFullyPaid = remaining <= 0;
+ const displaySign = selectedRequest.approvedCurrency === 'USD' ? '$' : '₹';
+
+ if (!confirm(`Have you verified receipt of ${displaySign}${submittedAmt.toLocaleString()} in your business account?`)) return;
 
  try {
  const adminToken = sessionStorage.getItem('admin_token') || '';
  const docRef = doc(db, 'requests', selectedRequest.id);
  await updateDoc(docRef, {
- status: 'completed',
+ status: isFullyPaid ? 'completed' : 'approved',
+ paidAmount: newPaidTotal,
+ paymentAmountSubmitted: 0,
  paymentVerifiedAt: Date.now(),
  adminAuthToken: adminToken
  });
@@ -305,7 +316,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  await addDoc(collection(db, 'chats'), {
  requestId: selectedRequest.id,
  sender: 'admin',
- text: `✅ Payment Verified! Thank you for completing your transaction. We have verified reference UTR ${selectedRequest.paymentTxRef}. Your project kickoff has been scheduled.`,
+ text: `✅ Payment Verified!\n\nWe have verified receipt of ${displaySign}${submittedAmt.toLocaleString()} (UTR Reference: ${selectedRequest.paymentTxRef || 'N/A'}).\n\nTotal Paid: ${displaySign}${newPaidTotal.toLocaleString()}\nRemaining Balance: ${displaySign}${Math.max(0, remaining).toLocaleString()}\n\n${isFullyPaid ? 'Your project is now fully funded! Kickoff scheduled.' : 'Thank you for the advance payment! Work kickoff and development logs have been initialized. You can pay the remaining balance anytime using the Secure UPI portal.'}`,
  timestamp: Date.now()
  });
  showToast('Payment verified successfully!', 'success', 'Payment Verified');
@@ -798,20 +809,38 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  {/* Payment Proof Details if submitted */}
- {(selectedRequest.status === 'payment_submitted' || selectedRequest.status === 'completed') && (
+ {(selectedRequest.status === 'payment_submitted' || selectedRequest.status === 'completed' || (selectedRequest.paidAmount && selectedRequest.paidAmount > 0)) && (
  <div className="bg-blue-500/10 border border-blue-500/20 p-3.5 space-y-2.5 rounded-2xl">
- <h4 className="text-[9px] font-bold text-blue-400 font-mono">Payment transaction proof</h4>
+ <h4 className="text-[9px] font-bold text-blue-400 font-mono">Payment transaction proof & Ledger</h4>
  
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] font-mono">
+ {selectedRequest.paidAmount !== undefined && selectedRequest.paidAmount > 0 && (
  <div>
- <p className="text-blue-400 font-bold text-[9px] ">UTR / UPI REFERENCE ID</p>
+ <p className="text-emerald-400 font-bold text-[9px] uppercase">TOTAL VERIFIED PAID</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold font-mono text-xs bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 rounded-lg">
+ {selectedRequest.approvedCurrency === 'USD' ? '$' : '₹'}{selectedRequest.paidAmount.toLocaleString()}
+ </p>
+ </div>
+ )}
+ {selectedRequest.paymentAmountSubmitted !== undefined && selectedRequest.paymentAmountSubmitted > 0 && (
+ <div>
+ <p className="text-blue-400 font-bold text-[9px] uppercase">AMOUNT FOR VERIFICATION</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold font-mono text-xs bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 rounded-lg">
+ {selectedRequest.approvedCurrency === 'USD' ? '$' : '₹'}{selectedRequest.paymentAmountSubmitted.toLocaleString()}
+ </p>
+ </div>
+ )}
+ {selectedRequest.paymentTxRef && (
+ <div>
+ <p className="text-blue-400 font-bold text-[9px] uppercase">UTR / UPI REFERENCE ID</p>
  <p className="text-slate-900 dark:text-slate-100 font-bold font-mono text-xs select-all bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 rounded-lg">
  {selectedRequest.paymentTxRef}
  </p>
  </div>
+ )}
  {selectedRequest.paymentNotes && (
  <div>
- <p className="text-blue-400 font-bold text-[9px] ">CLIENT REMARKS</p>
+ <p className="text-blue-400 font-bold text-[9px] uppercase">CLIENT REMARKS</p>
  <p className="text-slate-700 dark:text-slate-350 bg-slate-50 dark:bg-slate-950 px-2.5 py-1.5 border border-slate-200 dark:border-slate-850 mt-1 truncate rounded-lg">
  {selectedRequest.paymentNotes}
  </p>

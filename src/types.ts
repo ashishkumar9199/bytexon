@@ -31,6 +31,8 @@ export interface ProjectRequest {
  paymentNotes?: string;
  paymentSubmittedAt?: number;
  paymentVerifiedAt?: number;
+ paidAmount?: number;
+ paymentAmountSubmitted?: number;
  dailyUpdates?: ProjectUpdate[];
  files?: ProjectFile[];
 }

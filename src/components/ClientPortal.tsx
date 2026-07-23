@@ -29,6 +29,8 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  const [payNotes, setPayNotes] = useState('');
  const [copied, setCopied] = useState(false);
  const [submittingPayment, setSubmittingPayment] = useState(false);
+ const [paymentOption, setPaymentOption] = useState<'full' | 'advance'>('full');
+ const [customAdvanceAmount, setCustomAdvanceAmount] = useState<string>('');
 
  const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -105,6 +107,20 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  e.preventDefault();
  if (!txRef.trim() || !request) return;
 
+ const paidAmountVal = request.paidAmount ?? 0;
+ const remainingBalanceVal = Math.max(0, displayAmount - paidAmountVal);
+ const targetPaymentAmount = paymentOption === 'full' ? remainingBalanceVal : (parseFloat(customAdvanceAmount) || 0);
+
+ if (targetPaymentAmount <= 0) {
+   showToast('Please enter a valid payment amount.', 'warning', 'Invalid Amount');
+   return;
+ }
+
+ if (paymentOption === 'advance' && targetPaymentAmount > remainingBalanceVal) {
+   showToast(`Your advance payment cannot exceed the remaining balance of ${displaySign}${remainingBalanceVal.toLocaleString()}.`, 'warning', 'Limit Exceeded');
+   return;
+ }
+
  setSubmittingPayment(true);
  try {
  const docRef = doc(db, 'requests', request.id);
@@ -112,6 +128,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  status: 'payment_submitted',
  paymentTxRef: txRef.trim(),
  paymentNotes: payNotes.trim(),
+ paymentAmountSubmitted: targetPaymentAmount,
  paymentSubmittedAt: Date.now()
  });
 
@@ -119,7 +136,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  await addDoc(collection(db, 'chats'), {
  requestId: request.id,
  sender: 'client',
- text: `💳 [System notification] Client submitted payment proof. Tx Ref: ${txRef.trim()}`,
+ text: `💳 [System notification] Client submitted payment proof of ${displaySign}${targetPaymentAmount.toLocaleString()} via UPI.\n\nTransaction UTR: ${txRef.trim()}\n\nPayment Mode: ${paymentOption === 'full' ? 'Full Balance Payment' : 'Advance/Partial Payment'}\nRemaining Balance (pending verification): ${displaySign}${Math.max(0, remainingBalanceVal - targetPaymentAmount).toLocaleString()}`,
  timestamp: Date.now()
  });
 
@@ -294,6 +311,10 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  const displayCurrency = request.approvedCurrency ?? request.budgetCurrency;
  const displaySign = displayCurrency === 'USD' ? '$' : '₹';
 
+ const paidAmount = request.paidAmount ?? 0;
+ const remainingBalance = Math.max(0, displayAmount - paidAmount);
+ const targetPaymentAmount = paymentOption === 'full' ? remainingBalance : (parseFloat(customAdvanceAmount) || 0);
+
  // Determine active stages
  const isApproved = request.status === 'approved' || request.status === 'payment_submitted' || request.status === 'completed';
  const isPaymentSubmitted = request.status === 'payment_submitted' || request.status === 'completed';
@@ -395,9 +416,9 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  <p className={`font-bold text-xs truncate font-mono ${isPaymentSubmitted ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>[03] UPI PAYMENT</p>
  <p className={`text-[10px] font-semibold font-mono truncate ${
  isPaymentSubmitted ? 'text-indigo-600' :
- isApproved ? 'text-amber-400' : 'text-slate-300'
+ isApproved ? (paidAmount > 0 ? 'text-emerald-500' : 'text-amber-400') : 'text-slate-300'
  }`}>
- {isPaymentSubmitted ? 'PROOF SENT' : isApproved ? 'AWAITING PAY' : 'PENDING'}
+ {isPaymentSubmitted ? 'PROOF SENT' : isApproved ? (paidAmount > 0 ? `PAID: ${displaySign}${paidAmount.toLocaleString()}` : 'AWAITING PAY') : 'PENDING'}
  </p>
  </div>
  </div>
@@ -610,21 +631,98 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
 
  <div className="space-y-4">
  
- {/* Approved Price Notice */}
- <div className="flex justify-between items-center bg-indigo-50 dark:bg-indigo-950/40 p-3.5 border border-indigo-200 dark:border-indigo-900/50 rounded-2xl">
- <div>
- <p className="text-indigo-600 text-[9px] font-bold font-mono">Final approved price</p>
- <p className="text-lg font-sans font-bold text-slate-900 dark:text-white mt-0.5">
+ {/* Approved Price Notice & Paid Summary */}
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+ <div className="bg-slate-50 dark:bg-slate-950/45 p-3 border border-slate-200 dark:border-slate-800 rounded-2xl">
+ <p className="text-slate-500 dark:text-slate-400 text-[9px] font-bold font-mono">Final Approved Price</p>
+ <p className="text-base font-sans font-bold text-slate-900 dark:text-white mt-1">
  {displaySign}{displayAmount.toLocaleString()}
  </p>
  </div>
- <span className="px-2 py-0.5 bg-indigo-600 text-white text-[10px] font-bold font-mono">
- UPI TARGET
- </span>
+ <div className="bg-slate-50 dark:bg-slate-950/45 p-3 border border-slate-200 dark:border-slate-800 rounded-2xl">
+ <p className="text-emerald-600 text-[9px] font-bold font-mono">Total Verified Paid</p>
+ <p className="text-base font-sans font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+ {displaySign}{paidAmount.toLocaleString()}
+ </p>
+ </div>
+ <div className="bg-indigo-50 dark:bg-indigo-950/40 p-3 border border-indigo-200 dark:border-indigo-900/40 rounded-2xl">
+ <p className="text-indigo-600 dark:text-cyan-400 text-[9px] font-bold font-mono">Remaining Balance</p>
+ <p className="text-base font-sans font-bold text-indigo-700 dark:text-cyan-400 mt-1">
+ {displaySign}{remainingBalance.toLocaleString()}
+ </p>
+ </div>
  </div>
 
  {request.status === 'approved' ? (
  <>
+ {remainingBalance > 0 ? (
+ <div className="space-y-4 pt-1">
+ <div className="space-y-2">
+ <label className="block text-slate-500 text-[10px] font-bold font-mono uppercase tracking-wider">
+ Choose Payment Option
+ </label>
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+ <button
+ type="button"
+ onClick={() => {
+ setPaymentOption('full');
+ setCustomAdvanceAmount('');
+ }}
+ className={`py-3 px-4 rounded-xl border transition-all text-left flex flex-col justify-between cursor-pointer min-h-[55px] ${
+ paymentOption === 'full'
+ ? 'bg-slate-950 dark:bg-cyan-600 text-white border-slate-950 dark:border-cyan-600 shadow-md'
+ : 'bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100/50'
+ }`}
+ >
+ <span className="text-[9px] font-mono font-bold tracking-widest opacity-75">OPTION 01</span>
+ <span className="text-xs font-bold mt-1">Pay Remaining Balance ({displaySign}{remainingBalance.toLocaleString()})</span>
+ </button>
+ 
+ <button
+ type="button"
+ onClick={() => {
+ setPaymentOption('advance');
+ setCustomAdvanceAmount(Math.round(remainingBalance / 2).toString());
+ }}
+ className={`py-3 px-4 rounded-xl border transition-all text-left flex flex-col justify-between cursor-pointer min-h-[55px] ${
+ paymentOption === 'advance'
+ ? 'bg-slate-950 dark:bg-cyan-600 text-white border-slate-950 dark:border-cyan-600 shadow-md'
+ : 'bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100/50'
+ }`}
+ >
+ <span className="text-[9px] font-mono font-bold tracking-widest opacity-75">OPTION 02</span>
+ <span className="text-xs font-bold mt-1">Pay Custom Advance</span>
+ </button>
+ </div>
+ </div>
+
+ {paymentOption === 'advance' && (
+ <div className="bg-slate-50 dark:bg-slate-850 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-2">
+ <div className="flex justify-between items-center text-[10px] font-mono">
+ <span className="text-slate-500 font-bold uppercase">Enter Advance Amount ({displayCurrency})</span>
+ <span className="text-slate-400 font-bold">Limit: {displaySign}1 - {displaySign}{remainingBalance.toLocaleString()}</span>
+ </div>
+ <div className="relative group">
+ <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-mono text-xs font-bold">
+ {displaySign}
+ </span>
+ <input
+ type="number"
+ min="1"
+ max={remainingBalance}
+ value={customAdvanceAmount}
+ onChange={(e) => setCustomAdvanceAmount(e.target.value)}
+ className="w-full px-4 py-2.5 pl-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl text-xs font-mono text-slate-900 dark:text-slate-100 focus:border-cyan-500 focus:outline-none focus:ring-4 focus:ring-cyan-500/10 transition-all duration-200"
+ />
+ </div>
+ </div>
+ )}
+
+ <div className="flex items-center gap-2 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl text-[10px] font-mono text-amber-600 dark:text-amber-400">
+ <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+ <span>Active Scan Amount configured to: <strong>{displaySign}{targetPaymentAmount.toLocaleString()}</strong></span>
+ </div>
+
  <p className="text-slate-500 text-xs leading-relaxed font-mono">
  Please transfer using the secure details below. Then, paste your transaction UPI Reference ID (UTR) in the form below.
  </p>
@@ -635,7 +733,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  {/* UPI QR Generated */}
  <div className="bg-white dark:bg-slate-950 p-2 border border-slate-300 dark:border-slate-800 flex-shrink-0 rounded-xl">
  <img 
- src={getQrCodeUrl(adminConfig.upiId, displayAmount, adminConfig.upiQrBase64)}
+ src={getQrCodeUrl(adminConfig.upiId, targetPaymentAmount, adminConfig.upiQrBase64)}
  alt="Bytexon UPI QR"
  className="w-28 h-28 object-contain"
  referrerPolicy="no-referrer"
@@ -713,6 +811,18 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  )}
  </button>
  </form>
+ </div>
+ ) : (
+ <div className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 p-5 border border-emerald-200 dark:border-emerald-900/40 text-center space-y-3 rounded-2xl w-full">
+   <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
+   <div>
+     <h4 className="font-bold text-xs font-mono">[ PROJECT FULLY FUNDED ]</h4>
+     <p className="text-[11px] text-slate-500 mt-1 leading-relaxed font-mono">
+       ALL APPROVED FUNDS HAVE BEEN SUCCESSFULLY TRANSFERRED AND CONFIRMED. WORK PROGRESS IS ACTIVELY LOGGED BELOW.
+     </p>
+   </div>
+ </div>
+ )}
  </>
  ) : request.status === 'payment_submitted' ? (
  <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 text-center space-y-3 rounded-2xl">
