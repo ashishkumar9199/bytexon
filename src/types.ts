@@ -73,4 +73,8 @@ export interface AdminConfig {
   adminAuthToken?: string;
   totpEnabled?: boolean;
   totpSecret?: string;
+  bankName?: string;
+  bankAccNo?: string;
+  bankIfsc?: string;
+  bankHolderName?: string;
 }

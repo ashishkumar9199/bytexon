@@ -31,6 +31,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  const [submittingPayment, setSubmittingPayment] = useState(false);
  const [paymentOption, setPaymentOption] = useState<'full' | 'advance'>('full');
  const [customAdvanceAmount, setCustomAdvanceAmount] = useState<string>('');
+ const [paymentMethod, setPaymentMethod] = useState<'upi' | 'bank'>('upi');
 
  const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -150,7 +151,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  await addDoc(collection(db, 'chats'), {
  requestId: request.id,
  sender: 'client',
- text: `💳 [System notification] Client submitted payment proof of ${displaySign}${targetPaymentAmount.toLocaleString()} via UPI.\n\nTransaction UTR: ${txRef.trim()}\n\nPayment Mode: ${paymentOption === 'full' ? 'Full Balance Payment' : 'Advance/Partial Payment'}\nRemaining Balance (pending verification): ${displaySign}${Math.max(0, remainingBalanceVal - targetPaymentAmount).toLocaleString()}`,
+ text: `💳 [System notification] Client submitted payment proof of ${displaySign}${targetPaymentAmount.toLocaleString()} via ${paymentMethod === 'upi' ? 'UPI' : 'Direct Bank Transfer'}.\n\nTransaction UTR / Reference: ${txRef.trim()}\n\nPayment Mode: ${paymentOption === 'full' ? 'Full Balance Payment' : 'Advance/Partial Payment'}\nRemaining Balance (pending verification): ${displaySign}${Math.max(0, remainingBalanceVal - targetPaymentAmount).toLocaleString()}`,
  timestamp: Date.now()
  });
 
@@ -734,50 +735,172 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
 
  <div className="flex items-center gap-2 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl text-[10px] font-mono text-amber-600 dark:text-amber-400">
  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
- <span>Active Scan Amount configured to: <strong>{displaySign}{targetPaymentAmount.toLocaleString()}</strong></span>
+ <span>Active Pay Amount configured to: <strong>{displaySign}{targetPaymentAmount.toLocaleString()}</strong></span>
+ </div>
+
+ {/* Payment Method Tabs */}
+ <div className="flex bg-slate-100 dark:bg-slate-850 p-1 rounded-xl border border-slate-200 dark:border-slate-800 gap-1 mt-2">
+   <button
+     type="button"
+     onClick={() => setPaymentMethod('upi')}
+     className={`flex-1 py-2 text-center text-xs font-mono font-bold rounded-lg transition-all cursor-pointer ${
+       paymentMethod === 'upi'
+         ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-cyan-400 shadow-sm border border-slate-200/50 dark:border-slate-800'
+         : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+     }`}
+   >
+     ⚡ UPI SCAN / QR
+   </button>
+   <button
+     type="button"
+     onClick={() => setPaymentMethod('bank')}
+     className={`flex-1 py-2 text-center text-xs font-mono font-bold rounded-lg transition-all cursor-pointer ${
+       paymentMethod === 'bank'
+         ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-cyan-400 shadow-sm border border-slate-200/50 dark:border-slate-800'
+         : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+     }`}
+   >
+     🏦 BANK DETAILS
+   </button>
  </div>
 
  <p className="text-slate-500 text-xs leading-relaxed font-mono">
- Please transfer using the secure details below. Then, paste your transaction UPI Reference ID (UTR) in the form below.
+   {paymentMethod === 'upi' 
+     ? 'Please scan with any UPI app or copy the UPI ID below, then submit the UTR ID.'
+     : 'Please complete an IMPS / NEFT transfer using the bank details below, then submit the transaction reference.'
+   }
  </p>
 
- {/* QR Code and UPI ID Grid */}
- <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-slate-50 dark:bg-slate-850/55 border border-slate-200 dark:border-slate-800 rounded-2xl">
- 
- {/* UPI QR Generated */}
- <div className="bg-white dark:bg-slate-950 p-2 border border-slate-300 dark:border-slate-800 flex-shrink-0 rounded-xl">
- <img 
- src={getQrCodeUrl(adminConfig.upiId, targetPaymentAmount, adminConfig.upiQrBase64)}
- alt="Bytexon UPI QR"
- className="w-28 h-28 object-contain"
- referrerPolicy="no-referrer"
- />
- <p className="text-black text-[8px] text-center mt-1 font-mono font-bold">Scan with UPI App</p>
- </div>
+ {paymentMethod === 'upi' ? (
+   /* QR Code and UPI ID Grid */
+   <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-slate-50 dark:bg-slate-850/55 border border-slate-200 dark:border-slate-800 rounded-2xl">
+     
+     {/* UPI QR Generated */}
+     <div className="bg-white dark:bg-slate-950 p-2 border border-slate-300 dark:border-slate-800 flex-shrink-0 rounded-xl">
+       <img 
+         src={getQrCodeUrl(adminConfig.upiId, targetPaymentAmount, adminConfig.upiQrBase64)}
+         alt="Bytexon UPI QR"
+         className="w-28 h-28 object-contain"
+         referrerPolicy="no-referrer"
+       />
+       <p className="text-black text-[8px] text-center mt-1 font-mono font-bold">Scan with UPI App</p>
+     </div>
 
- {/* UPI Copy Action */}
- <div className="space-y-3.5 w-full text-center sm:text-left">
- <div>
- <p className="text-slate-400 text-[9px] font-mono font-bold ">Official upi id</p>
- <div className="flex items-center justify-center sm:justify-start space-x-2 mt-1">
- <span className="font-mono text-xs font-bold bg-white dark:bg-slate-950 px-2.5 py-1.5 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white select-all rounded-lg">
- {adminConfig.upiId}
- </span>
- <button 
- onClick={handleCopyUpi}
- className="p-1.5 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white transition-colors cursor-pointer"
- title="Copy UPI ID"
- >
- {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
- </button>
- </div>
- </div>
- <ul className="text-slate-500 text-[10px] space-y-0.5 pl-3 list-disc text-left leading-normal font-mono ">
- <li>Instant kickoff scheduled on receipt</li>
- <li>Accepts GPay, PhonePe, Paytm, BHIM</li>
- </ul>
- </div>
- </div>
+     {/* UPI Copy Action */}
+     <div className="space-y-3.5 w-full text-center sm:text-left">
+       <div>
+         <p className="text-slate-400 text-[9px] font-mono font-bold ">Official upi id</p>
+         <div className="flex items-center justify-center sm:justify-start space-x-2 mt-1">
+           <span className="font-mono text-xs font-bold bg-white dark:bg-slate-950 px-2.5 py-1.5 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white select-all rounded-lg">
+             {adminConfig.upiId}
+           </span>
+           <button 
+             type="button"
+             onClick={handleCopyUpi}
+             className="p-1.5 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white transition-colors cursor-pointer rounded-lg"
+             title="Copy UPI ID"
+           >
+             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+           </button>
+         </div>
+       </div>
+       <ul className="text-slate-500 text-[10px] space-y-0.5 pl-3 list-disc text-left leading-normal font-mono ">
+         <li>Instant kickoff scheduled on receipt</li>
+         <li>Accepts GPay, PhonePe, Paytm, BHIM</li>
+       </ul>
+     </div>
+   </div>
+ ) : (
+   /* Bank Account Details Grid */
+   <div className="p-4 bg-slate-50 dark:bg-slate-850/55 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3 text-left">
+     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+       
+       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl">
+         <p className="text-slate-400 text-[9px] font-mono font-bold uppercase">Beneficiary Name</p>
+         <div className="flex items-center justify-between mt-1">
+           <span className="font-mono text-xs font-bold text-slate-900 dark:text-white truncate">
+             {adminConfig.bankHolderName || 'Ashish kumar'}
+           </span>
+           <button 
+             type="button"
+             onClick={() => {
+               navigator.clipboard.writeText(adminConfig.bankHolderName || 'Ashish kumar');
+               showToast('Beneficiary name copied!', 'success', 'Copied');
+             }}
+             className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+             title="Copy Name"
+           >
+             <Copy className="w-3.5 h-3.5" />
+           </button>
+         </div>
+       </div>
+
+       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl">
+         <p className="text-slate-400 text-[9px] font-mono font-bold uppercase">Bank Name</p>
+         <div className="flex items-center justify-between mt-1">
+           <span className="font-mono text-xs font-bold text-slate-900 dark:text-white truncate">
+             {adminConfig.bankName || 'IndusInd Bank'}
+           </span>
+           <button 
+             type="button"
+             onClick={() => {
+               navigator.clipboard.writeText(adminConfig.bankName || 'IndusInd Bank');
+               showToast('Bank name copied!', 'success', 'Copied');
+             }}
+             className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+             title="Copy Bank"
+           >
+             <Copy className="w-3.5 h-3.5" />
+           </button>
+         </div>
+       </div>
+
+       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl sm:col-span-2">
+         <p className="text-slate-400 text-[9px] font-mono font-bold uppercase">Account Number</p>
+         <div className="flex items-center justify-between mt-1 border-t border-slate-100 dark:border-slate-800/80 pt-1.5 mt-1">
+           <span className="font-mono text-sm font-bold text-indigo-600 dark:text-cyan-400 tracking-wider select-all">
+             {adminConfig.bankAccNo || '159661089175'}
+           </span>
+           <button 
+             type="button"
+             onClick={() => {
+               navigator.clipboard.writeText(adminConfig.bankAccNo || '159661089175');
+               showToast('Account number copied!', 'success', 'Copied');
+             }}
+             className="p-1.5 bg-indigo-50 dark:bg-cyan-950/30 text-indigo-600 dark:text-cyan-400 hover:bg-indigo-100 transition-colors cursor-pointer rounded-lg"
+             title="Copy Account Number"
+           >
+             <Copy className="w-3.5 h-3.5" />
+           </button>
+         </div>
+       </div>
+
+       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl sm:col-span-2">
+         <p className="text-slate-400 text-[9px] font-mono font-bold uppercase">IFSC Code</p>
+         <div className="flex items-center justify-between mt-1 border-t border-slate-100 dark:border-slate-800/80 pt-1.5 mt-1">
+           <span className="font-mono text-sm font-bold text-indigo-600 dark:text-cyan-400 tracking-wider select-all">
+             {adminConfig.bankIfsc || 'INDB0000566'}
+           </span>
+           <button 
+             type="button"
+             onClick={() => {
+               navigator.clipboard.writeText(adminConfig.bankIfsc || 'INDB0000566');
+               showToast('IFSC Code copied!', 'success', 'Copied');
+             }}
+             className="p-1.5 bg-indigo-50 dark:bg-cyan-950/30 text-indigo-600 dark:text-cyan-400 hover:bg-indigo-100 transition-colors cursor-pointer rounded-lg"
+             title="Copy IFSC Code"
+           >
+             <Copy className="w-3.5 h-3.5" />
+           </button>
+         </div>
+       </div>
+
+     </div>
+     <div className="bg-indigo-500/5 p-2.5 rounded-xl border border-indigo-500/10 text-[9px] font-mono text-indigo-600 dark:text-cyan-450 leading-relaxed">
+       ⚠️ Transfer exact amount via IMPS, NEFT or RTGS, then copy-paste the transaction reference / UTR ID below.
+     </div>
+   </div>
+ )}
 
  {/* Payment Form */}
  <form onSubmit={handlePaymentSubmit} className="space-y-3 pt-1">

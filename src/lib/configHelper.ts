@@ -17,7 +17,11 @@ export const DEFAULT_CONFIG: AdminConfig = {
  starter: 15000,
  professional: 45000,
  enterprise: 95000
- }
+ },
+ bankName: 'IndusInd Bank',
+ bankAccNo: '159661089175',
+ bankIfsc: 'INDB0000566',
+ bankHolderName: 'Ashish kumar'
 };
 
 export async function getAdminConfig(): Promise<AdminConfig> {

@@ -53,7 +53,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
  starterPrice: adminConfig.standardPricing?.starter ?? 15000,
  professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
- enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
+ enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000,
+ bankName: adminConfig.bankName || 'IndusInd Bank',
+ bankAccNo: adminConfig.bankAccNo || '159661089175',
+ bankIfsc: adminConfig.bankIfsc || 'INDB0000566',
+ bankHolderName: adminConfig.bankHolderName || 'Ashish kumar'
  });
  const [qrFileBase64, setQrFileBase64] = useState<string>(adminConfig.upiQrBase64 || '');
  const [updatingSettings, setUpdatingSettings] = useState(false);
@@ -177,7 +181,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  adminSecretPath: adminConfig.adminSecretPath || 'gate-abhya23',
  starterPrice: adminConfig.standardPricing?.starter ?? 15000,
  professionalPrice: adminConfig.standardPricing?.professional ?? 45000,
- enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000
+ enterprisePrice: adminConfig.standardPricing?.enterprise ?? 95000,
+ bankName: adminConfig.bankName || 'IndusInd Bank',
+ bankAccNo: adminConfig.bankAccNo || '159661089175',
+ bankIfsc: adminConfig.bankIfsc || 'INDB0000566',
+ bankHolderName: adminConfig.bankHolderName || 'Ashish kumar'
  });
  setQrFileBase64(adminConfig.upiQrBase64 || '');
  }, [adminConfig]);
@@ -535,7 +543,11 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  starter: Number(settingsForm.starterPrice),
  professional: Number(settingsForm.professionalPrice),
  enterprise: Number(settingsForm.enterprisePrice)
- }
+ },
+ bankName: settingsForm.bankName.trim(),
+ bankAccNo: settingsForm.bankAccNo.trim(),
+ bankIfsc: settingsForm.bankIfsc.trim(),
+ bankHolderName: settingsForm.bankHolderName.trim()
  });
  setSettingsSuccess(true);
  showToast('System configuration saved successfully!', 'success', 'Settings Saved');
@@ -1441,9 +1453,69 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  </div>
  </div>
 
+ {/* Bank account credentials */}
+ <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800 font-mono">
+ <h3 className="text-[9px] font-bold text-indigo-600 font-mono uppercase">3. BANK TRANSFER GATEWAY CONFIG</h3>
+ <p className="text-[10px] text-slate-500 leading-relaxed">Configure the direct bank transfer details that clients see during checkout.</p>
+ 
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <div>
+ <label className="block text-slate-500 text-[9px] font-bold mb-1.5 font-mono uppercase">
+ Beneficiary Holder Name <span className="text-rose-500">*</span>
+ </label>
+ <input 
+ type="text"
+ required
+ value={settingsForm.bankHolderName}
+ onChange={(e) => setSettingsForm(prev => ({ ...prev, bankHolderName: e.target.value }))}
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
+ />
+ </div>
+
+ <div>
+ <label className="block text-slate-500 text-[9px] font-bold mb-1.5 font-mono uppercase">
+ Bank Name <span className="text-rose-500">*</span>
+ </label>
+ <input 
+ type="text"
+ required
+ value={settingsForm.bankName}
+ onChange={(e) => setSettingsForm(prev => ({ ...prev, bankName: e.target.value }))}
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
+ />
+ </div>
+
+ <div className="md:col-span-2">
+ <label className="block text-slate-500 text-[9px] font-bold mb-1.5 font-mono uppercase">
+ Account Number <span className="text-rose-500">*</span>
+ </label>
+ <input 
+ type="text"
+ required
+ value={settingsForm.bankAccNo}
+ onChange={(e) => setSettingsForm(prev => ({ ...prev, bankAccNo: e.target.value }))}
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
+ />
+ </div>
+
+ <div className="md:col-span-2">
+ <label className="block text-slate-500 text-[9px] font-bold mb-1.5 font-mono uppercase">
+ IFSC Code <span className="text-rose-500">*</span>
+ </label>
+ <input 
+ type="text"
+ required
+ value={settingsForm.bankIfsc}
+ onChange={(e) => setSettingsForm(prev => ({ ...prev, bankIfsc: e.target.value }))}
+ className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 rounded-xl focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono font-bold transition-colors"
+ />
+ </div>
+ </div>
+ </div>
+
  {/* Standard Plan Price change */}
  <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800 font-mono">
- <h3 className="text-[9px] font-bold text-indigo-600 font-mono">3. PRICE TABLE UPDATES</h3>
+ <h3 className="text-[9px] font-bold text-indigo-600 font-mono">4. PRICE TABLE UPDATES</h3>
  <p className="text-[10px] text-slate-500 leading-relaxed ">Adjust standard starter template pricing. Changes are applied immediately to standard plan cards on the client landing page.</p>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
