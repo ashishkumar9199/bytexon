@@ -711,10 +711,11 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  </div>
  </div>
 
- {paymentOption === 'advance' && (
  <div className="bg-slate-50 dark:bg-slate-850 p-4 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-2">
  <div className="flex justify-between items-center text-[10px] font-mono">
- <span className="text-slate-500 font-bold uppercase">Enter Advance Amount ({displayCurrency})</span>
+ <span className="text-slate-500 font-bold uppercase">
+ {paymentOption === 'full' ? 'Payment Amount (Full Balance)' : 'Payment Amount (Custom Advance)'}
+ </span>
  <span className="text-slate-400 font-bold">Limit: {displaySign}1 - {displaySign}{remainingBalance.toLocaleString()}</span>
  </div>
  <div className="relative group">
@@ -725,13 +726,21 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  type="number"
  min="1"
  max={remainingBalance}
- value={customAdvanceAmount}
- onChange={(e) => setCustomAdvanceAmount(e.target.value)}
+ value={paymentOption === 'full' ? remainingBalance : customAdvanceAmount}
+ onChange={(e) => {
+   const enteredVal = e.target.value;
+   if (paymentOption === 'full') {
+     setPaymentOption('advance');
+   }
+   setCustomAdvanceAmount(enteredVal);
+ }}
  className="w-full px-4 py-2.5 pl-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl text-xs font-mono text-slate-900 dark:text-slate-100 focus:border-cyan-500 focus:outline-none focus:ring-4 focus:ring-cyan-500/10 transition-all duration-200"
  />
  </div>
- </div>
+ {paymentOption === 'full' && (
+   <p className="text-[9px] text-slate-450 dark:text-slate-500 font-mono mt-1">💡 Pro-tip: You can directly edit the amount above to make a custom advance/partial payment!</p>
  )}
+ </div>
 
  <div className="flex items-center gap-2 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl text-[10px] font-mono text-amber-600 dark:text-amber-400">
  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>

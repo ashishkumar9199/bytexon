@@ -39,6 +39,9 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const [approvalCurrency, setApprovalCurrency] = useState<'INR' | 'USD'>('INR');
  const [isApproving, setIsApproving] = useState(false);
 
+ // Verified Amount state
+ const [adminVerifyAmount, setAdminVerifyAmount] = useState<string>('');
+
  // Daily updates state
  const [newUpdateTitle, setNewUpdateTitle] = useState('');
  const [newUpdateNotes, setNewUpdateNotes] = useState('');
@@ -109,6 +112,17 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
      loadTotpConfig();
    }
  }, [activeTab]);
+
+ // Sync adminVerifyAmount whenever the selectedRequest changes
+ useEffect(() => {
+   if (selectedRequest) {
+     const totalApproved = selectedRequest.approvedAmount ?? selectedRequest.budgetAmount;
+     const submittedAmt = selectedRequest.paymentAmountSubmitted ?? totalApproved;
+     setAdminVerifyAmount(submittedAmt.toString());
+   } else {
+     setAdminVerifyAmount('');
+   }
+ }, [selectedRequest]);
 
  // Generate TOTP setup session
  const handleInitiateTotpSetup = async () => {
@@ -323,8 +337,14 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const handleVerifyPayment = async () => {
  if (!selectedRequest) return;
  
+ const parsedAmount = parseFloat(adminVerifyAmount);
+ if (isNaN(parsedAmount) || parsedAmount <= 0) {
+ showToast('Please enter a valid verification amount.', 'warning', 'Invalid Amount');
+ return;
+ }
+
  const totalApproved = selectedRequest.approvedAmount ?? selectedRequest.budgetAmount;
- const submittedAmt = selectedRequest.paymentAmountSubmitted ?? totalApproved;
+ const submittedAmt = parsedAmount;
  const currentPaid = selectedRequest.paidAmount ?? 0;
  const newPaidTotal = currentPaid + submittedAmt;
  const remaining = totalApproved - newPaidTotal;
@@ -354,6 +374,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  if (matchedIndex !== -1) {
    updatedPayments[matchedIndex] = {
      ...updatedPayments[matchedIndex],
+     amount: submittedAmt,
      status: 'verified',
      verifiedAt: Date.now()
    };
@@ -995,21 +1016,38 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  )}
 
  {selectedRequest.status === 'payment_submitted' && (
- <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl">
+ <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 p-5 rounded-2xl space-y-4">
  <div className="text-left space-y-1">
  <h5 className="font-bold text-indigo-600 text-xs flex items-center space-x-1.5 font-mono">
  <span>Action Required: Confirm Transaction ID</span>
  </h5>
- <p className="text-[10px] text-slate-700 max-w-md leading-relaxed font-mono">
- MATCH BUSINESS STATEMENTS FOR REFERENCE <strong className="text-indigo-600 font-bold">{selectedRequest.paymentTxRef}</strong>. IF RECEIVED, VERIFY KICKOFF.
+ <p className="text-[10px] text-slate-700 dark:text-slate-300 max-w-xl leading-relaxed font-mono">
+ MATCH BUSINESS STATEMENTS FOR REFERENCE <strong className="text-indigo-600 font-bold">{selectedRequest.paymentTxRef}</strong>. VERIFY THE EXACT AMOUNT RECEIVED TO KICKOFF.
  </p>
  </div>
 
- <div className="flex gap-2 w-full sm:w-auto">
+ <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 w-full border-t border-indigo-100 dark:border-indigo-900/30 pt-3">
+ <div className="flex-1 space-y-1.5">
+ <label className="block text-[8px] font-bold text-slate-400 font-mono uppercase tracking-wider">
+ VERIFIED AMOUNT RECEIVED ({selectedRequest.approvedCurrency === 'USD' ? 'USD' : 'INR'})
+ </label>
+ <div className="relative">
+ <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-mono text-xs font-bold">
+ {selectedRequest.approvedCurrency === 'USD' ? '$' : '₹'}
+ </span>
+ <input
+ type="number"
+ value={adminVerifyAmount}
+ onChange={(e) => setAdminVerifyAmount(e.target.value)}
+ className="w-full px-3 py-1.5 pl-7 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 focus:outline-none focus:border-indigo-600 rounded-xl font-mono text-xs text-slate-900 dark:text-slate-100"
+ />
+ </div>
+ </div>
+
  <button
  onClick={handleVerifyPayment}
  id="btn-admin-verify-pay"
- className="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-indigo-600 text-[10px] font-mono font-bold border border-indigo-600 transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+ className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-mono font-bold text-[10px] border border-indigo-600 transition-colors flex items-center justify-center space-x-1 cursor-pointer rounded-xl h-[34px]"
  >
  <CheckCircle className="w-3.5 h-3.5" />
  <span>Verify & Kickoff</span>
