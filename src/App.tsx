@@ -12,7 +12,6 @@ import OurServices from './components/OurServices';
 import OtherServices from './components/OtherServices';
 import OurStacks from './components/OurStacks';
 import WorkProcess from './components/WorkProcess';
-import ProjectPlanner from './components/ProjectPlanner';
 import ContactUs from './components/ContactUs';
 import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
@@ -138,7 +137,7 @@ export default function App() {
  const [showIntro, setShowIntro] = useState<boolean>(() => {
  return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
  });
- const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'project-planner' | 'contact-us'>('client-landing');
+ const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'contact-us'>('client-landing');
  const [plannerTab, setPlannerTab] = useState<'create' | 'track'>('create');
  const [plannerPrefillPrice, setPlannerPrefillPrice] = useState<number | undefined>(undefined);
  const [plannerPrefillDesc, setPlannerPrefillDesc] = useState<string | undefined>(undefined);
@@ -640,14 +639,7 @@ export default function App() {
               >
                 Process
               </button>
-              <button 
-                onClick={() => {
-                  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
-                }}
-                className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'project-planner' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
-              >
-                Planner
-              </button>
+
               <button 
                 onClick={() => navigateTo('contact-us')}
                 className={`transition-colors hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'contact-us' ? 'text-slate-950 dark:text-white font-semibold' : ''}`}
@@ -889,14 +881,7 @@ export default function App() {
                   >
                     Process
                   </button>
-                  <button 
-                    onClick={() => {
-                      navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
-                    }}
-                    className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'project-planner' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
-                  >
-                    Planner
-                  </button>
+
                   <button 
                     onClick={() => navigateTo('contact-us')}
                     className={`text-left py-1 hover:text-indigo-600 dark:hover:text-cyan-400 ${view === 'contact-us' ? 'text-indigo-600 dark:text-white font-semibold' : ''}`}
@@ -928,8 +913,8 @@ export default function App() {
  <ClientLanding 
  onAccessPortal={handleAccessPortal} 
  adminConfig={adminConfig}
- onLaunchPlanner={(tab, price, desc) => {
- navigateTo('project-planner', { tab: tab || 'create', prefillPrice: price, prefillDesc: desc });
+ onLaunchPlanner={() => {
+ navigateTo('contact-us');
  }}
  />
  )}
@@ -938,7 +923,7 @@ export default function App() {
  {view === 'our-services' && (
  <OurServices 
  onPlanProject={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+ navigateTo('contact-us');
  }}
  />
  )}
@@ -948,7 +933,7 @@ export default function App() {
   <OtherServices 
   onBackToLanding={() => navigateTo('client-landing')}
   onPlanProject={() => {
-  navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+  navigateTo('contact-us');
   }}
   />
   )}
@@ -957,7 +942,7 @@ export default function App() {
  {view === 'our-stacks' && (
  <OurStacks 
  onPlanProject={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+ navigateTo('contact-us');
  }}
  />
  )}
@@ -966,27 +951,17 @@ export default function App() {
  {view === 'work-process' && (
  <WorkProcess 
  onPlanProject={() => {
- navigateTo('project-planner', { tab: 'create', prefillPrice: undefined, prefillDesc: undefined });
+ navigateTo('contact-us');
  }}
  />
  )}
 
- {/* 1.8. PROJECT PLANNER PAGE */}
- {view === 'project-planner' && (
- <ProjectPlanner 
- onAccessPortal={handleAccessPortal}
- adminConfig={adminConfig}
- initialTab={plannerTab}
- initialBudgetAmount={plannerPrefillPrice}
- initialDescription={plannerPrefillDesc}
- />
- )}
+
 
  {/* 1.9. CONTACT US PAGE */}
  {view === 'contact-us' && (
  <ContactUs 
  onBackToLanding={() => navigateTo('client-landing')}
- onPlanProject={() => navigateTo('project-planner', { tab: 'create' })}
  />
  )}
 
@@ -1198,12 +1173,7 @@ export default function App() {
           <button onClick={() => navigateTo('other-services')} className="hover:text-indigo-600 transition-colors cursor-pointer">Other Services</button>
           <button onClick={() => navigateTo('our-stacks')} className="hover:text-indigo-600 transition-colors cursor-pointer">Tech Stacks</button>
           <button onClick={() => navigateTo('work-process')} className="hover:text-indigo-600 transition-colors cursor-pointer">Process</button>
-          <button 
-            onClick={() => navigateTo('project-planner', { tab: 'create' })}
-            className="hover:text-indigo-600 transition-colors cursor-pointer"
-          >
-            Planner
-          </button>
+
           <button 
             onClick={() => navigateTo('contact-us')}
             className="hover:text-indigo-600 transition-colors cursor-pointer"

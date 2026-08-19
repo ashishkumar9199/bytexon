@@ -65,27 +65,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
               Bytexon translates complex organizational constraints into incredibly sleek, performant software. Submit specs in our interactive planner, secure live trackers, and collaborate directly with lead engineers.
             </motion.p>
 
-            {/* Micro Action Buttons */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md pt-4"
-            >
-              <button
-                onClick={() => onLaunchPlanner('create')}
-                className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-white font-medium py-3 px-6 text-xs sm:text-sm tracking-wide transition-all cursor-pointer rounded-none flex items-center justify-center space-x-2 shrink-0 shadow-sm hover:shadow"
-              >
-                <span>Launch Project Planner</span>
-                <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-700" />
-              </button>
-              <button
-                onClick={() => onLaunchPlanner('track')}
-                className="bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-medium py-3 px-6 text-xs sm:text-sm tracking-wide transition-all cursor-pointer border border-slate-200 dark:border-slate-800 rounded-none flex items-center justify-center space-x-2 shrink-0 shadow-sm hover:shadow"
-              >
-                <span>Track Workspace</span>
-              </button>
-            </motion.div>
+
 
             {/* Apple-style Bento Stats Grid */}
             <motion.div 
