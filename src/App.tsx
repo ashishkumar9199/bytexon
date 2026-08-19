@@ -161,7 +161,7 @@ export default function App() {
     const activePalette = PALETTES[palette] || PALETTES.corporate;
     const colors = activePalette[theme];
     Object.entries(colors).forEach(([key, val]) => {
-      document.documentElement.style.setProperty(key, val);
+      document.documentElement.style.setProperty(key, String(val));
     });
     localStorage.setItem('bytexon_palette', palette);
  }, [theme, palette]);

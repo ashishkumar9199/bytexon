@@ -343,12 +343,12 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  return;
  }
 
- const totalApproved = selectedRequest.approvedAmount ?? selectedRequest.budgetAmount;
- const submittedAmt = parsedAmount;
- const currentPaid = selectedRequest.paidAmount ?? 0;
+ const totalApproved = Number(selectedRequest.approvedAmount ?? selectedRequest.budgetAmount ?? 0);
+ const submittedAmt = Number(parsedAmount);
+ const currentPaid = Number(selectedRequest.paidAmount ?? 0);
  const newPaidTotal = currentPaid + submittedAmt;
  const remaining = totalApproved - newPaidTotal;
- const isFullyPaid = remaining <= 0;
+ const isFullyPaid = totalApproved > 0 && remaining <= 0.01;
  const displaySign = selectedRequest.approvedCurrency === 'USD' ? '$' : '₹';
 
  if (!confirm(`Have you verified receipt of ${displaySign}${submittedAmt.toLocaleString()} in your business account?`)) return;
