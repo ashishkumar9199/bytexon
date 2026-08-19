@@ -133,7 +133,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Button Gradient Shimmer */
 .bytexon-btn {
-  background: linear-gradient(135deg, #020617 0%, #0891b2 100%);
+  background: var(--color-brand-gradient);
   transition: all 0.3s ease;
 }
 
@@ -141,6 +141,128 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 10px 25px -5px rgba(8, 145, 178, 0.4);
   transform: translateY(-2px);
 }
+
+/* Dynamic CSS variables mapping */
+:root {
+  --color-bg-primary: #FAF9F6;
+  --color-bg-secondary: #FFFFFF;
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-border: rgba(15, 23, 42, 0.06);
+  --color-brand-accent: #009BB8;
+  --color-brand-gradient: linear-gradient(135deg, #0F172A 0%, #009BB8 100%);
+}
+
+.dark {
+  --color-bg-primary: #06080F;
+  --color-bg-secondary: #0F131E;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-brand-accent: #00C2E8;
+  --color-brand-gradient: linear-gradient(135deg, #020617 0%, #00C2E8 100%);
+}
+
+@theme {
+  --color-site-bg: var(--color-bg-primary);
+  --color-site-text: var(--color-text-primary);
+  --color-panel-bg: var(--color-bg-secondary);
+  --color-panel-text: var(--color-text-secondary);
+  --color-accent: var(--color-brand-accent);
+}
+
+/* Force body styling to respect dynamic theme properties */
+body, html {
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Seamless Background Overrides for the entire website */
+.bg-slate-50, 
+.bg-\[\#fbfbfd\] {
+  background-color: var(--color-bg-primary) !important;
+}
+
+.dark .dark\:bg-slate-950 {
+  background-color: var(--color-bg-primary) !important;
+}
+
+.bg-white, 
+.bg-slate-50\/50, 
+.bg-\[\#f5f5f7\] {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.dark .dark\:bg-slate-900, 
+.dark .dark\:bg-slate-900\/50, 
+.dark .dark\:bg-slate-850, 
+.dark .dark\:bg-slate-850\/50 {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+/* Text Color Overrides for pristine typography hierarchy */
+.text-slate-900, 
+.text-slate-950, 
+.text-\[\#1d1d1f\] {
+  color: var(--color-text-primary) !important;
+}
+
+.dark .dark\:text-white, 
+.dark .dark\:text-slate-100 {
+  color: var(--color-text-primary) !important;
+}
+
+.text-slate-500, 
+.text-slate-600 {
+  color: var(--color-text-secondary) !important;
+}
+
+.dark .dark\:text-slate-400, 
+.dark .dark\:text-slate-350, 
+.dark .dark\:text-slate-500 {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Elegant Accents, Gradients and Button Overrides */
+.bg-slate-900, 
+.bg-slate-950 {
+  background: var(--color-brand-gradient) !important;
+}
+
+.dark .dark\:bg-white {
+  background: var(--color-brand-accent) !important;
+  color: var(--color-bg-primary) !important;
+}
+
+/* Text Link & Icon Highlights */
+.text-indigo-600, 
+.text-indigo-500, 
+.text-purple-600 {
+  color: var(--color-brand-accent) !important;
+}
+
+.dark .dark\:text-cyan-400, 
+.dark .dark\:text-cyan-450 {
+  color: var(--color-brand-accent) !important;
+}
+
+/* Seamless Elegant Border Overrides */
+.border-slate-200, 
+.border-slate-200\/40, 
+.border-slate-200\/50, 
+.border-slate-200\/60, 
+.border-slate-200\/80, 
+.border-black\/\[0\.03\], 
+.border-black\/\[0\.04\] {
+  border-color: var(--color-border) !important;
+}
+
+.dark .dark\:border-slate-800, 
+.dark .dark\:border-slate-800\/80, 
+.dark .dark\:border-slate-850 {
+  border-color: var(--color-border) !important;
+}
+
 
 
 

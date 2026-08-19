@@ -18,11 +18,123 @@ import FeedbackWidget from './components/FeedbackWidget';
 import BytexonLogo from './components/BytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import { verifyTotp } from './lib/totpHelper';
-import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff, Key, QrCode } from 'lucide-react';
+import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff, Key, QrCode, Palette } from 'lucide-react';
 import { useToast } from './context/ToastContext';
+
+export const PALETTES = {
+  corporate: {
+    name: 'Classic Slate',
+    light: {
+      '--color-bg-primary': '#FAF9F6',
+      '--color-bg-secondary': '#FFFFFF',
+      '--color-text-primary': '#111827',
+      '--color-text-secondary': '#4B5563',
+      '--color-border': 'rgba(15, 23, 42, 0.06)',
+      '--color-brand-accent': '#009BB8',
+      '--color-brand-gradient': 'linear-gradient(135deg, #0F172A 0%, #009BB8 100%)',
+    },
+    dark: {
+      '--color-bg-primary': '#06080F',
+      '--color-bg-secondary': '#0F131E',
+      '--color-text-primary': '#F8FAFC',
+      '--color-text-secondary': '#94A3B8',
+      '--color-border': 'rgba(255, 255, 255, 0.06)',
+      '--color-brand-accent': '#00C2E8',
+      '--color-brand-gradient': 'linear-gradient(135deg, #020617 0%, #00C2E8 100%)',
+    }
+  },
+  alabaster: {
+    name: 'Basalt Warmth',
+    light: {
+      '--color-bg-primary': '#FAF7F2',
+      '--color-bg-secondary': '#FFFFFF',
+      '--color-text-primary': '#2D2721',
+      '--color-text-secondary': '#5E544A',
+      '--color-border': 'rgba(45, 39, 33, 0.06)',
+      '--color-brand-accent': '#8C6A4C',
+      '--color-brand-gradient': 'linear-gradient(135deg, #2D2721 0%, #8C6A4C 100%)',
+    },
+    dark: {
+      '--color-bg-primary': '#0C0B0A',
+      '--color-bg-secondary': '#1A1816',
+      '--color-text-primary': '#FAF6F0',
+      '--color-text-secondary': '#A3968A',
+      '--color-border': 'rgba(255, 255, 255, 0.06)',
+      '--color-brand-accent': '#D9A05B',
+      '--color-brand-gradient': 'linear-gradient(135deg, #0C0B0A 0%, #D9A05B 100%)',
+    }
+  },
+  emerald: {
+    name: 'Emerald Sage',
+    light: {
+      '--color-bg-primary': '#F2F6F3',
+      '--color-bg-secondary': '#FFFFFF',
+      '--color-text-primary': '#111A14',
+      '--color-text-secondary': '#4A5B4F',
+      '--color-border': 'rgba(17, 26, 20, 0.06)',
+      '--color-brand-accent': '#0E6856',
+      '--color-brand-gradient': 'linear-gradient(135deg, #111A14 0%, #0E6856 100%)',
+    },
+    dark: {
+      '--color-bg-primary': '#050A07',
+      '--color-bg-secondary': '#0D1611',
+      '--color-text-primary': '#ECF2EE',
+      '--color-text-secondary': '#819688',
+      '--color-border': 'rgba(255, 255, 255, 0.06)',
+      '--color-brand-accent': '#10B981',
+      '--color-brand-gradient': 'linear-gradient(135deg, #050A07 0%, #10B981 100%)',
+    }
+  },
+  violet: {
+    name: 'Amethyst Velvet',
+    light: {
+      '--color-bg-primary': '#F6F4FA',
+      '--color-bg-secondary': '#FFFFFF',
+      '--color-text-primary': '#1A1521',
+      '--color-text-secondary': '#544D5E',
+      '--color-border': 'rgba(26, 21, 33, 0.06)',
+      '--color-brand-accent': '#6C38DE',
+      '--color-brand-gradient': 'linear-gradient(135deg, #1A1521 0%, #6C38DE 100%)',
+    },
+    dark: {
+      '--color-bg-primary': '#07050A',
+      '--color-bg-secondary': '#110D18',
+      '--color-text-primary': '#F5F2FA',
+      '--color-text-secondary': '#938B9E',
+      '--color-border': 'rgba(255, 255, 255, 0.06)',
+      '--color-brand-accent': '#A78BFA',
+      '--color-brand-gradient': 'linear-gradient(135deg, #07050A 0%, #A78BFA 100%)',
+    }
+  },
+  terracotta: {
+    name: 'Rose Sand',
+    light: {
+      '--color-bg-primary': '#FAF5F5',
+      '--color-bg-secondary': '#FFFFFF',
+      '--color-text-primary': '#2D1B1B',
+      '--color-text-secondary': '#614E4E',
+      '--color-border': 'rgba(45, 27, 27, 0.06)',
+      '--color-brand-accent': '#C24141',
+      '--color-brand-gradient': 'linear-gradient(135deg, #2D1B1B 0%, #C24141 100%)',
+    },
+    dark: {
+      '--color-bg-primary': '#0C0606',
+      '--color-bg-secondary': '#180F0F',
+      '--color-text-primary': '#FBF3F3',
+      '--color-text-secondary': '#A38B8B',
+      '--color-border': 'rgba(255, 255, 255, 0.06)',
+      '--color-brand-accent': '#F87171',
+      '--color-brand-gradient': 'linear-gradient(135deg, #0C0606 0%, #F87171 100%)',
+    }
+  }
+};
 
 export default function App() {
  const { showToast } = useToast();
+ const [palette, setPalette] = useState<'corporate' | 'alabaster' | 'emerald' | 'violet' | 'terracotta'>(() => {
+   return (localStorage.getItem('bytexon_palette') as any) || 'corporate';
+ });
+ const [showPaletteMenu, setShowPaletteMenu] = useState(false);
  const [showIntro, setShowIntro] = useState<boolean>(() => {
  return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
  });
@@ -46,7 +158,13 @@ export default function App() {
      document.documentElement.classList.remove('dark');
    }
    localStorage.setItem('bytexon_theme', theme);
- }, [theme]);
+    const activePalette = PALETTES[palette] || PALETTES.corporate;
+    const colors = activePalette[theme];
+    Object.entries(colors).forEach(([key, val]) => {
+      document.documentElement.style.setProperty(key, val);
+    });
+    localStorage.setItem('bytexon_palette', palette);
+ }, [theme, palette]);
 
  // Scroll listener to toggle visibility of scroll to top button
  useEffect(() => {
@@ -474,8 +592,8 @@ export default function App() {
       
       {/* Premium Apple-inspired Sticky Top Header */}
       {!view.startsWith('admin') && (
-        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 dark:bg-slate-950/80 border-b border-slate-200/40 dark:border-slate-800/80 select-none transition-all">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/70 dark:bg-slate-950/80 border-b border-slate-200/40 dark:border-slate-800/80 select-none transition-all rounded-none">
+          <div className="w-full px-4 sm:px-8 lg:px-12 h-16 flex items-center justify-between rounded-none">
             {/* Logo */}
             <div 
               onClick={() => {
@@ -553,6 +671,83 @@ export default function App() {
                   <Sun className="w-4 h-4 text-cyan-400" />
                 )}
               </button>
+
+              {/* Theme Customizer Popover */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowPaletteMenu(!showPaletteMenu)}
+                  className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center"
+                  title="Customize Colors & Themes"
+                  aria-label="Customize Colors"
+                >
+                  <Palette className="w-4 h-4" />
+                </button>
+                
+                <AnimatePresence>
+                  {showPaletteMenu && (
+                    <>
+                      {/* Backdrop to close */}
+                      <div 
+                        className="fixed inset-0 z-40" 
+                        onClick={() => setShowPaletteMenu(false)}
+                      />
+                      
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 shadow-xl z-50 p-4 space-y-3"
+                      >
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider font-mono">
+                            Select Website Theme
+                          </h4>
+                          <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed font-sans">
+                            Instant real-time palette rendering
+                          </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-1.5">
+                          {Object.entries(PALETTES).map(([key, item]) => {
+                            const isSelected = palette === key;
+                            const previewColors = item[theme];
+                            return (
+                              <button
+                                key={key}
+                                onClick={() => {
+                                  setPalette(key);
+                                  setShowPaletteMenu(false);
+                                  showToast('Applied ' + item.name + ' theme!', 'success', 'Theme Updated');
+                                }}
+                                className={'w-full flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer text-left border ' + (
+                                  isSelected 
+                                    ? 'bg-slate-50 dark:bg-slate-850/60 border-slate-350 dark:border-slate-700 font-semibold' 
+                                    : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-850/30'
+                                )}
+                              >
+                                <span className="text-xs text-slate-800 dark:text-slate-200">
+                                  {item.name}
+                                </span>
+                                <div className="flex items-center space-x-1.5">
+                                  <span 
+                                    className="w-3 h-3 rounded-full border border-black/10 dark:border-white/10" 
+                                    style={{ backgroundColor: previewColors['--color-bg-primary'] }} 
+                                  />
+                                  <span 
+                                    className="w-3 h-3 rounded-full border border-black/10 dark:border-white/10" 
+                                    style={{ backgroundColor: previewColors['--color-brand-accent'] }} 
+                                  />
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Mobile Menu & Theme Actions */}
@@ -560,7 +755,7 @@ export default function App() {
               {/* Theme Toggle Button */}
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                 aria-label="Toggle Theme"
               >
@@ -570,6 +765,77 @@ export default function App() {
                   <Sun className="w-4.5 h-4.5 text-cyan-400" />
                 )}
               </button>
+
+              {/* Mobile Theme Customizer */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowPaletteMenu(!showPaletteMenu)}
+                  className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center"
+                  title="Customize Colors & Themes"
+                  aria-label="Customize Colors"
+                >
+                  <Palette className="w-4.5 h-4.5" />
+                </button>
+                
+                <AnimatePresence>
+                  {showPaletteMenu && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-40" 
+                        onClick={() => setShowPaletteMenu(false)}
+                      />
+                      
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 shadow-xl z-50 p-3 space-y-2.5"
+                      >
+                        <div className="space-y-0.5 px-1">
+                          <h4 className="text-[10px] font-bold text-slate-800 dark:text-white uppercase tracking-wider font-mono">
+                            Website Theme
+                          </h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-1">
+                          {Object.entries(PALETTES).map(([key, item]) => {
+                            const isSelected = palette === key;
+                            const previewColors = item[theme];
+                            return (
+                              <button
+                                key={key}
+                                onClick={() => {
+                                  setPalette(key as any);
+                                  setShowPaletteMenu(false);
+                                  showToast('Applied ' + item.name + ' theme!', 'success', 'Theme Updated');
+                                }}
+                                className={'w-full flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer text-left border ' + (
+                                  isSelected ? 'bg-slate-50 dark:bg-slate-850/60 border-slate-300 dark:border-slate-700 font-semibold' : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-850/30'
+                                )}
+                              >
+                                <span className="text-[11px] text-slate-800 dark:text-slate-200">
+                                  {item.name}
+                                </span>
+                                <div className="flex items-center space-x-1">
+                                  <span 
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 dark:border-white/10" 
+                                    style={{ backgroundColor: previewColors['--color-bg-primary'] }} 
+                                  />
+                                  <span 
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 dark:border-white/10" 
+                                    style={{ backgroundColor: previewColors['--color-brand-accent'] }} 
+                                  />
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -918,8 +1184,8 @@ export default function App() {
 
   {/* Global Footer with Copyright and All Rights Reserved */}
   {!view.startsWith('admin') && (
-    <footer className="w-full bg-white border-t border-slate-200/40 select-none py-12 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="w-full bg-white border-t border-slate-200/40 select-none py-12 mt-auto rounded-none">
+      <div className="w-full px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 rounded-none">
         <div className="flex flex-col items-center md:items-start gap-2">
           <BytexonLogo showText={true} theme="light" height={22} />
           <p className="text-[11px] text-slate-400 font-sans mt-1">
