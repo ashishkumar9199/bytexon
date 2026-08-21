@@ -61,6 +61,8 @@ export default function Interactive3DCard({
  perspective: 1200,
  rotateX,
  rotateY,
+ backfaceVisibility: 'hidden',
+ WebkitBackfaceVisibility: 'hidden',
  }}
  className={`relative overflow-hidden transition-all duration-300 ${className}`}
  >
@@ -79,6 +81,8 @@ export default function Interactive3DCard({
  pointerEvents: 'none',
  mixBlendMode: 'screen',
  zIndex: 4,
+ backfaceVisibility: 'hidden',
+ WebkitBackfaceVisibility: 'hidden',
  }}
  className="pointer-events-none"
  />
@@ -86,8 +90,10 @@ export default function Interactive3DCard({
  {/* Content wrapper with actual depth translate */}
  <div 
  style={{ 
- transform: 'translateZ(20px)', 
- transformStyle: 'preserve-3d' 
+ transform: 'translate3d(0, 0, 20px)', 
+ transformStyle: 'preserve-3d',
+ backfaceVisibility: 'hidden',
+ WebkitBackfaceVisibility: 'hidden',
  }}
  className="w-full h-full"
  >

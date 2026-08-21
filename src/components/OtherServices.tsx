@@ -32,13 +32,9 @@ export default function OtherServices({ onBackToLanding, onPlanProject }: OtherS
 
         {/* Section Header */}
         <div className="max-w-3xl mb-16 space-y-4">
-          <div className="inline-flex items-center space-x-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 px-3 py-1 rounded-full text-indigo-600 dark:text-cyan-450 text-[10px] font-bold tracking-widest uppercase font-mono shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-cyan-450 animate-pulse" />
-            <span>VENTURES & SPECIALTY SERVICES</span>
-          </div>
           <h1 className="text-4xl sm:text-5xl font-sans font-medium tracking-tight text-slate-900 dark:text-white leading-[1.1]">
             Specialized Solutions & <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 font-bold">
+            <span className="text-black dark:text-slate-100 font-bold">
               Sister Ecosystems
             </span>
           </h1>

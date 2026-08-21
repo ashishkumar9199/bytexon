@@ -387,10 +387,6 @@ export default function ProjectPlanner({
       {/* Header Banner */}
       <section className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/80 py-16 px-6 sm:px-12 relative overflow-hidden z-10 transition-colors duration-300">
         <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
-          <div className="inline-flex items-center space-x-2 bg-cyan-50/80 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900/50 px-3.5 py-1.5 rounded-full text-cyan-800 dark:text-cyan-400 text-[10px] font-bold font-mono tracking-wider uppercase shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-500 animate-spin" style={{ animationDuration: '6s' }} />
-            <span>Interactive Project Board</span>
-          </div>
           <h1 className="text-3xl sm:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
             Secure Project Space & Workspace Tracking
           </h1>

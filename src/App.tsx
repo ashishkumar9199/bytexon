@@ -146,25 +146,19 @@ export default function App() {
  const [adminConfig, setAdminConfig] = useState<AdminConfig>(DEFAULT_CONFIG);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const [showScrollTop, setShowScrollTop] = useState(false);
- const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-   return (localStorage.getItem('biytexon_theme') as 'light' | 'dark') || 'light';
- });
+ const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
  // Apply theme class to document element
  useEffect(() => {
-   if (theme === 'dark') {
-     document.documentElement.classList.add('dark');
-   } else {
-     document.documentElement.classList.remove('dark');
-   }
-   localStorage.setItem('biytexon_theme', theme);
-    const activePalette = PALETTES[palette] || PALETTES.corporate;
-    const colors = activePalette[theme];
-    Object.entries(colors).forEach(([key, val]) => {
-      document.documentElement.style.setProperty(key, String(val));
-    });
-    localStorage.setItem('biytexon_palette', palette);
- }, [theme, palette]);
+   document.documentElement.classList.add('dark');
+   localStorage.setItem('biytexon_theme', 'dark');
+   const activePalette = PALETTES[palette] || PALETTES.corporate;
+   const colors = activePalette['dark'];
+   Object.entries(colors).forEach(([key, val]) => {
+     document.documentElement.style.setProperty(key, String(val));
+   });
+   localStorage.setItem('biytexon_palette', palette);
+ }, [palette]);
 
  // Scroll listener to toggle visibility of scroll to top button
  useEffect(() => {
@@ -731,20 +725,6 @@ export default function App() {
 
             {/* Header Actions */}
             <div className="hidden md:flex items-center space-x-4">
-              {/* Theme Toggle Button */}
-              <button
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-                aria-label="Toggle Theme"
-              >
-                {theme === 'light' ? (
-                  <Moon className="w-4 h-4" />
-                ) : (
-                  <Sun className="w-4 h-4 text-cyan-400" />
-                )}
-              </button>
-
               {/* Theme Customizer Popover */}
               <div className="relative">
                 <button
@@ -825,20 +805,6 @@ export default function App() {
 
             {/* Mobile Menu & Theme Actions */}
             <div className="md:hidden flex items-center space-x-2">
-              {/* Theme Toggle Button */}
-              <button
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="text-slate-500 hover:text-indigo-600 dark:text-slate-450 dark:hover:text-cyan-400 transition-all p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-                aria-label="Toggle Theme"
-              >
-                {theme === 'light' ? (
-                  <Moon className="w-4.5 h-4.5" />
-                ) : (
-                  <Sun className="w-4.5 h-4.5 text-cyan-400" />
-                )}
-              </button>
-
               {/* Mobile Theme Customizer */}
               <div className="relative">
                 <button

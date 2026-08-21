@@ -20,7 +20,6 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
       
       {/* Dynamic Ambient Backing Glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-0 right-[15%] w-[600px] h-[600px] bg-gradient-to-br from-indigo-100/30 dark:from-indigo-950/20 to-purple-100/20 dark:to-purple-950/10 rounded-full blur-[140px]" />
         <div className="absolute top-[40%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-pink-100/20 dark:from-pink-950/10 to-blue-100/30 dark:to-blue-950/20 rounded-full blur-[120px]" />
       </div>
 
