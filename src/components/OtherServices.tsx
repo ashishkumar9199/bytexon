@@ -69,16 +69,10 @@ export default function OtherServices({ onBackToLanding, onPlanProject }: OtherS
                       <p className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">SaaS Ecosystem</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-lg border border-emerald-200/50 dark:border-emerald-900/45 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold tracking-wider font-mono">
-                    LIVE NOW
-                  </span>
                 </div>
 
                 {/* Subtitle / Hook */}
                 <div className="space-y-3">
-                  <h4 className="text-lg font-sans font-medium text-slate-800 dark:text-slate-200 leading-snug">
-                    AI-Driven Medical Verification & Diagnostic Documentation.
-                  </h4>
                   <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed font-sans">
                     Medificate is a high-security health-tech utility designed to digitize, verify, and deliver certified medical compliance documents. Purpose-built with cryptographic signing to prevent falsification and optimize doctor-patient-employer verification workflows.
                   </p>

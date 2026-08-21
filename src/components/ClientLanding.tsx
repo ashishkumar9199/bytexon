@@ -18,11 +18,6 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
   return (
     <div className="bg-[#fbfbfd] dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100 selection:bg-indigo-500/10 selection:text-indigo-900 pb-24 overflow-x-hidden">
       
-      {/* Dynamic Ambient Backing Glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[40%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-pink-100/20 dark:from-pink-950/10 to-blue-100/30 dark:to-blue-950/20 rounded-full blur-[120px]" />
-      </div>
-
       <div className="relative z-10 w-full">
         
         {/* Apple-style Immersive Hero Card */}
