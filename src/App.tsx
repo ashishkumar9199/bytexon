@@ -204,6 +204,11 @@ export default function App() {
  });
  const [lockoutCountdown, setLockoutCountdown] = useState<number>(0);
 
+ // Session Expiration States
+ const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
+ const [showSessionWarning, setShowSessionWarning] = useState<boolean>(false);
+ const [warningCountdown, setWarningCountdown] = useState<number>(120);
+
  // TOTP Challenge login state
  const [showTotpChallenge, setShowTotpChallenge] = useState(false);
  const [pendingAuth, setPendingAuth] = useState<{ token: string; username: string; password: string; secret: string } | null>(null);
@@ -228,6 +233,81 @@ export default function App() {
    const interval = setInterval(updateCountdown, 1000);
    return () => clearInterval(interval);
  }, [lockoutUntil]);
+
+ // Monitor Admin Logged-In state & set up timers
+ useEffect(() => {
+   if (isAdminLoggedIn) {
+     // 15 Minutes session lifetime
+     setSessionExpiresAt(Date.now() + 15 * 60 * 1000);
+     setShowSessionWarning(false);
+   } else {
+     setSessionExpiresAt(null);
+     setShowSessionWarning(false);
+   }
+ }, [isAdminLoggedIn]);
+
+ // Check session expiration on interval
+ useEffect(() => {
+   if (!isAdminLoggedIn || !sessionExpiresAt) return;
+
+   const interval = setInterval(() => {
+     const now = Date.now();
+     const timeRemainingMs = sessionExpiresAt - now;
+
+     if (timeRemainingMs <= 2 * 60 * 1000) {
+       setShowSessionWarning(true);
+       const secs = Math.max(0, Math.round(timeRemainingMs / 1000));
+       setWarningCountdown(secs);
+     } else {
+       setShowSessionWarning(false);
+     }
+
+     if (timeRemainingMs <= 0) {
+       handleAdminLogOut();
+       setShowSessionWarning(false);
+       setSessionExpiresAt(null);
+       showToast('Your session has expired due to inactivity. You have been securely logged out.', 'warning', 'Session Expired');
+     }
+   }, 1000);
+
+   return () => clearInterval(interval);
+ }, [isAdminLoggedIn, sessionExpiresAt]);
+
+ // Keep session extended silently on user keyboard/mouse activity (up to 15m)
+ useEffect(() => {
+   if (!isAdminLoggedIn || showSessionWarning) return;
+
+   const handleActivity = () => {
+     const now = Date.now();
+     if (sessionExpiresAt && (sessionExpiresAt - now) < 14 * 60 * 1000) {
+       setSessionExpiresAt(now + 15 * 60 * 1000);
+     }
+   };
+
+   window.addEventListener('mousemove', handleActivity);
+   window.addEventListener('keypress', handleActivity);
+   window.addEventListener('click', handleActivity);
+   window.addEventListener('scroll', handleActivity);
+
+   return () => {
+     window.removeEventListener('mousemove', handleActivity);
+     window.removeEventListener('keypress', handleActivity);
+     window.removeEventListener('click', handleActivity);
+     window.removeEventListener('scroll', handleActivity);
+   };
+ }, [isAdminLoggedIn, sessionExpiresAt, showSessionWarning]);
+
+ const handleExtendSession = () => {
+   setSessionExpiresAt(Date.now() + 15 * 60 * 1000);
+   setShowSessionWarning(false);
+   showToast('Your administrator session has been successfully extended for 15 minutes.', 'success', 'Session Extended');
+ };
+
+ const formatTime = (seconds: number) => {
+   const m = Math.floor(seconds / 60);
+   const s = seconds % 60;
+   return `${m}:${s < 10 ? '0' : ''}${s}`;
+ };
 
  const isEnvCredentialsMissing = !adminConfig.customAuthActive && (!import.meta.env.VITE_ADMIN_USERNAME || !import.meta.env.VITE_ADMIN_PASSWORD);
 
@@ -1213,6 +1293,71 @@ export default function App() {
        >
          <ArrowUp className="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5" />
        </motion.button>
+     )}
+   </AnimatePresence>
+
+   {/* Admin Session Expiration Warning Modal */}
+   <AnimatePresence>
+     {showSessionWarning && (
+       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+         <motion.div
+           initial={{ opacity: 0, scale: 0.95, y: 15 }}
+           animate={{ opacity: 1, scale: 1, y: 0 }}
+           exit={{ opacity: 0, scale: 0.95, y: 15 }}
+           transition={{ type: "spring", stiffness: 350, damping: 30 }}
+           className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono"
+           id="session-expiry-warning-modal"
+         >
+           {/* Header with decorative warning color line */}
+           <div className="bg-amber-500 h-1.5 w-full animate-pulse" />
+           
+           <div className="p-6 space-y-4">
+             <div className="flex items-start space-x-4">
+               <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20">
+                 <Shield className="w-6 h-6 animate-pulse" />
+               </div>
+               <div className="flex-1 space-y-1">
+                 <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                   Session Expiring Soon
+                 </h3>
+                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
+                   For your security, inactive administrator sessions are automatically logged out. Extend your session now to continue working without losing unsaved changes.
+                 </p>
+               </div>
+             </div>
+
+             {/* Countdown Tracker */}
+             <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-800/80 rounded-xl p-4 flex items-center justify-between">
+               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                 AUTO-LOGOUT IN
+               </span>
+               <div className="flex items-center space-x-2 font-mono text-lg font-black text-amber-500 dark:text-amber-400">
+                 <span className="bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
+                   {formatTime(warningCountdown)}
+                 </span>
+               </div>
+             </div>
+
+             {/* Action Buttons */}
+             <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 pt-2">
+               <button
+                 onClick={handleExtendSession}
+                 id="btn-extend-session"
+                 className="flex-1 py-2.5 bg-slate-900 hover:bg-indigo-600 dark:bg-white dark:hover:bg-indigo-600 dark:hover:text-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition-all cursor-pointer border border-transparent shadow-sm hover:shadow-indigo-500/10 text-center"
+               >
+                 EXTEND SESSION
+               </button>
+               <button
+                 onClick={handleAdminLogOut}
+                 id="btn-force-logout"
+                 className="px-4 py-2.5 border border-slate-200 dark:border-slate-800 hover:border-rose-500/40 text-slate-400 dark:text-slate-500 hover:text-rose-500 transition-all font-bold text-xs rounded-xl cursor-pointer text-center"
+               >
+                 LOG OUT
+               </button>
+             </div>
+           </div>
+         </motion.div>
+       </div>
      )}
    </AnimatePresence>
 
