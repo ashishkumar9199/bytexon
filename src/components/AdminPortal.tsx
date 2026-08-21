@@ -12,7 +12,7 @@ import {
 import { getQrCodeUrl, getAdminTotpConfig, updateAdminTotpConfig } from '../lib/configHelper';
 import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/totpHelper';
 import QRCode from 'qrcode';
-import BytexonLogo from './BytexonLogo';
+import BiytexonLogo from './BiytexonLogo';
 import { useToast } from '../context/ToastContext';
 
 interface AdminPortalProps {
@@ -129,7 +129,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
    try {
      const secret = generateBase32Secret(16);
      const username = sessionStorage.getItem('admin_username') || 'admin';
-     const uri = generateOtpauthUri(secret, username, 'Bytexon');
+     const uri = generateOtpauthUri(secret, username, 'Biytexon');
      const qrData = await QRCode.toDataURL(uri, { margin: 2, scale: 6 });
      
      setTotpSetupSecret(secret);
@@ -294,7 +294,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  await addDoc(collection(db, 'chats'), {
  requestId: selectedRequest.id,
  sender: 'admin',
- text: `🎉 Good news! Bytexon has approved your project request. The final approved price is set to ${approvalCurrency === 'USD' ? '$' : '₹'}${amountNum.toLocaleString()}. You can now complete your payment through our secure UPI gateway.`,
+ text: `🎉 Good news! Biytexon has approved your project request. The final approved price is set to ${approvalCurrency === 'USD' ? '$' : '₹'}${amountNum.toLocaleString()}. You can now complete your payment through our secure UPI gateway.`,
  timestamp: Date.now()
  });
 
@@ -593,7 +593,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  {/* Top Banner Header */}
  <header className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
  <div className="flex items-center space-x-3">
- <BytexonLogo theme="light" height={24} />
+ <BiytexonLogo theme="light" height={24} />
  <span className="text-slate-400 dark:text-slate-500 font-mono text-[9px] font-bold border-l border-slate-300 dark:border-slate-700 pl-3 ">
  Architect Admin Workspace
  </span>
@@ -1416,7 +1416,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  />
  </div>
  <p className="text-[9px] text-slate-400 mt-1.5 leading-relaxed font-mono ">
- BY SETTING THIS PATH, THE LOGIN SCREEN IS ONLY ACCESSIBLE BY ENTERING <span className="text-indigo-600 font-semibold">#/admin-{settingsForm.adminSecretPath || 'bytexon-secure-gate'}</span> IN YOUR BROWSER'S ADDRESS BAR.
+ BY SETTING THIS PATH, THE LOGIN SCREEN IS ONLY ACCESSIBLE BY ENTERING <span className="text-indigo-600 font-semibold">#/admin-{settingsForm.adminSecretPath || 'biytexon-secure-gate'}</span> IN YOUR BROWSER'S ADDRESS BAR.
  </p>
  </div>
  </div>
@@ -1931,7 +1931,7 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
                   <button
                     onClick={() => {
                       if (redosInputMode === 'normal') {
-                        addSecurityLog(`[REDOS_SIM] Input: 'support@bytexon.app' (length: 18 chars)`);
+                        addSecurityLog(`[REDOS_SIM] Input: 'support@biytexon.app' (length: 18 chars)`);
                         addSecurityLog(`[REDOS_SIM] Input size within safe limit (64 chars). Matching pattern...`);
                         addSecurityLog(`[REDOS_SIM] Pattern match: true. Thread performance remaining: 100%`);
                         showToast("Normal validation completed.", "success", "Regex Valid");

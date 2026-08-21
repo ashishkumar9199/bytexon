@@ -96,7 +96,7 @@ export async function verifyTotp(secret: string, code: string): Promise<boolean>
 }
 
 // Generate the otpauth URI for scan QR code
-export function generateOtpauthUri(secret: string, username: string = 'admin', issuer: string = 'Bytexon'): string {
+export function generateOtpauthUri(secret: string, username: string = 'admin', issuer: string = 'Biytexon'): string {
   const cleanSecret = secret.toUpperCase().replace(/[\s-]/g, '').replace(/=+$/, '');
   return `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(username)}?secret=${cleanSecret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
 }

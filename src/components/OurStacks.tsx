@@ -333,7 +333,7 @@ export default function OurStacks({ onPlanProject }: OurStacksProps) {
           <div className="space-y-1">
             <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">Verified Catalog</span>
             <h2 className="text-2xl font-bold text-[#1d1d1f] dark:text-white">
-              Bytexon Standard Modules
+              Biytexon Standard Modules
             </h2>
           </div>
 

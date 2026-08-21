@@ -122,7 +122,7 @@ export default function OtherServices({ onBackToLanding, onPlanProject }: OtherS
                       <Cpu className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 font-sans">Bytexon Engine</p>
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 font-sans">Biytexon Engine</p>
                       <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">Powered by our custom low-latency serverless stack.</p>
                     </div>
                   </div>
@@ -156,7 +156,7 @@ export default function OtherServices({ onBackToLanding, onPlanProject }: OtherS
               </h2>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-sans">
-              As technology partners and co-creators of the Medificate platform, Bytexon designed the foundational security system, real-time sync hooks, and secure database parameters. 
+              As technology partners and co-creators of the Medificate platform, Biytexon designed the foundational security system, real-time sync hooks, and secure database parameters. 
             </p>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-sans">
               Medificate provides clinics, institutions, and individual practitioners with high-fidelity, secure, and easily-verifiable medical document generation tools, removing administrative friction completely.
@@ -168,7 +168,7 @@ export default function OtherServices({ onBackToLanding, onPlanProject }: OtherS
                 <span>EXTERNAL RESOURCE HUB</span>
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed font-sans">
-                Visit Medificate directly to experience how Bytexon's premium engineering translates into specialized commercial ecosystems.
+                Visit Medificate directly to experience how Biytexon's premium engineering translates into specialized commercial ecosystems.
               </p>
               <a 
                 href="https://medificate.vercel.app/"

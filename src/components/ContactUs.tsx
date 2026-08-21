@@ -26,7 +26,7 @@ export default function ContactUs({ onBackToLanding, onPlanProject }: ContactUsP
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('bbytexon@gmail.com');
+    navigator.clipboard.writeText('bbiytexon@gmail.com');
     setCopied(true);
     showToast('Email address copied to clipboard!', 'success', 'Copied');
     setTimeout(() => setCopied(false), 2000);
@@ -78,7 +78,7 @@ export default function ContactUs({ onBackToLanding, onPlanProject }: ContactUsP
           </span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-          Contact Bytexon
+          Contact Biytexon
         </h1>
         <p className="mt-4 text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed">
           Have an elite project idea, a service question, or just want to collaborate? 
@@ -103,7 +103,7 @@ export default function ContactUs({ onBackToLanding, onPlanProject }: ContactUsP
                   Primary Email
                 </h3>
                 <p className="text-lg sm:text-xl font-bold text-slate-950 dark:text-white font-mono break-all selection:bg-indigo-500/10">
-                  bbytexon@gmail.com
+                  bbiytexon@gmail.com
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed pt-1">
                   Send us technical specifications, requests for proposals, or general inquiries.
@@ -130,7 +130,7 @@ export default function ContactUs({ onBackToLanding, onPlanProject }: ContactUsP
               </button>
 
               <a
-                href="mailto:bbytexon@gmail.com"
+                href="mailto:bbiytexon@gmail.com"
                 className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-cyan-500 dark:hover:bg-cyan-600 text-xs font-semibold text-white dark:text-slate-950 rounded-xl transition-all shadow-sm cursor-pointer"
               >
                 <Send className="w-4 h-4" />
@@ -216,7 +216,7 @@ export default function ContactUs({ onBackToLanding, onPlanProject }: ContactUsP
                   <div className="space-y-2">
                     <h3 className="text-base font-bold text-slate-900 dark:text-white">Inquiry Received Successfully</h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
-                      Thank you for contacting Bytexon. Your inquiry has been saved securely to our system. 
+                      Thank you for contacting Biytexon. Your inquiry has been saved securely to our system. 
                       A lead architect will email you within 12 hours.
                     </p>
                   </div>

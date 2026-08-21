@@ -162,7 +162,7 @@ export default function OurServices({ onPlanProject }: OurServicesProps) {
           Architected Software Services
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          Bytexon translates intricate system requirements into polished, scale-ready digital products with optimized latency.
+          Biytexon translates intricate system requirements into polished, scale-ready digital products with optimized latency.
         </p>
       </section>
 

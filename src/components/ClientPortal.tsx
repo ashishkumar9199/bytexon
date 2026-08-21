@@ -225,33 +225,33 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
 				{/* Left Column: Details (6 Columns) */}
 				<div className="lg:col-span-6 space-y-4">
 					{/* Status Alert Banner Skeleton */}
-					<div className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-5 rounded-3xl flex items-start space-x-3">
-						<div className="w-5 h-5 bg-slate-300 dark:bg-slate-700 rounded-full flex-shrink-0" />
+					<div className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-5 rounded-none flex items-start space-x-3">
+						<div className="w-5 h-5 bg-slate-300 dark:bg-slate-700 rounded-none flex-shrink-0" />
 						<div className="space-y-2 flex-1">
-							<div className="w-32 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
-							<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
-							<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-32 h-4 bg-slate-300 dark:bg-slate-700 rounded-none" />
+							<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
+							<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
 						</div>
 					</div>
 
 					{/* Scope Details Card Skeleton */}
-					<div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-3xl space-y-5">
+					<div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-none space-y-5">
 						<div className="flex items-center space-x-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-							<div className="w-4 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
-							<div className="w-36 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="w-4 h-4 bg-slate-300 dark:bg-slate-700 rounded-none" />
+							<div className="w-36 h-4 bg-slate-300 dark:bg-slate-700 rounded-none" />
 						</div>
 						
 						<div className="space-y-4">
 							<div className="space-y-2">
-								<div className="w-24 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
-								<div className="w-40 h-4 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-24 h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
+								<div className="w-40 h-4 bg-slate-300 dark:bg-slate-700 rounded-none" />
 							</div>
 							<div className="space-y-2.5">
-								<div className="w-28 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
-								<div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 rounded-2xl">
-									<div className="w-full h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
-									<div className="w-11/12 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
-									<div className="w-4/5 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-28 h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
+								<div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 rounded-none">
+									<div className="w-full h-3.5 bg-slate-300 dark:bg-slate-700 rounded-none" />
+									<div className="w-11/12 h-3.5 bg-slate-300 dark:bg-slate-700 rounded-none" />
+									<div className="w-4/5 h-3.5 bg-slate-300 dark:bg-slate-700 rounded-none" />
 								</div>
 							</div>
 						</div>
@@ -259,45 +259,45 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
 				</div>
 
 				{/* Right Column: Chat Panel (6 Columns) */}
-				<div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col h-[520px] overflow-hidden">
+				<div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-none flex flex-col h-[520px] overflow-hidden">
 					{/* Chat Header Skeleton */}
 					<div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40">
 						<div className="flex items-center space-x-3">
-							<div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-full" />
+							<div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-none" />
 							<div className="space-y-1.5">
-								<div className="w-28 h-3.5 bg-slate-300 dark:bg-slate-700 rounded" />
-								<div className="w-16 h-2.5 bg-slate-300 dark:bg-slate-700 rounded" />
+								<div className="w-28 h-3.5 bg-slate-300 dark:bg-slate-700 rounded-none" />
+								<div className="w-16 h-2.5 bg-slate-300 dark:bg-slate-700 rounded-none" />
 							</div>
 						</div>
-						<div className="w-16 h-5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+						<div className="w-16 h-5 bg-slate-300 dark:bg-slate-700 rounded-none" />
 					</div>
 
 					{/* Chat Messages Skeleton */}
 					<div className="flex-grow p-5 bg-slate-50/50 dark:bg-slate-950/10 space-y-4 overflow-y-auto">
 						<div className="flex justify-start">
-							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl space-y-2 w-48">
-								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
-								<div className="w-2/3 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-none space-y-2 w-48">
+								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
+								<div className="w-2/3 h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
 							</div>
 						</div>
 						<div className="flex justify-end">
-							<div className="max-w-[70%] p-3 bg-slate-300 dark:bg-slate-700 rounded-2xl space-y-2 w-52">
-								<div className="w-full h-3 bg-slate-400 dark:bg-slate-600 rounded" />
-								<div className="w-1/2 h-3 bg-slate-400 dark:bg-slate-600 rounded" />
+							<div className="max-w-[70%] p-3 bg-slate-300 dark:bg-slate-700 rounded-none space-y-2 w-52">
+								<div className="w-full h-3 bg-slate-400 dark:bg-slate-600 rounded-none" />
+								<div className="w-1/2 h-3 bg-slate-400 dark:bg-slate-600 rounded-none" />
 							</div>
 						</div>
 						<div className="flex justify-start">
-							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl space-y-2 w-56">
-								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded" />
-								<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded" />
+							<div className="max-w-[70%] p-3 bg-slate-200 dark:bg-slate-800 rounded-none space-y-2 w-56">
+								<div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
+								<div className="w-4/5 h-3 bg-slate-300 dark:bg-slate-700 rounded-none" />
 							</div>
 						</div>
 					</div>
 
 					{/* Chat Input Skeleton */}
 					<div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center space-x-3">
-						<div className="flex-grow h-10 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-850" />
-						<div className="w-10 h-10 bg-slate-300 dark:bg-slate-700 rounded-2xl flex-shrink-0" />
+						<div className="flex-grow h-10 bg-slate-100 dark:bg-slate-950 rounded-none border border-slate-200 dark:border-slate-850" />
+						<div className="w-10 h-10 bg-slate-300 dark:bg-slate-700 rounded-none flex-shrink-0" />
 					</div>
 				</div>
 			</div>
@@ -344,7 +344,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  className="flex items-center space-x-1.5 text-slate-500 hover:text-indigo-600 mb-6 transition-colors group cursor-pointer font-mono text-[10px] "
  >
  <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
- <span>Back to Bytexon Home</span>
+ <span>Back to Biytexon Home</span>
  </button>
 
  {/* Header Panel */}
@@ -788,7 +788,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
      <div className="bg-white dark:bg-slate-950 p-2 border border-slate-300 dark:border-slate-800 flex-shrink-0 rounded-xl">
        <img 
          src={getQrCodeUrl(adminConfig.upiId, targetPaymentAmount, adminConfig.upiQrBase64)}
-         alt="Bytexon UPI QR"
+         alt="Biytexon UPI QR"
          className="w-28 h-28 object-contain"
          referrerPolicy="no-referrer"
        />
@@ -1088,7 +1088,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  BY
  </div>
  <div>
- <h3 className="font-bold text-slate-900 dark:text-white text-xs tracking-wide">Bytexon Lead Architect</h3>
+ <h3 className="font-bold text-slate-900 dark:text-white text-xs tracking-wide">Biytexon Lead Architect</h3>
  <p className="text-indigo-600 text-[10px] font-bold flex items-center font-mono">
  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full mr-1.5 animate-pulse"></span>
  ONLINE & READY
@@ -1144,7 +1144,7 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  type="text"
  value={newMessage}
  onChange={(e) => setNewMessage(e.target.value)}
- placeholder="Type message to Bytexon Architect..."
+ placeholder="Type message to Biytexon Architect..."
  className="flex-grow px-3 py-2 bg-slate-50 dark:bg-slate-950/40 border border-slate-300 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 focus:outline-none text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 rounded-xl"
  />
  <button 

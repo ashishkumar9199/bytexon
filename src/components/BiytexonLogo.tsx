@@ -1,19 +1,19 @@
 import React from 'react';
 import { motion } from 'motion/react';
 
-interface BytexonLogoProps {
+interface BiytexonLogoProps {
   showText?: boolean;
   theme?: 'light' | 'dark'; // 'light' is for light backgrounds, 'dark' is for dark backgrounds
   height?: number | string;
   className?: string;
 }
 
-export default function BytexonLogo({
+export default function BiytexonLogo({
   showText = true,
   theme = 'light',
   height = 32,
   className = '',
-}: BytexonLogoProps) {
+}: BiytexonLogoProps) {
   // Theme styling declarations
   const textColor = theme === 'light' ? 'text-slate-900' : 'text-white';
   const subtitleColor = theme === 'light' ? 'text-slate-400' : 'text-slate-500';
@@ -48,7 +48,7 @@ export default function BytexonLogo({
         >
           <defs>
             {/* Smooth Cyan to Deep Blue Linear Gradient matching the image */}
-            <linearGradient id="bytexonIconGradient" x1="20" y1="20" x2="90" y2="80" gradientUnits="userSpaceOnUse">
+            <linearGradient id="biytexonIconGradient" x1="20" y1="20" x2="90" y2="80" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor="#00E5FF" /> {/* Glowing Cyan */}
               <stop offset="45%" stopColor="#00A2D3" /> {/* Medium Electric Blue */}
               <stop offset="100%" stopColor="#0B4C8C" /> {/* High-End Corporate Navy */}
@@ -79,7 +79,7 @@ export default function BytexonLogo({
                M 22 34 L 10 34
                M 22 66 L 10 66
                M 32 83.32 L 14 83.32"
-            stroke="url(#bytexonIconGradient)"
+            stroke="url(#biytexonIconGradient)"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeOpacity="0.85"
@@ -95,7 +95,7 @@ export default function BytexonLogo({
                L 32 51.32 
                L 22 34 
                Z"
-            stroke="url(#bytexonIconGradient)"
+            stroke="url(#biytexonIconGradient)"
             strokeWidth="4.5"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -110,7 +110,7 @@ export default function BytexonLogo({
                L 32 83.32 
                L 22 66 
                Z"
-            stroke="url(#bytexonIconGradient)"
+            stroke="url(#biytexonIconGradient)"
             strokeWidth="4.5"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -120,14 +120,14 @@ export default function BytexonLogo({
           {/* Main descending diagonal */}
           <path
             d="M 72 36 L 96 64"
-            stroke="url(#bytexonIconGradient)"
+            stroke="url(#biytexonIconGradient)"
             strokeWidth="6"
             strokeLinecap="round"
           />
           {/* Main ascending diagonal */}
           <path
             d="M 72 64 L 96 36"
-            stroke="url(#bytexonIconGradient)"
+            stroke="url(#biytexonIconGradient)"
             strokeWidth="6"
             strokeLinecap="round"
           />
@@ -144,22 +144,22 @@ export default function BytexonLogo({
 
           {/* GLOWING CENTER NODES & ENDPOINTS */}
           {/* Top Hexagon Center Node */}
-          <circle cx="42" cy="34" r="5" fill="url(#bytexonIconGradient)" />
+          <circle cx="42" cy="34" r="5" fill="url(#biytexonIconGradient)" />
           <circle cx="42" cy="34" r="2.5" fill="#ffffff" />
 
           {/* Bottom Hexagon Center Node */}
-          <circle cx="42" cy="66" r="5" fill="url(#bytexonIconGradient)" />
+          <circle cx="42" cy="66" r="5" fill="url(#biytexonIconGradient)" />
           <circle cx="42" cy="66" r="2.5" fill="#ffffff" />
 
           {/* 'X' Center Intersection Node with Bright Flash */}
-          <circle cx="84" cy="50" r="7.5" fill="url(#bytexonIconGradient)" />
+          <circle cx="84" cy="50" r="7.5" fill="url(#biytexonIconGradient)" />
           <circle cx="84" cy="50" r="3.5" fill="#ffffff" />
 
           {/* 'X' Terminal Arm Nodes */}
-          <circle cx="72" cy="36" r="4.5" fill="url(#bytexonIconGradient)" />
-          <circle cx="96" cy="36" r="4.5" fill="url(#bytexonIconGradient)" />
-          <circle cx="72" cy="64" r="4.5" fill="url(#bytexonIconGradient)" />
-          <circle cx="96" cy="64" r="4.5" fill="url(#bytexonIconGradient)" />
+          <circle cx="72" cy="36" r="4.5" fill="url(#biytexonIconGradient)" />
+          <circle cx="96" cy="36" r="4.5" fill="url(#biytexonIconGradient)" />
+          <circle cx="72" cy="64" r="4.5" fill="url(#biytexonIconGradient)" />
+          <circle cx="96" cy="64" r="4.5" fill="url(#biytexonIconGradient)" />
         </svg>
 
         {/* Ambient pulse flare on 'X' center */}
@@ -181,7 +181,7 @@ export default function BytexonLogo({
             className={`text-base sm:text-lg font-black tracking-wider font-sans flex items-center h-5`}
             style={{ color: theme === 'light' ? primaryNavy : darkBgText }}
           >
-            <span>BYTE</span>
+            <span>BIYTE</span>
             <span style={{ color: cyanTeal }}>X</span>
             <span>ON</span>
           </motion.div>

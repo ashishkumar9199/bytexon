@@ -112,7 +112,7 @@
   animation: shake-horizontal 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* Animated Input Focus Ring & ByteXon Styles */
+/* Animated Input Focus Ring & Biytexon Styles */
 input, textarea, select {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -124,7 +124,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Glassmorphism Card Style */
-.bytexon-card {
+.biytexon-card {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(226, 232, 240, 0.8);
@@ -132,12 +132,12 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Button Gradient Shimmer */
-.bytexon-btn {
+.biytexon-btn {
   background: var(--color-brand-gradient);
   transition: all 0.3s ease;
 }
 
-.bytexon-btn:hover {
+.biytexon-btn:hover {
   box-shadow: 0 10px 25px -5px rgba(8, 145, 178, 0.4);
   transform: translateY(-2px);
 }

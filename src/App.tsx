@@ -14,7 +14,7 @@ import OurStacks from './components/OurStacks';
 import WorkProcess from './components/WorkProcess';
 import ContactUs from './components/ContactUs';
 import FeedbackWidget from './components/FeedbackWidget';
-import BytexonLogo from './components/BytexonLogo';
+import BiytexonLogo from './components/BiytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
 import { verifyTotp } from './lib/totpHelper';
 import { Shield, Sparkles, Layout, User, Lock, ArrowLeft, ArrowRight, ArrowUp, Activity, Briefcase, Layers, FileText, Menu, X, Terminal, Sun, Moon, Loader2, Eye, EyeOff, Key, QrCode, Palette } from 'lucide-react';
@@ -131,11 +131,11 @@ export const PALETTES = {
 export default function App() {
  const { showToast } = useToast();
  const [palette, setPalette] = useState<'corporate' | 'alabaster' | 'emerald' | 'violet' | 'terracotta'>(() => {
-   return (localStorage.getItem('bytexon_palette') as any) || 'corporate';
+   return (localStorage.getItem('biytexon_palette') as any) || 'corporate';
  });
  const [showPaletteMenu, setShowPaletteMenu] = useState(false);
  const [showIntro, setShowIntro] = useState<boolean>(() => {
- return sessionStorage.getItem('bytexon_intro_completed') !== 'true';
+ return sessionStorage.getItem('biytexon_intro_completed') !== 'true';
  });
  const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'contact-us'>('client-landing');
  const [plannerTab, setPlannerTab] = useState<'create' | 'track'>('create');
@@ -146,7 +146,7 @@ export default function App() {
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const [showScrollTop, setShowScrollTop] = useState(false);
  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-   return (localStorage.getItem('bytexon_theme') as 'light' | 'dark') || 'light';
+   return (localStorage.getItem('biytexon_theme') as 'light' | 'dark') || 'light';
  });
 
  // Apply theme class to document element
@@ -156,13 +156,13 @@ export default function App() {
    } else {
      document.documentElement.classList.remove('dark');
    }
-   localStorage.setItem('bytexon_theme', theme);
+   localStorage.setItem('biytexon_theme', theme);
     const activePalette = PALETTES[palette] || PALETTES.corporate;
     const colors = activePalette[theme];
     Object.entries(colors).forEach(([key, val]) => {
       document.documentElement.style.setProperty(key, String(val));
     });
-    localStorage.setItem('bytexon_palette', palette);
+    localStorage.setItem('biytexon_palette', palette);
  }, [theme, palette]);
 
  // Scroll listener to toggle visibility of scroll to top button
@@ -601,7 +601,7 @@ export default function App() {
               }}
               className="cursor-pointer flex items-center hover:opacity-85 transition-opacity"
             >
-              <BytexonLogo showText={true} theme={theme} height={28} />
+              <BiytexonLogo showText={true} theme={theme} height={28} />
             </div>
 
             {/* Desktop Navigation Links */}
@@ -1058,7 +1058,7 @@ export default function App() {
      <div className="w-8 h-8 bg-slate-100 text-slate-900 rounded-sm flex items-center justify-center mx-auto border border-slate-250">
      <Lock className="w-4 h-4" />
      </div>
-     <h2 className="text-base font-sans font-bold text-slate-900 ">Bytexon Administrator Login</h2>
+     <h2 className="text-base font-sans font-bold text-slate-900 ">Biytexon Administrator Login</h2>
      <p className="text-[11px] text-slate-500 max-w-xs mx-auto">Authorize root environment settings using platform credentials.</p>
      </div>
 
@@ -1162,9 +1162,9 @@ export default function App() {
     <footer className="w-full bg-white border-t border-slate-200/40 select-none py-12 mt-auto rounded-none">
       <div className="w-full px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 rounded-none">
         <div className="flex flex-col items-center md:items-start gap-2">
-          <BytexonLogo showText={true} theme="light" height={22} />
+          <BiytexonLogo showText={true} theme="light" height={22} />
           <p className="text-[11px] text-slate-400 font-sans mt-1">
-            © 2026 BYTEXON. All rights reserved.
+            © 2026 BIYTEXON. All rights reserved.
           </p>
         </div>
         <div className="flex items-center space-x-8 text-[11px] font-medium text-slate-400">

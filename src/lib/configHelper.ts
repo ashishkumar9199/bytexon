@@ -10,7 +10,7 @@ export const DEFAULT_CONFIG: AdminConfig = {
  id: CONFIG_DOC_ID,
  adminUsername: '', // Empty on standard client-side config
  adminPassword: '', // Empty on standard client-side config
- upiId: 'bytexon@upi',
+ upiId: 'biytexon@upi',
  adminSecretPath: 'gate-abhya23',
  upiQrBase64: '', // Empty means use dynamically generated UPI QR
  standardPricing: {
@@ -107,7 +107,7 @@ export async function updateAdminConfig(updates: Partial<AdminConfig>): Promise<
 }
 
 // Generate a valid, scannable UPI pay URL
-export function generateUpiUrl(upiId: string, amount: number, payeeName: string = 'Bytexon'): string {
+export function generateUpiUrl(upiId: string, amount: number, payeeName: string = 'Biytexon'): string {
  const cleanUpiId = upiId.trim();
  const encodedName = encodeURIComponent(payeeName);
  return `upi://pay?pa=${cleanUpiId}&pn=${encodedName}&am=${amount}&cu=INR`;

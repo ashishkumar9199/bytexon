@@ -1,7 +1,7 @@
 import React from 'react';
 import { AdminConfig } from '../types';
 import { motion } from 'motion/react';
-import BytexonLogo from './BytexonLogo';
+import BiytexonLogo from './BiytexonLogo';
 import Interactive3DCard from './Interactive3DCard';
 import { 
   Sparkles, ChevronRight,
@@ -24,10 +24,10 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
         <div className="absolute top-[40%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-pink-100/20 dark:from-pink-950/10 to-blue-100/30 dark:to-blue-950/20 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-12 sm:pt-16 space-y-24">
+      <div className="relative z-10 w-full">
         
         {/* Apple-style Immersive Hero Card */}
-        <section className="relative overflow-hidden rounded-none bg-[#f5f5f7] dark:bg-slate-900/50 border border-black/[0.03] dark:border-slate-800 shadow-sm transition-all duration-500">
+        <section className="relative overflow-hidden rounded-none bg-[#f5f5f7] dark:bg-slate-900/50 border-b border-black/[0.03] dark:border-slate-800 shadow-sm transition-all duration-500 w-full">
           <div className="absolute inset-0 bg-radial-gradient from-white/30 dark:from-white/5 to-transparent pointer-events-none" />
           
           <div className="max-w-4xl mx-auto text-center px-6 py-20 sm:py-28 flex flex-col items-center relative z-10 space-y-8">
@@ -62,7 +62,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
               transition={{ delay: 0.3, duration: 0.7 }}
               className="text-slate-500 dark:text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl text-center"
             >
-              Bytexon translates complex organizational constraints into incredibly sleek, performant software. Submit specs in our interactive planner, secure live trackers, and collaborate directly with lead engineers.
+              Biytexon translates complex organizational constraints into incredibly sleek, performant software. Submit specs in our interactive planner, secure live trackers, and collaborate directly with lead engineers.
             </motion.p>
 
 
@@ -90,8 +90,9 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
           </div>
         </section>
 
-        {/* Capabilities Section */}
-        <section className="space-y-12">
+        <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-16 sm:pt-24 pb-12 space-y-24 max-w-7xl mx-auto">
+          {/* Capabilities Section */}
+          <section className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-400 tracking-widest uppercase">Expertise Catalog</span>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1f] dark:text-white">
@@ -160,6 +161,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
           </div>
         </section>
 
+        </div>
       </div>
     </div>
   );

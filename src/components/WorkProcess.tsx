@@ -90,12 +90,12 @@ const PROCESS_STEPS: ProcessStep[] = [
     phase: 'Phase 04: Monitoring',
     icon: MessageSquare,
     duration: 'Continuous',
-    shortDesc: 'Access your dedicated, real-time Bytexon Portal to watch logs, chat with lead architects, and verify milestones.',
-    detailedDesc: 'This is where Bytexon excels. You receive an exclusive, secure tracking workspace. Log in using your BTX tracking ID to chat directly with tech leads, review real-time feedback, upload assets, and coordinate payments via secure UPI QR codes.',
+    shortDesc: 'Access your dedicated, real-time Biytexon Portal to watch logs, chat with lead architects, and verify milestones.',
+    detailedDesc: 'This is where Biytexon excels. You receive an exclusive, secure tracking workspace. Log in using your BTX tracking ID to chat directly with tech leads, review real-time feedback, upload assets, and coordinate payments via secure UPI QR codes.',
     clientRole: 'Monitor progress updates, provide input in real-time chat, upload required assets.',
     deliverables: [
       'Live tracking dashboard accessible 24/7',
-      'Direct chat line with Bytexon Lead Architect',
+      'Direct chat line with Biytexon Lead Architect',
       'Secure ledger logs detailing payment verifications'
     ],
     checklist: [
@@ -164,7 +164,7 @@ export default function WorkProcess({ onPlanProject }: WorkProcessProps) {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center space-y-4">
         <span className="text-xs font-semibold text-indigo-600 dark:text-cyan-450 tracking-widest uppercase">AGILE LIFECYCLE</span>
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#1d1d1f] dark:text-white">
-          How Bytexon Delivers
+          How Biytexon Delivers
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           From the initial requirement formulation in our interactive planner to secure cloud deployment, we adhere to strict engineering phases.

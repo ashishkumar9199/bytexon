@@ -180,7 +180,7 @@ export default function ProjectPlanner({
  await addDoc(collection(db, 'chats'), {
  requestId: customId,
  sender: 'admin',
- text: `👋 Hello ${payload.name}! Thank you for choosing Bytexon. We have received your project request for "${payload.description.substring(0, 30)}...". Our architects are reviewing it and will get back to you shortly in this live chat!`,
+ text: `👋 Hello ${payload.name}! Thank you for choosing Biytexon. We have received your project request for "${payload.description.substring(0, 30)}...". Our architects are reviewing it and will get back to you shortly in this live chat!`,
  timestamp: Date.now()
  });
  } catch (chatErr) {
