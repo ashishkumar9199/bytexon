@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
  Users, CheckCircle, XCircle, Clock, Settings, MessageSquare, 
  Send, ShieldAlert, Check, Copy, RefreshCw, Upload, IndianRupee, DollarSign, LogOut, Trash2, Key, QrCode, Activity,
- Paperclip, FileText, Shield, Lock
+ Paperclip, FileText, Shield, Lock, Mic, MicOff
 } from 'lucide-react';
 import { getQrCodeUrl, getAdminTotpConfig, updateAdminTotpConfig } from '../lib/configHelper';
 import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/totpHelper';
@@ -32,6 +32,117 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  // Chat settings
  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
  const [adminReply, setAdminReply] = useState('');
+ const [isListening, setIsListening] = useState(false);
+ const recognitionRef = useRef<any>(null);
+
+ useEffect(() => {
+ return () => {
+ if (recognitionRef.current) {
+ recognitionRef.current.stop();
+ }
+ };
+ }, []);
+
+ const adminTypingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+ const isAdminTypingRef = useRef<boolean>(false);
+
+ useEffect(() => {
+ if (!selectedRequest) return;
+
+ if (adminReply.trim().length > 0) {
+ if (!isAdminTypingRef.current) {
+ isAdminTypingRef.current = true;
+ updateDoc(doc(db, 'requests', selectedRequest.id), { adminTyping: true }).catch(err => {
+ console.warn("Error setting adminTyping:", err);
+ });
+ }
+
+ if (adminTypingTimeoutRef.current) {
+ clearTimeout(adminTypingTimeoutRef.current);
+ }
+
+ adminTypingTimeoutRef.current = setTimeout(() => {
+ if (isAdminTypingRef.current) {
+ isAdminTypingRef.current = false;
+ updateDoc(doc(db, 'requests', selectedRequest.id), { adminTyping: false }).catch(err => {
+ console.warn("Error resetting adminTyping:", err);
+ });
+ }
+ }, 3000);
+ } else {
+ if (isAdminTypingRef.current) {
+ isAdminTypingRef.current = false;
+ if (adminTypingTimeoutRef.current) {
+ clearTimeout(adminTypingTimeoutRef.current);
+ }
+ updateDoc(doc(db, 'requests', selectedRequest.id), { adminTyping: false }).catch(() => {});
+ }
+ }
+ }, [adminReply, selectedRequest]);
+
+ useEffect(() => {
+ return () => {
+ if (selectedRequest && isAdminTypingRef.current) {
+ updateDoc(doc(db, 'requests', selectedRequest.id), { adminTyping: false }).catch(() => {});
+ }
+ };
+ }, [selectedRequest]);
+
+ const handleToggleListen = () => {
+ const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+ if (!SpeechRecognition) {
+ showToast('Speech recognition is not supported in this browser. Please use Google Chrome.', 'warning', 'Speech API');
+ return;
+ }
+
+ if (isListening) {
+ if (recognitionRef.current) {
+ recognitionRef.current.stop();
+ }
+ setIsListening(false);
+ } else {
+ try {
+ const rec = new SpeechRecognition();
+ rec.continuous = false;
+ rec.interimResults = false;
+ rec.lang = 'en-US';
+
+ rec.onstart = () => {
+ setIsListening(true);
+ showToast('Listening... Speak now.', 'info', 'Speech API');
+ };
+
+ rec.onresult = (event: any) => {
+ const transcript = event.results[0][0].transcript;
+ if (transcript) {
+ setAdminReply((prev) => prev ? `${prev} ${transcript}` : transcript);
+ showToast('Voice converted successfully!', 'success', 'Speech API');
+ }
+ };
+
+ rec.onerror = (event: any) => {
+ console.error('Speech recognition error:', event.error);
+ if (event.error === 'not-allowed') {
+ showToast('Microphone access was denied.', 'error', 'Speech API');
+ } else {
+ showToast(`Speech error: ${event.error}`, 'warning', 'Speech API');
+ }
+ setIsListening(false);
+ };
+
+ rec.onend = () => {
+ setIsListening(false);
+ };
+
+ recognitionRef.current = rec;
+ rec.start();
+ } catch (err) {
+ console.error('Speech initiation error:', err);
+ setIsListening(false);
+ }
+ }
+ };
+
  const chatEndRef = useRef<HTMLDivElement>(null);
 
  // Price adjustment during approval
@@ -870,25 +981,39 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
   </div>
  )}
  
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[10px] font-mono">
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[10px] font-mono">
  <div>
- <p className="text-slate-400 font-bold text-[8px] font-mono">WHATSAPP</p>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">📞 PHONE NUMBER</p>
  <p className="text-slate-900 dark:text-slate-100 dark:text-white font-bold mt-1 text-xs">{selectedRequest.whatsapp}</p>
  </div>
- {selectedRequest.companyName && (
  <div>
- <p className="text-slate-400 font-bold text-[8px] font-mono">COMPANY</p>
- <p className="text-slate-900 dark:text-slate-100 font-bold mt-1 text-xs truncate ">{selectedRequest.companyName}</p>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">✉️ GMAIL ADDRESS</p>
+ <p className="text-slate-900 dark:text-slate-100 dark:text-white font-bold mt-1 text-xs truncate" title={selectedRequest.email}>{selectedRequest.email}</p>
+ </div>
+ {selectedRequest.companyEmail && (
+ <div>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">🏢 COMPANY MAIL</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold mt-1 text-xs truncate" title={selectedRequest.companyEmail}>{selectedRequest.companyEmail}</p>
  </div>
  )}
+ {selectedRequest.companyName && (
  <div>
- <p className="text-slate-400 font-bold text-[8px] font-mono">CLIENT BUDGET</p>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">🏢 COMPANY NAME</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold mt-1 text-xs truncate" title={selectedRequest.companyName}>{selectedRequest.companyName}</p>
+ </div>
+ )}
+ <div className="col-span-2">
+ <p className="text-slate-400 font-bold text-[8px] font-mono">📍 PHYSICAL ADDRESS</p>
+ <p className="text-slate-900 dark:text-slate-100 font-bold mt-1 text-xs">{selectedRequest.address}</p>
+ </div>
+ <div>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">💰 CLIENT BUDGET</p>
  <p className="text-indigo-600 font-bold mt-1 text-xs">
  {selectedRequest.budgetCurrency === 'USD' ? '$' : '₹'}{selectedRequest.budgetAmount.toLocaleString()}
  </p>
  </div>
  <div>
- <p className="text-slate-400 font-bold text-[8px] font-mono">SUBMITTED</p>
+ <p className="text-slate-400 font-bold text-[8px] font-mono">📅 SUBMITTED</p>
  <p className="text-slate-900 dark:text-slate-100 dark:text-white font-bold mt-1 text-xs">
  {new Date(selectedRequest.createdAt).toLocaleDateString()}
  </p>
@@ -1310,6 +1435,18 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  );
  })
  )}
+ {selectedRequest.clientTyping && (
+ <div className="flex justify-start">
+ <div className="bg-white dark:bg-slate-900 text-slate-500 p-3 text-[10px] font-mono rounded-xl rounded-tl-none border border-slate-200 dark:border-slate-800 flex items-center space-x-1.5">
+ <span className="font-bold">Client is typing</span>
+ <span className="flex space-x-1">
+ <span className="w-1 h-1 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+ <span className="w-1 h-1 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+ <span className="w-1 h-1 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+ </span>
+ </div>
+ </div>
+ )}
  <div ref={chatEndRef} />
  </div>
 
@@ -1322,6 +1459,18 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  placeholder={`REPLY TO CLIENT ${selectedRequest.name.toUpperCase()}...`}
  className="flex-grow px-3.5 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-850 focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 focus:outline-none text-slate-900 dark:text-slate-100 text-xs font-mono placeholder-slate-400 rounded-xl"
  />
+ <button 
+ type="button"
+ onClick={handleToggleListen}
+ className={`p-2 transition-all flex-shrink-0 cursor-pointer rounded-xl border ${
+ isListening 
+ ? 'bg-rose-500 text-white border-rose-500 animate-pulse' 
+ : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+ }`}
+ title="Speak message (Voice-to-Text)"
+ >
+ {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+ </button>
  <button 
  type="submit"
  className="p-2 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-indigo-600 transition-colors flex-shrink-0 cursor-pointer border border-indigo-600"

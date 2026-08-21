@@ -5,7 +5,7 @@ import BiytexonLogo from './BiytexonLogo';
 import Interactive3DCard from './Interactive3DCard';
 import { 
   Sparkles, ChevronRight,
-  Code, Server, Database, Cloud, Brain, Laptop, Terminal, Layers, ArrowRight
+  Code, Server, Database, Cloud, Brain, Laptop, Terminal, Layers, ArrowRight, Rocket, Activity
 } from 'lucide-react';
 
 interface ClientLandingProps {
@@ -32,17 +32,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
           
           <div className="max-w-4xl mx-auto text-center px-6 py-20 sm:py-28 flex flex-col items-center relative z-10 space-y-8">
             
-            {/* Elegant Sub-badge */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="inline-flex items-center space-x-2 bg-white/80 dark:bg-slate-900/80 border border-black/[0.04] dark:border-slate-800 px-4 py-1 rounded-none text-slate-500 dark:text-slate-400 text-xs font-medium tracking-wide shadow-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-cyan-450 animate-pulse" />
-              <span>Premium Core Systems</span>
-            </motion.div>
-            
+
             {/* Huge Display Heading with perfect optical kerning */}
             <motion.h1 
               initial={{ opacity: 0, y: 15 }}
@@ -51,7 +41,7 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
               className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-[#1d1d1f] dark:text-white font-sans"
             >
               Digital Architecture. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-cyan-400 dark:via-blue-500 dark:to-indigo-500">
+              <span className="text-black dark:text-white">
                 Engineered to scale.
               </span>
             </motion.h1>
@@ -64,6 +54,30 @@ export default function ClientLanding({ onAccessPortal, adminConfig, onLaunchPla
             >
               Biytexon translates complex organizational constraints into incredibly sleek, performant software. Submit specs in our interactive planner, secure live trackers, and collaborate directly with lead engineers.
             </motion.p>
+
+            {/* Premium CTA Button Group */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.7 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full pt-4 relative z-20"
+            >
+              <button
+                onClick={() => onLaunchPlanner('create')}
+                className="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 font-bold text-sm tracking-wide transition-all duration-300 shadow-lg shadow-indigo-600/10 dark:shadow-cyan-500/10 flex items-center justify-center space-x-2 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-95"
+              >
+                <Rocket className="w-4.5 h-4.5 animate-bounce-subtle" />
+                <span>Launch Project</span>
+              </button>
+              
+              <button
+                onClick={() => onLaunchPlanner('track')}
+                className="w-full sm:w-auto px-8 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-600 dark:hover:border-cyan-400 text-slate-700 dark:text-slate-200 font-bold text-sm tracking-wide transition-all duration-300 shadow-sm flex items-center justify-center space-x-2 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-95"
+              >
+                <Activity className="w-4.5 h-4.5 text-indigo-500 dark:text-cyan-450" />
+                <span>Track Project</span>
+              </button>
+            </motion.div>
 
 
 

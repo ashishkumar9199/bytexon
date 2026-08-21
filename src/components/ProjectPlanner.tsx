@@ -9,7 +9,7 @@ import { useToast } from '../context/ToastContext';
 import { 
  Sparkles, Check, Key, ArrowRight, ShieldCheck, 
  Database, User, Mail, MessageSquare, Copy, Terminal, Zap, ShieldAlert, Rocket,
- Building2, Paperclip, UploadCloud, FileText, X
+ Building2, Paperclip, UploadCloud, FileText, X, Phone, MapPin
 } from 'lucide-react';
 
 interface ProjectPlannerProps {
@@ -50,6 +50,8 @@ export default function ProjectPlanner({
  email: '',
  companyName: '',
  whatsapp: '',
+ companyEmail: '',
+ address: '',
  description: initialDescription || '',
  budgetAmount: initialBudgetAmount ? initialBudgetAmount.toString() : '',
  budgetCurrency: 'INR' as 'INR' | 'USD'
@@ -155,6 +157,8 @@ export default function ProjectPlanner({
  email: formData.email.trim().toLowerCase(),
  companyName: formData.companyName.trim() || undefined,
  whatsapp: formData.whatsapp.trim(),
+ companyEmail: formData.companyEmail.trim() || undefined,
+ address: formData.address.trim(),
  description: formData.description.trim(),
  budgetAmount: parseFloat(formData.budgetAmount),
  budgetCurrency: formData.budgetCurrency,
@@ -192,6 +196,8 @@ export default function ProjectPlanner({
  email: '',
  companyName: '',
  whatsapp: '',
+ companyEmail: '',
+ address: '',
  description: '',
  budgetAmount: '',
  budgetCurrency: 'INR'
@@ -463,8 +469,8 @@ export default function ProjectPlanner({
 
         {/* Right Column - Interactive Form Container */}
         <div className="lg:col-span-7">
-          <Interactive3DCard glowColor="rgba(0, 194, 232, 0.2)" maxTilt={4}>
-            <div className="bg-white/80 backdrop-blur-xl dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-8 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden transition-colors duration-300">
+          <div className="transform-none">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden transition-colors duration-300">
               {/* Dynamic Background Accents */}
               <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/5 rounded-full blur-[80px] pointer-events-none" />
               <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#0B4C8C]/5 rounded-full blur-[80px] pointer-events-none" />
@@ -575,7 +581,7 @@ export default function ProjectPlanner({
                                 </div>
                                 <input 
                                   type="text"
-                                  placeholder="E.g. Acme Inc."
+                                  placeholder="E.g. Acme Corporation"
                                   value={formData.companyName}
                                   onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
                                   className="w-full px-4 py-3 pl-11 bg-slate-50/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all duration-200"
@@ -583,10 +589,10 @@ export default function ProjectPlanner({
                               </div>
                             </div>
 
-                            {/* Email */}
+                            {/* Gmail Address */}
                             <div className="space-y-2">
                               <label className="block text-[11px] font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase mb-2">
-                                ✉️ Email *
+                                ✉️ Gmail Address *
                               </label>
                               <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 transition-colors duration-200">
@@ -595,7 +601,7 @@ export default function ProjectPlanner({
                                 <input 
                                   type="email"
                                   required
-                                  placeholder="E.g. email@domain.com"
+                                  placeholder="E.g. user@gmail.com"
                                   value={formData.email}
                                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                                   className="w-full px-4 py-3 pl-11 bg-slate-50/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all duration-200"
@@ -603,21 +609,60 @@ export default function ProjectPlanner({
                               </div>
                             </div>
 
-                            {/* WhatsApp */}
+                            {/* Phone Number */}
                             <div className="space-y-2">
                               <label className="block text-[11px] font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase mb-2">
-                                💬 WhatsApp *
+                                📞 Phone Number *
                               </label>
                               <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 transition-colors duration-200">
-                                  <Zap className="w-4 h-4" />
+                                  <Phone className="w-4 h-4" />
                                 </div>
                                 <input 
                                   type="text"
                                   required
-                                  placeholder="E.g. +91 XXXXX XXXXX"
+                                  placeholder="E.g. +91 98765 43210"
                                   value={formData.whatsapp}
                                   onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                                  className="w-full px-4 py-3 pl-11 bg-slate-50/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all duration-200"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Company Email (Optional) */}
+                            <div className="space-y-2">
+                              <label className="block text-[11px] font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase mb-2">
+                                🏢 Company Mail (Optional)
+                              </label>
+                              <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 transition-colors duration-200">
+                                  <Mail className="w-4 h-4" />
+                                </div>
+                                <input 
+                                  type="email"
+                                  placeholder="E.g. company@firm.com"
+                                  value={formData.companyEmail}
+                                  onChange={(e) => setFormData(prev => ({ ...prev, companyEmail: e.target.value }))}
+                                  className="w-full px-4 py-3 pl-11 bg-slate-50/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all duration-200"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Address */}
+                            <div className="space-y-2">
+                              <label className="block text-[11px] font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase mb-2">
+                                📍 Address *
+                              </label>
+                              <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 transition-colors duration-200">
+                                  <MapPin className="w-4 h-4" />
+                                </div>
+                                <input 
+                                  type="text"
+                                  required
+                                  placeholder="E.g. 123 Tech Square, Sector 5"
+                                  value={formData.address}
+                                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                                   className="w-full px-4 py-3 pl-11 bg-slate-50/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all duration-200"
                                 />
                               </div>
@@ -688,13 +733,13 @@ export default function ProjectPlanner({
                                       <UploadCloud className="w-5 h-5" />
                                     </div>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                                      Attach project briefs, wireframes or PDFs
+                                      Upload Project SRS or Requirement Document (Optional)
                                     </p>
                                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                                      Drag & drop or <span className="text-cyan-600 dark:text-cyan-400 font-medium">browse files</span> (PDF, PNG, JPG, DOCX, TXT)
+                                      Drag & drop or <span className="text-cyan-600 dark:text-cyan-400 font-medium">browse files</span> (SRS PDF, PNG, JPG, DOCX, TXT)
                                     </p>
                                     <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
-                                      Max size 800 KB per file. Large file? Use cloud links in text instead.
+                                      Max size 800 KB per file. Optional step — you can add SRS now or skip it.
                                     </p>
                                   </div>
                                 </div>
@@ -1029,7 +1074,7 @@ export default function ProjectPlanner({
                 )}
               </AnimatePresence>
             </div>
-          </Interactive3DCard>
+          </div>
         </div>
 
       </section>

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
  ArrowLeft, CheckCircle2, AlertCircle, Clock, Send, CreditCard, 
  Copy, Check, MessageSquare, Briefcase, FileText, UploadCloud, IndianRupee, DollarSign, Activity,
- Paperclip
+ Paperclip, Mic, MicOff
 } from 'lucide-react';
 import { getQrCodeUrl, getAdminConfig } from '../lib/configHelper';
 import { useToast } from '../context/ToastContext';
@@ -25,6 +25,117 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  const [error, setError] = useState<string | null>(null);
  const [messages, setMessages] = useState<ChatMessage[]>([]);
  const [newMessage, setNewMessage] = useState('');
+ const [isListening, setIsListening] = useState(false);
+ const recognitionRef = useRef<any>(null);
+
+ useEffect(() => {
+ return () => {
+ if (recognitionRef.current) {
+ recognitionRef.current.stop();
+ }
+ };
+ }, []);
+
+ const clientTypingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+ const isClientTypingRef = useRef<boolean>(false);
+
+ useEffect(() => {
+ if (!request) return;
+
+ if (newMessage.trim().length > 0) {
+ if (!isClientTypingRef.current) {
+ isClientTypingRef.current = true;
+ updateDoc(doc(db, 'requests', requestId), { clientTyping: true }).catch(err => {
+ console.warn("Error setting clientTyping:", err);
+ });
+ }
+
+ if (clientTypingTimeoutRef.current) {
+ clearTimeout(clientTypingTimeoutRef.current);
+ }
+
+ clientTypingTimeoutRef.current = setTimeout(() => {
+ if (isClientTypingRef.current) {
+ isClientTypingRef.current = false;
+ updateDoc(doc(db, 'requests', requestId), { clientTyping: false }).catch(err => {
+ console.warn("Error resetting clientTyping:", err);
+ });
+ }
+ }, 3000);
+ } else {
+ if (isClientTypingRef.current) {
+ isClientTypingRef.current = false;
+ if (clientTypingTimeoutRef.current) {
+ clearTimeout(clientTypingTimeoutRef.current);
+ }
+ updateDoc(doc(db, 'requests', requestId), { clientTyping: false }).catch(() => {});
+ }
+ }
+ }, [newMessage, requestId, request]);
+
+ useEffect(() => {
+ return () => {
+ if (requestId && isClientTypingRef.current) {
+ updateDoc(doc(db, 'requests', requestId), { clientTyping: false }).catch(() => {});
+ }
+ };
+ }, [requestId]);
+
+ const handleToggleListen = () => {
+ const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+ if (!SpeechRecognition) {
+ showToast('Speech recognition is not supported in this browser. Please use Google Chrome.', 'warning', 'Speech API');
+ return;
+ }
+
+ if (isListening) {
+ if (recognitionRef.current) {
+ recognitionRef.current.stop();
+ }
+ setIsListening(false);
+ } else {
+ try {
+ const rec = new SpeechRecognition();
+ rec.continuous = false;
+ rec.interimResults = false;
+ rec.lang = 'en-US';
+
+ rec.onstart = () => {
+ setIsListening(true);
+ showToast('Listening... Speak now.', 'info', 'Speech API');
+ };
+
+ rec.onresult = (event: any) => {
+ const transcript = event.results[0][0].transcript;
+ if (transcript) {
+ setNewMessage((prev) => prev ? `${prev} ${transcript}` : transcript);
+ showToast('Voice converted successfully!', 'success', 'Speech API');
+ }
+ };
+
+ rec.onerror = (event: any) => {
+ console.error('Speech recognition error:', event.error);
+ if (event.error === 'not-allowed') {
+ showToast('Microphone access was denied.', 'error', 'Speech API');
+ } else {
+ showToast(`Speech error: ${event.error}`, 'warning', 'Speech API');
+ }
+ setIsListening(false);
+ };
+
+ rec.onend = () => {
+ setIsListening(false);
+ };
+
+ recognitionRef.current = rec;
+ rec.start();
+ } catch (err) {
+ console.error('Speech initiation error:', err);
+ setIsListening(false);
+ }
+ }
+ };
+
  const [txRef, setTxRef] = useState('');
  const [payNotes, setPayNotes] = useState('');
  const [copied, setCopied] = useState(false);
@@ -524,19 +635,33 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  <span>Project Scope Details</span>
  </h2>
  
- <dl className="space-y-4 text-xs">
+ <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
  <div>
- <dt className="text-slate-400 font-bold text-[9px] font-mono">Whatsapp contact</dt>
- <dd className="text-slate-900 dark:text-white font-mono mt-1 text-sm font-bold">{request.whatsapp}</dd>
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">📞 Phone Number</dt>
+ <dd className="text-slate-900 dark:text-white font-mono mt-1 text-xs font-bold">{request.whatsapp}</dd>
  </div>
+ <div>
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">✉️ Gmail Address</dt>
+ <dd className="text-slate-900 dark:text-white font-mono mt-1 text-xs font-bold">{request.email}</dd>
+ </div>
+ {request.companyEmail && (
+ <div>
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">🏢 Company Mail</dt>
+ <dd className="text-slate-900 dark:text-white font-mono mt-1 text-xs font-bold">{request.companyEmail}</dd>
+ </div>
+ )}
  {request.companyName && (
  <div>
- <dt className="text-slate-400 font-bold text-[9px] font-mono">Company name</dt>
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">🏢 Company Name</dt>
  <dd className="text-slate-900 dark:text-white mt-1 text-xs font-bold ">{request.companyName}</dd>
  </div>
  )}
- <div>
- <dt className="text-slate-400 font-bold text-[9px] font-mono">Project description</dt>
+ <div className="sm:col-span-2">
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">📍 Registered Address</dt>
+ <dd className="text-slate-900 dark:text-white font-mono mt-1 text-xs font-bold">{request.address}</dd>
+ </div>
+ <div className="sm:col-span-2">
+ <dt className="text-slate-400 font-bold text-[9px] font-mono uppercase tracking-wider">📝 Project description</dt>
  <dd className="text-slate-700 dark:text-slate-300 mt-2 p-3.5 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 text-xs leading-relaxed whitespace-pre-wrap font-mono rounded-2xl">
  {request.description}
  </dd>
@@ -1135,6 +1260,18 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  );
  })
  )}
+ {request?.adminTyping && (
+ <div className="flex justify-start">
+ <div className="bg-slate-100 dark:bg-slate-800 text-slate-500 p-3 text-[10px] font-mono rounded-xl rounded-tl-none border border-slate-300 dark:border-slate-700 flex items-center space-x-1.5">
+ <span className="font-bold">Architect is typing</span>
+ <span className="flex space-x-1">
+ <span className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+ <span className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+ <span className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+ </span>
+ </div>
+ </div>
+ )}
  <div ref={chatEndRef} />
  </div>
 
@@ -1147,6 +1284,18 @@ export default function ClientPortal({ requestId, onBack, adminConfig }: ClientP
  placeholder="Type message to Biytexon Architect..."
  className="flex-grow px-3 py-2 bg-slate-50 dark:bg-slate-950/40 border border-slate-300 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 focus:outline-none text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 rounded-xl"
  />
+ <button 
+ type="button"
+ onClick={handleToggleListen}
+ className={`p-2 transition-all flex-shrink-0 cursor-pointer rounded-xl border ${
+ isListening 
+ ? 'bg-rose-500 text-white border-rose-500 animate-pulse' 
+ : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+ }`}
+ title="Speak message (Voice-to-Text)"
+ >
+ {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+ </button>
  <button 
  type="submit"
  className="p-2 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-indigo-600 border border-indigo-600 transition-colors flex-shrink-0 cursor-pointer"

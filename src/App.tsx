@@ -13,6 +13,7 @@ import OtherServices from './components/OtherServices';
 import OurStacks from './components/OurStacks';
 import WorkProcess from './components/WorkProcess';
 import ContactUs from './components/ContactUs';
+import ProjectPlanner from './components/ProjectPlanner';
 import FeedbackWidget from './components/FeedbackWidget';
 import BiytexonLogo from './components/BiytexonLogo';
 import { motion, AnimatePresence } from 'motion/react';
@@ -137,7 +138,7 @@ export default function App() {
  const [showIntro, setShowIntro] = useState<boolean>(() => {
  return sessionStorage.getItem('biytexon_intro_completed') !== 'true';
  });
- const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'contact-us'>('client-landing');
+ const [view, setView] = useState<'client-landing' | 'client-portal' | 'admin-login' | 'admin-dashboard' | 'our-services' | 'other-services' | 'our-stacks' | 'work-process' | 'contact-us' | 'project-planner'>('client-landing');
  const [plannerTab, setPlannerTab] = useState<'create' | 'track'>('create');
  const [plannerPrefillPrice, setPlannerPrefillPrice] = useState<number | undefined>(undefined);
  const [plannerPrefillDesc, setPlannerPrefillDesc] = useState<string | undefined>(undefined);
@@ -913,8 +914,8 @@ export default function App() {
  <ClientLanding 
  onAccessPortal={handleAccessPortal} 
  adminConfig={adminConfig}
- onLaunchPlanner={() => {
- navigateTo('contact-us');
+ onLaunchPlanner={(tab) => {
+ navigateTo('project-planner', { tab: tab || 'create' });
  }}
  />
  )}
@@ -923,7 +924,7 @@ export default function App() {
  {view === 'our-services' && (
  <OurServices 
  onPlanProject={() => {
- navigateTo('contact-us');
+ navigateTo('project-planner', { tab: 'create' });
  }}
  />
  )}
@@ -933,7 +934,7 @@ export default function App() {
   <OtherServices 
   onBackToLanding={() => navigateTo('client-landing')}
   onPlanProject={() => {
-  navigateTo('contact-us');
+  navigateTo('project-planner', { tab: 'create' });
   }}
   />
   )}
@@ -942,7 +943,7 @@ export default function App() {
  {view === 'our-stacks' && (
  <OurStacks 
  onPlanProject={() => {
- navigateTo('contact-us');
+ navigateTo('project-planner', { tab: 'create' });
  }}
  />
  )}
@@ -951,8 +952,19 @@ export default function App() {
  {view === 'work-process' && (
  <WorkProcess 
  onPlanProject={() => {
- navigateTo('contact-us');
+ navigateTo('project-planner', { tab: 'create' });
  }}
+ />
+ )}
+
+ {/* 1.8. INTERACTIVE PROJECT PLANNER & TRACKER */}
+ {view === 'project-planner' && (
+ <ProjectPlanner 
+ onAccessPortal={handleAccessPortal}
+ adminConfig={adminConfig}
+ initialTab={plannerTab}
+ initialBudgetAmount={plannerPrefillPrice}
+ initialDescription={plannerPrefillDesc}
  />
  )}
 

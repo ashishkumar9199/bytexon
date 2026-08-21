@@ -30,6 +30,8 @@ export interface ProjectRequest {
  email: string;
  companyName?: string;
  whatsapp: string;
+ companyEmail?: string;
+ address: string;
  description: string;
  budgetAmount: number;
  budgetCurrency: 'INR' | 'USD';
@@ -47,6 +49,8 @@ export interface ProjectRequest {
  dailyUpdates?: ProjectUpdate[];
  files?: ProjectFile[];
  payments?: PaymentRecord[];
+ adminTyping?: boolean;
+ clientTyping?: boolean;
 }
 
 export interface ChatMessage {
