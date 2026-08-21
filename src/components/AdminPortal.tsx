@@ -28,6 +28,9 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const [activeTab, setActiveTab] = useState<'requests' | 'chat' | 'settings' | 'security'>('requests');
  const [statusFilter, setStatusFilter] = useState<string>('all');
  const [loadingRequests, setLoadingRequests] = useState(true);
+ const [newRequestsCount, setNewRequestsCount] = useState<number>(0);
+ const [lastUpdatedRequestId, setLastUpdatedRequestId] = useState<string | null>(null);
+ const isFirstLoadRef = useRef(true);
 
  // Chat settings
  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -326,6 +329,20 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  });
  // Sort newest first
  list.sort((a, b) => b.createdAt - a.createdAt);
+
+ // Handle real-time 'New Project Request' notification toast or counter
+ if (isFirstLoadRef.current) {
+ isFirstLoadRef.current = false;
+ } else {
+ snapshot.docChanges().forEach((change) => {
+ if (change.type === 'added') {
+ const newReq = change.doc.data() as any;
+ showToast(`New Project Request received: "${newReq.name}"!`, 'success', 'New Request Alert');
+ setNewRequestsCount(prev => prev + 1);
+ }
+ });
+ }
+
  setRequests(list);
  setLoadingRequests(false);
 
@@ -410,6 +427,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  });
 
  showToast('Proposal approved successfully!', 'success', 'Approved');
+ setLastUpdatedRequestId(selectedRequest.id);
+ setTimeout(() => setLastUpdatedRequestId(null), 3000);
  } catch (err) {
  console.error("Error approving request:", err);
  showToast("Failed to approve request.", "error", "Error");
@@ -438,6 +457,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  timestamp: Date.now()
  });
  showToast('Proposal declined successfully.', 'warning', 'Declined');
+ setLastUpdatedRequestId(selectedRequest.id);
+ setTimeout(() => setLastUpdatedRequestId(null), 3000);
  } catch (err) {
  console.error("Error rejecting request:", err);
  showToast("Failed to decline proposal.", "error", "Error");
@@ -520,6 +541,8 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  timestamp: Date.now()
  });
  showToast('Payment verified successfully!', 'success', 'Payment Verified');
+ setLastUpdatedRequestId(selectedRequest.id);
+ setTimeout(() => setLastUpdatedRequestId(null), 3000);
  } catch (err) {
  console.error("Error verifying payment:", err);
  showToast("Failed to verify payment.", "error", "Error");
@@ -731,15 +754,23 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-0 flex items-center justify-between transition-colors duration-300">
  <div className="flex space-x-2">
  <button
- onClick={() => setActiveTab('requests')}
+ onClick={() => {
+   setActiveTab('requests');
+   setNewRequestsCount(0);
+ }}
  id="tab-requests"
- className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer ${
+ className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer flex items-center ${
  activeTab === 'requests' 
  ? 'border-indigo-600 text-indigo-600' 
  : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white'
  }`}
  >
- Proposals ({requests.length})
+ <span>Proposals ({requests.length})</span>
+ {newRequestsCount > 0 && (
+   <span className="ml-2 px-1.5 py-0.5 bg-rose-500 text-white font-extrabold font-mono text-[8px] rounded-full animate-pulse">
+     {newRequestsCount} NEW
+   </span>
+ )}
  </button>
  
  <button
@@ -857,23 +888,43 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  <p className="text-[10px] text-slate-400">ADJUST STATUS FILTERS ABOVE</p>
  </div>
  ) : (
- filteredRequests.map((req) => {
+ <AnimatePresence mode="popLayout">
+ {filteredRequests.map((req) => {
  const isSelected = selectedRequest?.id === req.id;
+ const isRecentlyUpdated = lastUpdatedRequestId === req.id;
  const bSign = req.budgetCurrency === 'USD' ? '$' : '₹';
  return (
- <button
+ <motion.button
+ layout
+ initial={{ opacity: 0, y: 15 }}
+ animate={{ opacity: 1, y: 0 }}
+ exit={{ opacity: 0, scale: 0.95 }}
+ transition={{ type: "spring", stiffness: 350, damping: 30 }}
  key={req.id}
  onClick={() => setSelectedRequest(req)}
- className={`w-full text-left p-3 border transition-all flex flex-col space-y-2 cursor-pointer font-mono ${
- isSelected 
+ className={`w-full text-left p-3 border flex flex-col space-y-2 cursor-pointer font-mono rounded-xl transition-all ${
+ isRecentlyUpdated
+ ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500 shadow-md shadow-emerald-500/10'
+ : isSelected 
  ? 'bg-slate-100 dark:bg-slate-800 border-indigo-600' 
  : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-850 hover:border-slate-300/35'
  }`}
  >
  <div className="flex items-center justify-between w-full">
+ <div className="flex items-center space-x-1.5">
  <span className="font-mono text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40 px-1.5 py-0.5 rounded">
  ID: {req.id}
  </span>
+ {isRecentlyUpdated && (
+   <motion.span 
+     initial={{ scale: 0.8 }}
+     animate={{ scale: 1 }}
+     className="text-[7px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-1.5 py-0.5 rounded animate-pulse"
+   >
+     STATE SYNCED!
+   </motion.span>
+ )}
+ </div>
  <span className={`px-1.5 py-0.5 text-[8px] font-bold border ${
  req.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' :
  req.status === 'approved' ? 'bg-indigo-50 text-indigo-600 border-indigo-200' :
@@ -896,9 +947,10 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  BUDGET: {bSign}{req.budgetAmount.toLocaleString()}
  </span>
  </div>
- </button>
+ </motion.button>
  );
- })
+ })}
+ </AnimatePresence>
  )}
  </div>
 
