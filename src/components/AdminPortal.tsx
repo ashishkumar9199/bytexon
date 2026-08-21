@@ -14,6 +14,7 @@ import { generateBase32Secret, generateOtpauthUri, verifyTotp } from '../lib/tot
 import QRCode from 'qrcode';
 import BiytexonLogo from './BiytexonLogo';
 import { useToast } from '../context/ToastContext';
+import { triggerStatusNotificationEmail, EmailLog } from '../lib/emailService';
 
 interface AdminPortalProps {
  adminConfig: AdminConfig;
@@ -25,12 +26,17 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  const { showToast } = useToast();
  const [requests, setRequests] = useState<ProjectRequest[]>([]);
  const [selectedRequest, setSelectedRequest] = useState<ProjectRequest | null>(null);
- const [activeTab, setActiveTab] = useState<'requests' | 'chat' | 'settings' | 'security'>('requests');
+ const [activeTab, setActiveTab] = useState<'requests' | 'chat' | 'settings' | 'security' | 'emails'>('requests');
  const [statusFilter, setStatusFilter] = useState<string>('all');
  const [loadingRequests, setLoadingRequests] = useState(true);
  const [newRequestsCount, setNewRequestsCount] = useState<number>(0);
  const [lastUpdatedRequestId, setLastUpdatedRequestId] = useState<string | null>(null);
  const isFirstLoadRef = useRef(true);
+
+ // Email Outbox Notification States
+ const [emailLogs, setEmailLogs] = useState<EmailLog[]>([]);
+ const [selectedEmailLog, setSelectedEmailLog] = useState<EmailLog | null>(null);
+ const [loadingEmails, setLoadingEmails] = useState(false);
 
  // Chat settings
  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -359,6 +365,28 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  return () => unsubscribe();
  }, [selectedRequest?.id]);
 
+ // Load Email Notification logs
+ useEffect(() => {
+ if (activeTab !== 'emails') return;
+ setLoadingEmails(true);
+ const q = collection(db, 'email_logs');
+ const unsubscribe = onSnapshot(q, (snapshot) => {
+ const list: EmailLog[] = [];
+ snapshot.forEach((docSnap) => {
+ list.push({ id: docSnap.id, ...docSnap.data() } as EmailLog);
+ });
+ // Sort newest sent first
+ list.sort((a, b) => b.sentAt - a.sentAt);
+ setEmailLogs(list);
+ setLoadingEmails(false);
+ }, (err) => {
+ console.warn("Error loading email notification logs:", err);
+ setLoadingEmails(false);
+ });
+
+ return () => unsubscribe();
+ }, [activeTab]);
+
  // Load selected request's chat in real-time
  useEffect(() => {
  if (!selectedRequest) {
@@ -429,6 +457,20 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  showToast('Proposal approved successfully!', 'success', 'Approved');
  setLastUpdatedRequestId(selectedRequest.id);
  setTimeout(() => setLastUpdatedRequestId(null), 3000);
+
+ // Trigger automated notification email
+ try {
+   const updatedRequestForEmail = { 
+     ...selectedRequest, 
+     status: 'approved' as const, 
+     approvedAmount: amountNum, 
+     approvedCurrency: approvalCurrency as 'USD' | 'INR'
+   };
+   triggerStatusNotificationEmail(updatedRequestForEmail, 'approved');
+   showToast('Notification email automatically dispatched to client!', 'info', 'Email Sent');
+ } catch (emailErr) {
+   console.error("Email dispatch failed:", emailErr);
+ }
  } catch (err) {
  console.error("Error approving request:", err);
  showToast("Failed to approve request.", "error", "Error");
@@ -459,6 +501,18 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  showToast('Proposal declined successfully.', 'warning', 'Declined');
  setLastUpdatedRequestId(selectedRequest.id);
  setTimeout(() => setLastUpdatedRequestId(null), 3000);
+
+ // Trigger automated notification email
+ try {
+   const updatedRequestForEmail = { 
+     ...selectedRequest, 
+     status: 'rejected' as const
+   };
+   triggerStatusNotificationEmail(updatedRequestForEmail, 'rejected');
+   showToast('Notification email automatically dispatched to client!', 'info', 'Email Sent');
+ } catch (emailErr) {
+   console.error("Email dispatch failed:", emailErr);
+ }
  } catch (err) {
  console.error("Error rejecting request:", err);
  showToast("Failed to decline proposal.", "error", "Error");
@@ -543,6 +597,21 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  showToast('Payment verified successfully!', 'success', 'Payment Verified');
  setLastUpdatedRequestId(selectedRequest.id);
  setTimeout(() => setLastUpdatedRequestId(null), 3000);
+
+ // Trigger automated notification email
+ try {
+   const nextStatus = isFullyPaid ? 'completed' : 'approved';
+   const updatedRequestForEmail = { 
+     ...selectedRequest, 
+     status: nextStatus as any, 
+     paidAmount: newPaidTotal, 
+     payments: updatedPayments 
+   };
+   triggerStatusNotificationEmail(updatedRequestForEmail, nextStatus);
+   showToast('Notification email automatically dispatched to client!', 'info', 'Email Sent');
+ } catch (emailErr) {
+   console.error("Email dispatch failed:", emailErr);
+ }
  } catch (err) {
  console.error("Error verifying payment:", err);
  showToast("Failed to verify payment.", "error", "Error");
@@ -813,6 +882,18 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
  }`}
  >
  Security Controls
+ </button>
+
+ <button
+ onClick={() => setActiveTab('emails')}
+ id="tab-emails"
+ className={`py-3 px-4 font-mono font-bold text-xs border-b-2 transition-all cursor-pointer ${
+ activeTab === 'emails' 
+ ? 'border-indigo-600 text-indigo-600' 
+ : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white'
+ }`}
+ >
+ Email Outbox
  </button>
  </div>
 
@@ -2393,6 +2474,131 @@ export default function AdminPortal({ adminConfig, onUpdateConfig, onLogOut }: A
           </div>
         </div>
       </div>
+    </div>
+  )}
+
+  {activeTab === 'emails' && (
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 h-full flex flex-col text-left transition-colors duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+        <div>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-2 font-mono uppercase tracking-wider">
+            <FileText className="w-4 h-4 text-indigo-600" />
+            <span>Client Email Outbox Logs</span>
+          </h3>
+          <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase">
+            Automated operational notifications delivered regarding project status modifications.
+          </p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="text-[10px] font-bold font-mono px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 border border-indigo-200/50 rounded-lg">
+            {emailLogs.length} DISPATCHED
+          </span>
+        </div>
+      </div>
+
+      {loadingEmails ? (
+        <div className="flex-1 flex flex-col items-center justify-center py-20 space-y-3">
+          <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs text-slate-400 font-mono">Syncing Secure Outbox...</p>
+        </div>
+      ) : emailLogs.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center justify-center py-20 text-center space-y-4">
+          <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-full border border-slate-200 dark:border-slate-850">
+            <Clock className="w-8 h-8 text-slate-400" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono font-bold uppercase">Outbox is Clean</p>
+            <p className="text-[10px] text-slate-500 max-w-xs font-mono">
+              No automated email notification triggers have been fired in this session yet. Emails dispatch when proposals are approved, declined, or payments verified.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-6 mt-6">
+          {/* Email list panel */}
+          <div className="flex-1 overflow-y-auto pr-2 space-y-3 max-h-[550px] scrollbar-thin">
+            {emailLogs.map((log) => (
+              <div
+                key={log.id}
+                onClick={() => setSelectedEmailLog(log)}
+                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer text-left relative ${
+                  selectedEmailLog?.id === log.id
+                    ? 'bg-indigo-50/40 dark:bg-indigo-950/20 border-indigo-500 shadow-sm'
+                    : 'bg-slate-50/50 dark:bg-slate-900/30 border-slate-200 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-900/60'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[9px] font-bold font-mono tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                    {new Date(log.sentAt).toLocaleString()}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded-md font-bold font-mono text-[8px] tracking-wider uppercase border ${
+                    log.status === 'sent' 
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-950/30 dark:text-emerald-450 dark:border-emerald-900/50'
+                      : log.status === 'sending'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50 animate-pulse'
+                      : 'bg-rose-50 text-rose-700 border-rose-200/50 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50'
+                  }`}>
+                    {log.status}
+                  </span>
+                </div>
+
+                <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 mt-2 line-clamp-1 font-mono uppercase">
+                  {log.subject}
+                </h4>
+
+                <div className="flex items-center justify-between gap-4 mt-3 pt-3 border-t border-black/[0.03] dark:border-white/[0.03] text-[9px] text-slate-500 font-mono">
+                  <div>
+                     <span className="text-slate-400">TO: </span>
+                     <span className="font-bold text-slate-700 dark:text-slate-300">{log.to}</span>
+                  </div>
+                  <div>
+                     <span className="text-slate-400 font-bold uppercase">PROJECT: </span>
+                     <span className="font-bold text-indigo-600 dark:text-cyan-400">{log.projectName}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Live preview pane */}
+          <div className="w-full lg:w-[480px] border border-slate-200 dark:border-slate-800 rounded-3xl p-5 bg-slate-50 dark:bg-slate-950 flex flex-col h-[550px]">
+            {selectedEmailLog ? (
+              <div className="flex-1 flex flex-col h-full overflow-hidden text-left">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold font-mono text-slate-400 uppercase">Interactive Delivery Preview</span>
+                    <a
+                      href={`mailto:${selectedEmailLog.to}?subject=${encodeURIComponent(selectedEmailLog.subject)}&body=Dear client, please log in to review your status update.`}
+                      className="text-[9px] font-bold font-mono text-indigo-600 hover:text-indigo-700 flex items-center space-x-1"
+                    >
+                      <Send className="w-3 h-3" />
+                      <span>Open in Desktop Client</span>
+                    </a>
+                  </div>
+                  <div className="text-[10px] font-mono space-y-1 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-850">
+                    <p><strong className="text-slate-400 font-bold uppercase">To:</strong> {selectedEmailLog.to}</p>
+                    <p><strong className="text-slate-400 font-bold uppercase">Subject:</strong> {selectedEmailLog.subject}</p>
+                    <p><strong className="text-slate-400 font-bold uppercase">Status:</strong> <span className="text-emerald-500 font-bold">SMTP delivered</span></p>
+                  </div>
+                </div>
+
+                {/* HTML template sandbox preview container */}
+                <div className="flex-1 overflow-y-auto mt-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl relative shadow-inner">
+                  <div 
+                    className="absolute inset-0 p-4 overflow-auto scale-[0.95] origin-top text-slate-900 dark:text-slate-100"
+                    dangerouslySetInnerHTML={{ __html: selectedEmailLog.body }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-3 text-slate-400">
+                <FileText className="w-10 h-10 text-slate-300 dark:text-slate-700 animate-bounce" />
+                <p className="text-xs font-mono">Select a dispatched email on the left to load its interactive layout preview.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )}
 

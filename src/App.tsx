@@ -147,6 +147,17 @@ export default function App() {
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const [showScrollTop, setShowScrollTop] = useState(false);
  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+ const [isPageLoading, setIsPageLoading] = useState(false);
+
+ // Trigger loading screen on view navigation transition
+ useEffect(() => {
+   setIsPageLoading(true);
+   const timer = setTimeout(() => {
+     setIsPageLoading(false);
+     window.scrollTo(0, 0);
+   }, 600);
+   return () => clearTimeout(timer);
+ }, [view]);
 
  // Apply theme class to document element
  useEffect(() => {
@@ -1329,6 +1340,54 @@ export default function App() {
 
    {/* Persistent Feedback Widget in Bottom-Left */}
    <FeedbackWidget />
+
+   {/* Fullscreen Centered Spinner Overlay for Page Loading Transition */}
+   <AnimatePresence>
+     {isPageLoading && (
+       <motion.div
+         initial={{ opacity: 0 }}
+         animate={{ opacity: 1 }}
+         exit={{ opacity: 0 }}
+         transition={{ duration: 0.2 }}
+         className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md text-center"
+       >
+         <div className="relative flex flex-col items-center">
+           {/* Outer spinning ring matching theme */}
+           <motion.div
+             animate={{ rotate: 360 }}
+             transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
+             className="w-16 h-16 rounded-full border-t-2 border-r-2 border-indigo-500 border-b-transparent border-l-transparent"
+           />
+           
+           {/* Inner inverse spinning ring */}
+           <motion.div
+             animate={{ rotate: -360 }}
+             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+             className="absolute top-2 left-2 w-12 h-12 rounded-full border-b-2 border-l-2 border-cyan-400 border-t-transparent border-r-transparent opacity-80"
+           />
+
+           {/* Glowing static center node */}
+           <div className="absolute top-5 left-5 w-6 h-6 rounded-full bg-indigo-600/30 flex items-center justify-center border border-indigo-500/50">
+             <div className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse" />
+           </div>
+
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.1 }}
+             className="mt-6 space-y-2"
+           >
+             <div className="font-mono text-[10px] font-bold tracking-[0.3em] text-cyan-400 uppercase animate-pulse">
+               BIYTEXON LABS
+             </div>
+             <div className="text-[10px] text-slate-500 font-mono tracking-wider uppercase">
+               Loading Secure Environment...
+             </div>
+           </motion.div>
+         </div>
+       </motion.div>
+     )}
+   </AnimatePresence>
 
   </div>
   );
